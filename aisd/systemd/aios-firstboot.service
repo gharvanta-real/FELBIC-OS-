@@ -1,0 +1,28 @@
+[Unit]
+Description=AIOS First-Boot Model Downloader
+Documentation=https://aios.dev/docs/firstboot
+After=network-online.target aisd.service
+Requires=network-online.target
+ConditionPathExists=/var/lib/aios/downloader.conf
+ConditionPathExists=!/var/lib/aios/models/.complete
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+RemainAfterExit=yes
+
+ExecStart=/usr/lib/aios/firstboot-download.sh
+
+# Safety net: if download hangs, timeout after 30 minutes
+TimeoutStartSec=1800
+
+# Allow network and file access
+PrivateTmp=false
+ProtectHome=no
+
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

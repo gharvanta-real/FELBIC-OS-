@@ -1,0 +1,30 @@
+# branding.desc — Calamares branding configuration for AIOS (FELBIC OS)
+---
+componentName:   felbicos
+welcomeStyleCalamares:   true
+
+strings:
+    productName:         AIOS
+    shortProductName:    AIOS
+    productVersion:      0.1.0-dev
+    shortVersionedName:  AIOS 0.1
+    bootloaderEntryName: AIOS
+    productUrl:          https://ai-os.dev/
+    supportUrl:          https://ai-os.dev/support
+    releaseNotesUrl:     https://ai-os.dev/releases
+
+images:
+    productLogo:         "logo.png"
+    productIcon:         "logo.png"
+    productWelcome:      "welcome.png"
+    productWallpaper:    "wallpaper.png"
+
+slideshow:               "show.qml"
+
+style:
+   SidebarBackground:    "#1e1a3a"
+   SidebarText:          "#ffffff"
+   SidebarTextCurrent:   "#a855f7"
+   SidebarBackgroundCurrent: "#2e2555"
+
+slideshowAPI: 2

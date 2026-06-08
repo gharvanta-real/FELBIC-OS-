@@ -1,0 +1,9 @@
+[capabilities]
+stats_read = "allow"
+fs_read = "allow"
+process_list = "allow"
+
+# These remain gated until the UI approval flow exists.
+fs_write = "ask"
+process_kill = "ask"
+system_control = "ask"

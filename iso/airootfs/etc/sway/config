@@ -1,0 +1,103 @@
+# AIOS Live — Sway config (Phase 0 temporary WM)
+# This is replaced by aios-comp in Phase 3.
+
+# ── Variables ────────────────────────────────────────────────────────────────
+set $mod Mod1
+set $term foot
+set $menu wofi --show drun
+
+# ── Output ───────────────────────────────────────────────────────────────────
+output * bg /usr/share/backgrounds/felbicos/wallpaper.png fill
+output * scale 1
+
+# ── Input ────────────────────────────────────────────────────────────────────
+input type:keyboard {
+    xkb_layout us
+    repeat_delay 300
+    repeat_rate 30
+}
+
+input type:touchpad {
+    tap enabled
+    natural_scroll enabled
+    dwt enabled
+}
+
+# ── Appearance ───────────────────────────────────────────────────────────────
+font pango:Inter 10
+gaps inner 8
+gaps outer 4
+default_border pixel 2
+
+# focused            border  bg      text    indicator child_border
+client.focused       #7c3aed #7c3aed #ffffff #a855f7   #7c3aed
+client.unfocused     #1e1e2e #1e1e2e #888888 #1e1e2e   #1e1e2e
+client.urgent        #ef4444 #ef4444 #ffffff #ef4444   #ef4444
+
+# ── Key bindings ─────────────────────────────────────────────────────────────
+bindsym $mod+Return    exec $term
+bindsym $mod+d         exec $menu
+bindsym $mod+Shift+q   kill
+bindsym $mod+Shift+c   reload
+bindsym $mod+Shift+e   exec swaymsg exit
+
+# Focus
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+
+# Move
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+
+# Layout
+bindsym $mod+b splith
+bindsym $mod+v splitv
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+bindsym $mod+f fullscreen toggle
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+
+# Workspaces
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+
+# Volume
+bindsym XF86AudioRaiseVolume  exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
+bindsym XF86AudioLowerVolume  exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+bindsym XF86AudioMute         exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+
+# Brightness
+bindsym XF86MonBrightnessUp   exec brightnessctl set 10%+
+bindsym XF86MonBrightnessDown exec brightnessctl set 10%-
+
+# Screenshot
+bindsym Print exec grim -g "$(slurp)" /tmp/screenshot-$(date +%s).png
+
+# ── Autostart ────────────────────────────────────────────────────────────────
+exec_always --no-startup-id nm-applet --indicator
+# exec_always --no-startup-id waybar
+exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+exec sh -lc 'python -m http.server 8765 --bind 127.0.0.1 --directory /usr/share/desktop-shell >/tmp/felbicos-shell-http.log 2>&1'
+exec sh -lc 'sleep 1; chromium --kiosk --app=http://127.0.0.1:8765/index.html --no-first-run --no-default-browser-check --ozone-platform=wayland --enable-features=UseOzonePlatform'
+
+# ── Window rules (Floating by default for macOS feel) ────────────────────────
+for_window [app_id="foot"] floating enable, resize set 720 480
+for_window [app_id="calamares"] floating enable
+for_window [app_id="pavucontrol"] floating enable, resize set 600 400
+
+include /etc/sway/config.d/*

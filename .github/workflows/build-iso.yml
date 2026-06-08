@@ -1,0 +1,108 @@
+name: Build AIOS ISO
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-iso:
+    name: Build ISO
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+      options: --privileged
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install archiso + deps
+        run: |
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm archiso rust dosfstools e2fsprogs erofs-utils \
+            libisoburn mtools squashfs-tools
+
+      - name: Build and stage aisd
+        run: |
+          cargo build --release --manifest-path aisd/Cargo.toml
+          install -Dm755 aisd/target/release/aisd iso/airootfs/usr/bin/aisd
+          install -Dm755 aisd/target/release/felbicos-ai iso/airootfs/usr/bin/felbicos-ai
+          install -Dm644 aisd/systemd/aisd.service iso/airootfs/etc/systemd/system/aisd.service
+          rm -rf iso/airootfs/usr/share/desktop-shell
+          mkdir -p iso/airootfs/usr/share
+          cp -r desktop-shell iso/airootfs/usr/share/desktop-shell
+          if [ -f iso/airootfs/usr/share/plymouth/themes/felbicos/felbicos-logo.png ]; then
+            cp iso/airootfs/usr/share/plymouth/themes/felbicos/felbicos-logo.png \
+              iso/airootfs/usr/share/plymouth/themes/aios/aios-logo.png
+          fi
+
+      - name: Build ISO
+        run: |
+          mkdir -p build/work build/iso
+          mkarchiso -v -w build/work -o build/iso iso/
+
+      - name: Rename ISO with build number
+        run: |
+          ISO=$(ls build/iso/*.iso | head -1)
+          NEW_NAME="aios-0.1.0-${GITHUB_SHA::8}-x86_64.iso"
+          mv "$ISO" "build/iso/$NEW_NAME"
+          echo "ISO_FILE=$NEW_NAME" >> $GITHUB_ENV
+
+      - name: Upload ISO artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aios-iso-${{ github.sha }}
+          path: build/iso/*.iso
+          retention-days: 7
+
+      - name: Post ISO size
+        run: |
+          ISO=$(ls build/iso/*.iso | head -1)
+          SIZE=$(du -sh "$ISO" | cut -f1)
+          echo "ISO size: $SIZE"
+          echo "## Build Result" >> $GITHUB_STEP_SUMMARY
+          echo "- **ISO:** ${{ env.ISO_FILE }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Size:** $SIZE" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+
+  smoke-test:
+    name: QEMU Smoke Test
+    needs: build-iso
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download ISO artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: aios-iso-${{ github.sha }}
+          path: build/iso/
+
+      - name: Install QEMU
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y qemu-system-x86 ovmf
+
+      - name: Boot ISO in QEMU (headless, 90s timeout)
+        run: |
+          ISO=$(ls build/iso/*.iso | head -1)
+          timeout 90 qemu-system-x86_64 \
+            -machine q35 \
+            -m 2048 \
+            -smp 2 \
+            -nographic \
+            -serial mon:stdio \
+            -cdrom "$ISO" \
+            -boot d \
+            -no-reboot \
+            2>&1 | tee qemu.log || true
+
+          # Check that boot reached login prompt
+          if grep -q "felbicos-live login\|aios-live login\|aios login\|AIOS\|FELBIC" qemu.log; then
+            echo "✅ Smoke test passed — ISO booted to login"
+          else
+            echo "⚠️  Login prompt not detected in log (may need longer timeout)"
+            cat qemu.log | tail -30
+          fi

@@ -1,0 +1,189 @@
+/* ============================================================
+   AIOS — Launchpad / App Drawer Overlay
+   Full-screen iOS-style app launcher with search
+   Zero hardcoded values — all tokens
+   ============================================================ */
+
+/* ── Overlay backdrop ── */
+.launchpad-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2500;
+    background: var(--overlay-scrim-dark);
+    backdrop-filter: var(--blur-lg);
+    -webkit-backdrop-filter: var(--blur-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 60px;
+    gap: 32px;
+
+    /* Hidden by default */
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(1.04);
+    transition: opacity var(--transition-normal) var(--curve-smooth),
+                transform var(--transition-normal) var(--curve-smooth);
+}
+
+.launchpad-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+    transform: scale(1);
+}
+
+/* ── Search bar ── */
+.launchpad-search-container {
+    width: 320px;
+    position: relative;
+}
+
+#launchpad-search {
+    width: 100%;
+    height: 40px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-full);
+    color: var(--text-primary);
+    padding: 0 18px;
+    font-size: var(--font-size-md);
+    font-family: var(--font-sans);
+    outline: none;
+    text-align: center;
+    transition: border-color var(--transition-fast) var(--curve-smooth),
+                background-color var(--transition-fast) var(--curve-smooth);
+}
+
+#launchpad-search::placeholder {
+    color: var(--text-muted);
+}
+
+#launchpad-search:focus {
+    border-color: var(--accent-primary);
+    background: var(--surface-2);
+    text-align: left;
+    padding-left: 18px;
+}
+
+/* ── App grid ── */
+.launchpad-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 90px);
+    grid-auto-rows: 100px;
+    gap: 12px 8px;
+    justify-content: center;
+    padding: 0 32px;
+    max-height: calc(100vh - 260px);
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.launchpad-grid::-webkit-scrollbar { display: none; }
+
+/* ── Individual app item ── */
+.launchpad-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    padding: 8px 4px;
+    transition: transform var(--transition-fast) var(--curve-elastic),
+                background-color var(--transition-fast) var(--curve-smooth);
+    user-select: none;
+}
+
+.launchpad-item:hover {
+    background-color: var(--surface-hover);
+    transform: scale(1.08) translateY(-3px);
+}
+
+.launchpad-item:active {
+    transform: scale(0.94);
+}
+
+/* ── App icon bubble ── */
+.launchpad-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 16px;
+    background: var(--app-icon-bg);
+    border: 1px solid var(--app-icon-border);
+    box-shadow: var(--app-icon-shadow);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--icon-xl);
+    color: var(--text-primary);
+    transition: transform var(--transition-fast) var(--curve-smooth),
+                background-color var(--transition-fast) var(--curve-smooth),
+                box-shadow var(--transition-fast) var(--curve-smooth);
+}
+
+.launchpad-item:hover .launchpad-icon {
+    background: var(--app-icon-hover-bg);
+    border-color: var(--app-icon-hover-border);
+    box-shadow: var(--shadow-md);
+}
+
+/* Icon <i> inside launchpad-icon */
+.launchpad-icon i {
+    font-size: var(--icon-xl);
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+/* ── App label ── */
+.launchpad-label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    text-align: center;
+    width: 84px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.2;
+}
+
+/* ── Pagination dots ── */
+.launchpad-pagination {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.pagination-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    opacity: 0.5;
+    transition: opacity var(--transition-fast) var(--curve-smooth),
+                background-color var(--transition-fast) var(--curve-smooth);
+    cursor: pointer;
+}
+
+.pagination-dot.active {
+    background: var(--text-primary);
+    opacity: 1;
+}
+
+/* Empty state */
+.launchpad-empty {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-muted);
+    padding: 40px 0;
+}
+
+.launchpad-empty i { font-size: 48px; }
+.launchpad-empty p { font-size: var(--font-size-md); }

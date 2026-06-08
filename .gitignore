@@ -1,0 +1,39 @@
+# Git ignore for AIOS project
+
+# Build artifacts
+build/
+*.iso
+*.img
+
+# Rust
+aisd/target/
+
+# Compositor build
+compositor/build/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+
+# AI models (never commit — too large)
+models/*.gguf
+models/*.bin
+models/*.onnx
+models/downloads/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Secrets
+*.key
+*.pem
+*.env

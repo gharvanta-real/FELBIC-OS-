@@ -1,0 +1,87 @@
+[
+    {
+        "name": "topbar",
+        "layer": "top",
+        "position": "top",
+        "height": 28,
+        "modules-left": ["custom/logo", "sway/workspaces", "sway/mode"],
+        "modules-center": ["clock"],
+        "modules-right": ["network", "cpu", "memory", "keyboard-state", "pulseaudio", "tray"],
+        
+        "custom/logo": {
+            "format": "  FELBIC OS",
+            "tooltip": false,
+            "on-click": "wofi --show drun"
+        },
+        "sway/workspaces": {
+            "disable-scroll": true,
+            "all-outputs": true,
+            "format": "{name}"
+        },
+        "keyboard-state": {
+            "numlock": true,
+            "capslock": true,
+            "format": "  {name}",
+            "format-icons": {
+                "locked": "",
+                "unlocked": ""
+            }
+        },
+        "clock": {
+            "format": "{:%a %b %d   %I:%M %p}",
+            "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+        },
+        "cpu": {
+            "format": "  {usage}%",
+            "tooltip": false
+        },
+        "memory": {
+            "format": "  {used:0.1f}G"
+        },
+        "network": {
+            "format-wifi": "  {essid}",
+            "format-ethernet": "  Connected",
+            "format-disconnected": "⚠  Disconnected"
+        },
+        "pulseaudio": {
+            "format": "{icon}  {volume}%",
+            "format-muted": "  Muted",
+            "format-icons": {
+                "default": ["", "", ""]
+            },
+            "on-click": "pavucontrol"
+        }
+    },
+    {
+        "name": "dock",
+        "layer": "top",
+        "position": "bottom",
+        "height": 48,
+        "width": 380,
+        "margin-bottom": 10,
+        "exclusive": false,
+        "gtk-layer-shell": true,
+        "modules-center": ["custom/term", "custom/web", "custom/fileman", "custom/install"],
+        
+        "custom/term": {
+            "format": "",
+            "on-click": "foot",
+            "tooltip-format": "Terminal"
+        },
+        "custom/web": {
+            "format": "",
+            "on-click": "wofi --show drun",
+            "tooltip-format": "Applications"
+        },
+        "custom/fileman": {
+            "format": "",
+            "on-click": "foot -e ranger",
+            "tooltip-format": "File Manager"
+        },
+        "custom/install": {
+            "format": "",
+            "on-click": "install-felbicos",
+            "tooltip-format": "Install System"
+        }
+    }
+]

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Install FELBIC OS
+Comment=Install FELBIC OS to disk
+Exec=install-felbicos
+Icon=calamares
+Terminal=false
+Categories=System;

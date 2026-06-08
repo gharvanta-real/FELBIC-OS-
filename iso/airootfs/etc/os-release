@@ -1,0 +1,12 @@
+NAME="FELBIC OS"
+PRETTY_NAME="FELBIC OS — AI-Native Operating System 0.1.0"
+ID=felbicos
+ID_LIKE=arch
+BUILD_ID=rolling
+VERSION="0.1.0"
+VERSION_ID="0.1.0"
+ANSI_COLOR="1;35"
+HOME_URL="https://felbicos.dev"
+SUPPORT_URL="https://github.com/felbic-os/felbicos/issues"
+BUG_REPORT_URL="https://github.com/felbic-os/felbicos/issues"
+LOGO="felbicos"

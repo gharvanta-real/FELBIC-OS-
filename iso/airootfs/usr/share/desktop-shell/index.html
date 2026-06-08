@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FELBIC OS — Desktop Shell</title>
+    <link rel="stylesheet" href="https://cdn.hugeicons.com/font/hgi-stroke-rounded.css">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+    <!-- ── TOP BAR ── -->
+    <header class="topbar">
+        <div class="topbar-left">
+            <div class="topbar-logo" id="logo-trigger" title="Launch Menu">
+                <i class="hgi-stroke hgi-ai-brain-01" style="font-size: 15px; color: var(--color-topbar-text);"></i>
+            </div>
+            <div class="topbar-active-app" id="topbar-active-app">FELBIC OS</div>
+            <nav class="topbar-menu">
+                <span class="topbar-menu-item">File</span>
+                <span class="topbar-menu-item">Edit</span>
+                <span class="topbar-menu-item">View</span>
+                <span class="topbar-menu-item">Go</span>
+                <span class="topbar-menu-item">Window</span>
+                <span class="topbar-menu-item">Help</span>
+            </nav>
+        </div>
+
+        <div class="topbar-center"></div>
+
+        <div class="topbar-right">
+            <div class="topbar-right-item" id="control-center-trigger" title="Control Center">
+                <!-- Network Stat Icon -->
+                <i class="hgi-stroke hgi-wifi-01" style="font-size: 13px;"></i>
+                <span id="stat-cpu">0%</span>
+                <span id="stat-mem">0%</span>
+                <!-- Audio Icon -->
+                <i class="hgi-stroke hgi-volume-high" style="font-size: 13px;"></i>
+            </div>
+            <!-- Clock -->
+            <span class="topbar-clock" id="topbar-clock">Mon Jun 08 09:30 AM</span>
+        </div>
+    </header>
+
+    <!-- ── CONTROL CENTER DROPDOWN ── -->
+    <div class="control-center" id="control-center-panel">
+        <div class="cc-grid">
+            <!-- Toggles Card -->
+            <div class="cc-card cc-toggles">
+                <div class="cc-toggle-item active" id="toggle-wifi">
+                    <span class="cc-toggle-icon">
+                        <i class="hgi-stroke hgi-wifi-01"></i>
+                    </span>
+                    <div class="cc-toggle-text">
+                        <span class="cc-toggle-label">Wi-Fi</span>
+                        <span class="cc-toggle-sub">Connected</span>
+                    </div>
+                </div>
+                <div class="cc-toggle-item active" id="toggle-bluetooth">
+                    <span class="cc-toggle-icon">
+                        <i class="hgi-stroke hgi-bluetooth"></i>
+                    </span>
+                    <div class="cc-toggle-text">
+                        <span class="cc-toggle-label">Bluetooth</span>
+                        <span class="cc-toggle-sub">On</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- DND / Focus Card -->
+            <div class="cc-card cc-focus" id="toggle-dnd">
+                <span class="cc-focus-icon">
+                    <i class="hgi-stroke hgi-moon"></i>
+                </span>
+                <span class="cc-focus-label">Do Not Disturb</span>
+            </div>
+        </div>
+
+        <!-- Sliders -->
+        <div class="cc-card cc-sliders">
+            <div class="cc-slider-row">
+                <span class="cc-slider-icon">
+                    <i class="hgi-stroke hgi-volume-high"></i>
+                </span>
+                <input type="range" class="cc-slider" min="0" max="100" value="75" id="volume-slider">
+            </div>
+            <div class="cc-slider-row">
+                <span class="cc-slider-icon">
+                    <i class="hgi-stroke hgi-sun-01"></i>
+                </span>
+                <input type="range" class="cc-slider" min="0" max="100" value="80" id="brightness-slider">
+            </div>
+        </div>
+
+        <!-- Power Row -->
+        <div class="cc-power-row">
+            <button class="cc-power-btn" id="btn-lock">Lock Screen</button>
+            <button class="cc-power-btn" id="btn-restart">Restart...</button>
+            <button class="cc-power-btn danger" id="btn-shutdown">Shutdown...</button>
+        </div>
+    </div>
+
+    <!-- ── SPOTLIGHT QUICK SEARCH OVERLAY ── -->
+    <div class="spotlight-overlay" id="spotlight-overlay">
+        <div class="spotlight">
+            <div class="spotlight-search-bar">
+                <i class="hgi-stroke hgi-search-01 spotlight-icon" style="font-size: 20px;"></i>
+                <input type="text" id="spotlight-input" placeholder="Search apps, files, or settings..." autocomplete="off">
+                <span class="spotlight-esc-hint">ESC</span>
+            </div>
+            <ul class="spotlight-results" id="spotlight-results">
+                <!-- Dynamically populated -->
+            </ul>
+        </div>
+    </div>
+
+    <!-- ── WORKSPACE ── -->
+    <main class="workspace">
+        
+        <!-- App 1: Terminal Window -->
+        <div class="window" id="terminal-window">
+            <div class="window-titlebar">
+                <div class="window-controls">
+                    <span class="window-btn close" data-target="terminal-window"></span>
+                    <span class="window-btn minimize"></span>
+                    <span class="window-btn maximize"></span>
+                </div>
+                <div class="window-title">root@felbicos-live: ~ (foot)</div>
+            </div>
+            <div class="window-content" style="padding: 0;">
+                <div class="terminal-content-wrapper">
+                    <div class="terminal-history" id="terminal-history">
+                        <div class="terminal-history-row">
+                            <span class="terminal-prompt">felbicos-live#</span> <span class="terminal-cmd">fastfetch</span>
+                        </div>
+                        <div class="terminal-output">
+       .---.            <b>root@felbicos-live</b>
+       /     \           -------------------
+       \.---./           <b>OS</b>: FELBIC OS — AI-Native Operating System 0.1.0 x86_64
+       /  o o  \          <b>Host</b>: VMware Virtual Platform
+       \   -   /          <b>Kernel</b>: Linux 7.0.11-arch1-1
+        '-----'           <b>Uptime</b>: 16 seconds
+                          -------------------
+                          <b>CPU</b>: 2 x 11th Gen Intel(R) Core(TM) i5-1135G7 (2) @ 2.42 GHz
+                          <b>GPU</b>: VMware SVGA II Adapter
+                          <b>Memory</b>: 509.38 MiB / 1.81 GiB (27%)
+                          <b>Terminal</b>: foot 1.27.0
+                          <b>Shell</b>: zsh 5.9.1</div>
+                    </div>
+                    <div class="terminal-input-line">
+                        <span class="terminal-prompt">felbicos-live#</span>
+                        <input type="text" id="terminal-input" class="terminal-input" autocomplete="off" spellcheck="false">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- App 2: Settings Window -->
+        <div class="window settings-window" id="settings-window" style="display: none;">
+            <div class="window-titlebar">
+                <div class="window-controls">
+                    <span class="window-btn close" data-target="settings-window"></span>
+                    <span class="window-btn minimize"></span>
+                    <span class="window-btn maximize"></span>
+                </div>
+                <div class="window-title">Settings</div>
+            </div>
+            <div class="settings-container">
+                <!-- Sidebar -->
+                <aside class="settings-sidebar">
+                    <div class="settings-search-box">
+                        <i class="hgi-stroke hgi-search-01 settings-search-icon"></i>
+                        <input type="text" id="settings-search-input" class="settings-search-input" placeholder="Search" autocomplete="off">
+                    </div>
+                    <div class="settings-user-card">
+                        <div class="settings-user-avatar">
+                            <i class="hgi-stroke hgi-user"></i>
+                        </div>
+                        <div class="settings-user-info">
+                            <span class="settings-username">Live User</span>
+                            <span class="settings-user-sub">Default Account</span>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-sidebar-list">
+                        <div class="settings-sidebar-item active" data-tab="wifi">
+                            <span class="squircle-icon bg-blue">
+                                <i class="hgi-stroke hgi-wifi-01"></i>
+                            </span>
+                            <span>Wi-Fi</span>
+                        </div>
+                        <div class="settings-sidebar-item" data-tab="bluetooth">
+                            <span class="squircle-icon bg-indigo">
+                                <i class="hgi-stroke hgi-bluetooth"></i>
+                            </span>
+                            <span>Bluetooth</span>
+                        </div>
+                        <div class="settings-sidebar-item" data-tab="sound">
+                            <span class="squircle-icon bg-red">
+                                <i class="hgi-stroke hgi-volume-high"></i>
+                            </span>
+                            <span>Sound</span>
+                        </div>
+                        <div class="settings-sidebar-item" data-tab="displays">
+                            <span class="squircle-icon bg-teal">
+                                <i class="hgi-stroke hgi-sun-01"></i>
+                            </span>
+                            <span>Displays</span>
+                        </div>
+                        <div class="settings-sidebar-item" data-tab="wallpaper">
+                            <span class="squircle-icon bg-gradient">
+                                <i class="hgi-stroke hgi-image-01"></i>
+                            </span>
+                            <span>Wallpaper</span>
+                        </div>
+                        <div class="settings-sidebar-item" data-tab="appearance">
+                            <span class="squircle-icon bg-pink">
+                                <i class="hgi-stroke hgi-brush"></i>
+                            </span>
+                            <span>Appearance</span>
+                        </div>
+                        <div class="settings-sidebar-item" data-tab="about">
+                            <span class="squircle-icon bg-grey">
+                                <i class="hgi-stroke hgi-information-circle"></i>
+                            </span>
+                            <span>About</span>
+                        </div>
+                    </div>
+                </aside>
+                
+                <!-- Detail Content -->
+                <main class="settings-content">
+                    
+                    <!-- Tab: Wi-Fi -->
+                    <section class="settings-tab-pane" id="pane-wifi">
+                        <h2>Wi-Fi</h2>
+                        <p class="settings-sub">Manage wireless network connections.</p>
+                        
+                        <div class="settings-row-group">
+                            <div class="settings-row">
+                                <span class="row-label">Wi-Fi Wireless Networking</span>
+                                <label class="switch-container">
+                                    <input type="checkbox" id="settings-wifi-toggle" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div id="wifi-networks-area">
+                            <div class="settings-section-title">Available Networks</div>
+                            <div class="settings-row-group" id="wifi-networks-list">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Tab: Bluetooth -->
+                    <section class="settings-tab-pane" id="pane-bluetooth" style="display: none;">
+                        <h2>Bluetooth</h2>
+                        <p class="settings-sub">Connect and manage peripheral devices.</p>
+                        
+                        <div class="settings-row-group">
+                            <div class="settings-row">
+                                <span class="row-label">Bluetooth Controller</span>
+                                <label class="switch-container">
+                                    <input type="checkbox" id="settings-bluetooth-toggle" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div id="bluetooth-devices-area">
+                            <div class="settings-section-title">My Devices</div>
+                            <div class="settings-row-group" id="bluetooth-devices-list">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Tab: Sound -->
+                    <section class="settings-tab-pane" id="pane-sound" style="display: none;">
+                        <h2>Sound</h2>
+                        <p class="settings-sub">Configure audio devices and levels.</p>
+                        
+                        <div class="settings-row-group">
+                            <div class="settings-column-row">
+                                <div class="slider-row-header">
+                                    <span class="row-label">Output Volume</span>
+                                    <span id="sound-vol-val">75%</span>
+                                </div>
+                                <input type="range" class="settings-slider" id="settings-sound-volume" min="0" max="100" value="75">
+                            </div>
+                            <div class="settings-column-row">
+                                <div class="slider-row-header">
+                                    <span class="row-label">Balance (L / R)</span>
+                                </div>
+                                <input type="range" class="settings-slider" id="settings-sound-balance" min="-50" max="50" value="0">
+                            </div>
+                            <div class="settings-row" style="margin-top: 10px;">
+                                <span class="row-label">System Sound Effects</span>
+                                <label class="switch-container">
+                                    <input type="checkbox" id="settings-sound-effects-toggle" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="settings-section-title">Output Device</div>
+                        <div class="settings-row-group">
+                            <div class="settings-row">
+                                <span class="row-label">Audio Destination</span>
+                                <select class="settings-select" id="settings-sound-output">
+                                    <option value="speakers">Internal Speakers (Built-in)</option>
+                                    <option value="headphones">Line Out / Headphones</option>
+                                    <option value="hdmi">HDMI Digital Audio Port</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-section-title">Input Level</div>
+                        <div class="settings-row-group">
+                            <div class="settings-column-row">
+                                <div class="slider-row-header">
+                                    <span class="row-label">Input Volume</span>
+                                    <span id="sound-input-val">80%</span>
+                                </div>
+                                <input type="range" class="settings-slider" id="settings-sound-input" min="0" max="100" value="80">
+                            </div>
+                            <div class="settings-row">
+                                <span class="row-label">Input Level Indicator</span>
+                                <div class="volume-mic-meter">
+                                    <div class="meter-bar" id="mic-meter-bar" style="width: 25%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Tab: Displays -->
+                    <section class="settings-tab-pane" id="pane-displays" style="display: none;">
+                        <h2>Displays</h2>
+                        <p class="settings-sub">Adjust display resolution and brightness.</p>
+                        
+                        <div class="settings-row-group">
+                            <div class="settings-column-row">
+                                <div class="slider-row-header">
+                                    <span class="row-label">Screen Brightness</span>
+                                    <span id="displays-bright-val">80%</span>
+                                </div>
+                                <input type="range" class="settings-slider" id="settings-displays-brightness" min="0" max="100" value="80">
+                            </div>
+                        </div>
+
+                        <div class="settings-section-title">Display Settings</div>
+                        <div class="settings-row-group">
+                            <div class="settings-row">
+                                <span class="row-label">Resolution</span>
+                                <select class="settings-select" id="settings-displays-resolution">
+                                    <option value="1920x1080">1920 x 1080 (16:9, Default)</option>
+                                    <option value="2560x1440">2560 x 1440 (16:9 Retina)</option>
+                                    <option value="1280x720">1280 x 720 (16:9 Low-Res)</option>
+                                    <option value="1440x900">1440 x 900 (16:10)</option>
+                                </select>
+                            </div>
+                            <div class="settings-row">
+                                <span class="row-label">Refresh Rate</span>
+                                <select class="settings-select" id="settings-displays-refresh">
+                                    <option value="60">60.00 Hz</option>
+                                    <option value="120">120.00 Hz (ProMotion)</option>
+                                    <option value="50">50.00 Hz</option>
+                                </select>
+                            </div>
+                            <div class="settings-row">
+                                <span class="row-label">Display Scale</span>
+                                <select class="settings-select" id="settings-displays-scale">
+                                    <option value="1">100% (Normal)</option>
+                                    <option value="1.1">110%</option>
+                                    <option value="1.2">120%</option>
+                                    <option value="1.25">125%</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="settings-section-title">Night Light</div>
+                        <div class="settings-row-group">
+                            <div class="settings-row">
+                                <span class="row-label">Warm Color Temperature Filter</span>
+                                <label class="switch-container">
+                                    <input type="checkbox" id="settings-nightlight-toggle">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="settings-column-row" id="nightlight-temp-row" style="opacity: 0.5; pointer-events: none;">
+                                <div class="slider-row-header">
+                                    <span class="row-label">Color Temperature</span>
+                                </div>
+                                <input type="range" class="settings-slider" id="settings-nightlight-temp" min="0" max="100" value="50">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Tab: Wallpaper -->
+                    <section class="settings-tab-pane" id="pane-wallpaper" style="display: none;">
+                        <h2>Wallpaper</h2>
+                        <p class="settings-sub">Choose a desktop background style.</p>
+                        
+                        <div class="wallpaper-grid">
+                            <div class="wallpaper-thumb active" data-img="wallpaper.png" style="background: linear-gradient(135deg, #0f172a, #1e293b);">
+                                <span class="wallpaper-label">Default Slate</span>
+                            </div>
+                            <div class="wallpaper-thumb" data-img="wall_aurora" style="background: linear-gradient(135deg, #1e1b4b, #311042, #180026);">
+                                <span class="wallpaper-label">Aurora Glow</span>
+                            </div>
+                            <div class="wallpaper-thumb" data-img="wall_sunset" style="background: linear-gradient(135deg, #fdba74, #f472b6, #3b82f6);">
+                                <span class="wallpaper-label">Sunset Wave</span>
+                            </div>
+                            <div class="wallpaper-thumb" data-img="wall_monochrome" style="background: linear-gradient(135deg, #09090b, #27272a, #09090b);">
+                                <span class="wallpaper-label">Ink Dark</span>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <!-- Tab: Appearance -->
+                    <section class="settings-tab-pane" id="pane-appearance" style="display: none;">
+                        <h2>Appearance</h2>
+                        <p class="settings-sub">Choose a workspace theme style.</p>
+                        
+                        <div class="theme-selector">
+                            <div class="theme-card active" id="theme-btn-dark">
+                                <div class="theme-card-preview dark">
+                                    <span class="theme-card-bar"></span>
+                                    <span class="theme-card-dock"></span>
+                                </div>
+                                <span class="theme-card-label">Dark Space</span>
+                            </div>
+                            
+                            <div class="theme-card" id="theme-btn-light">
+                                <div class="theme-card-preview light">
+                                    <span class="theme-card-bar"></span>
+                                    <span class="theme-card-dock"></span>
+                                </div>
+                                <span class="theme-card-label">Light Quartz</span>
+                            </div>
+                        </div>
+
+                        <div class="settings-section-title">Accent Colors</div>
+                        <div class="accent-color-list">
+                            <div class="accent-dot active" data-color="white" style="background-color: #ffffff; border: 1px solid #71717a;" title="Default White"></div>
+                            <div class="accent-dot" data-color="blue" style="background-color: #3b82f6;" title="Ocean Blue"></div>
+                            <div class="accent-dot" data-color="purple" style="background-color: #a855f7;" title="Purple Orchid"></div>
+                            <div class="accent-dot" data-color="pink" style="background-color: #ec4899;" title="Pink Rose"></div>
+                            <div class="accent-dot" data-color="red" style="background-color: #ef4444;" title="Red Coral"></div>
+                            <div class="accent-dot" data-color="orange" style="background-color: #f97316;" title="Orange Flame"></div>
+                            <div class="accent-dot" data-color="green" style="background-color: #10b981;" title="Emerald Green"></div>
+                        </div>
+
+                        <div class="settings-section-title">Scrollbars</div>
+                        <div class="settings-row-group">
+                            <div class="settings-row">
+                                <span class="row-label">Show Scrollbars</span>
+                                <select class="settings-select" id="settings-scroll-pref">
+                                    <option value="auto">Based on Mouse / Trackpad</option>
+                                    <option value="scroll">When Scrolling</option>
+                                    <option value="always">Always Show</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Tab: About -->
+                    <section class="settings-tab-pane" id="pane-about" style="display: none;">
+                        <div class="about-branding">
+                            <div class="about-logo">
+                                <i class="hgi-stroke hgi-ai-brain-01"></i>
+                            </div>
+                            <h1>FELBIC OS</h1>
+                            <span class="about-version">Version 0.1.0 (Live Dev Build)</span>
+                        </div>
+                        <div class="about-list">
+                            <div class="about-row">
+                                <span class="about-label">Kernel</span>
+                                <span class="about-val">Linux 7.0.11-arch1-1-felbic</span>
+                            </div>
+                            <div class="about-row">
+                                <span class="about-label">Compositor</span>
+                                <span class="about-val">aios-comp v0.1.0 (Wayland)</span>
+                            </div>
+                            <div class="about-row">
+                                <span class="about-label">Workspace Mode</span>
+                                <span class="about-val">Sway Live Session</span>
+                            </div>
+                            <div class="about-row">
+                                <span class="about-label">Active CPU</span>
+                                <span class="about-val" id="about-val-cpu">11th Gen Intel i5-1135G7</span>
+                            </div>
+                            <div class="about-row">
+                                <span class="about-label">Graphics Architecture</span>
+                                <span class="about-val">Wayland wlroots Hardware Accel</span>
+                            </div>
+                            <div class="about-row" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+                                <span class="about-label">User Agent</span>
+                                <span class="about-val" id="about-val-ua" style="word-break: break-all; font-size: 10px; text-align: left; opacity: 0.8; user-select: text;">Unknown</span>
+                            </div>
+                            <div class="about-row">
+                                <span class="about-label">Screen Resolution</span>
+                                <span class="about-val" id="about-val-resolution">Unknown</span>
+                            </div>
+                            <div class="about-row">
+                                <span class="about-label">Logical CPU Threads</span>
+                                <span class="about-val" id="about-val-cores">Unknown</span>
+                            </div>
+                            <div class="about-row">
+                                <span class="about-label">System Uptime</span>
+                                <span class="about-val" id="about-val-uptime">Unknown</span>
+                            </div>
+                        </div>
+                    </section>
+
+                </main>
+            </div>
+        </div>
+
+        <!-- App 3: Files (Rebranded Finder) -->
+        <div class="window finder-window" id="files-window" style="display: none;">
+            <div class="window-titlebar">
+                <div class="window-controls">
+                    <span class="window-btn close" data-target="files-window"></span>
+                    <span class="window-btn minimize"></span>
+                    <span class="window-btn maximize"></span>
+                </div>
+                <div class="window-title">Files Explorer</div>
+            </div>
+            <div class="finder-container">
+                <!-- Sidebar -->
+                <aside class="finder-sidebar">
+                    <div class="finder-sidebar-section">Places</div>
+                    <div class="finder-sidebar-item active" data-folder="workspace">
+                        <span class="finder-tab-icon">
+                            <i class="hgi-stroke hgi-computer"></i>
+                        </span>
+                        <span>Workspace</span>
+                    </div>
+                    <div class="finder-sidebar-item" data-folder="documents">
+                        <span class="finder-tab-icon">
+                            <i class="hgi-stroke hgi-folder-01"></i>
+                        </span>
+                        <span>Documents</span>
+                    </div>
+                    <div class="finder-sidebar-item" data-folder="downloads">
+                        <span class="finder-tab-icon">
+                            <i class="hgi-stroke hgi-download-01"></i>
+                        </span>
+                        <span>Downloads</span>
+                    </div>
+                </aside>
+                
+                <!-- Main Folder Explorer -->
+                <div class="files-view-container">
+                    <div class="files-toolbar">
+                        <button class="files-nav-btn" id="files-back-btn" disabled>←</button>
+                        <span class="files-path-breadcrumb" id="files-breadcrumb">Workspace</span>
+                        <div class="files-action-buttons" style="display: flex; gap: 6px; margin-right: 12px; align-items: center;">
+                            <button class="files-nav-btn" id="files-new-file" title="New File" style="font-size: 14px;"><i class="hgi-stroke hgi-file-add"></i></button>
+                            <button class="files-nav-btn" id="files-new-folder" title="New Folder" style="font-size: 14px;"><i class="hgi-stroke hgi-folder-add"></i></button>
+                            <button class="files-nav-btn" id="files-rename" title="Rename" style="font-size: 14px;" disabled><i class="hgi-stroke hgi-edit-01"></i></button>
+                            <button class="files-nav-btn" id="files-delete" title="Delete" style="font-size: 14px;" disabled><i class="hgi-stroke hgi-delete-02"></i></button>
+                            <div style="width: 1px; height: 16px; background-color: rgba(255,255,255,0.1); margin: 0 4px;"></div>
+                            <button class="files-nav-btn" id="files-toggle-properties" title="Toggle Properties Pane" style="font-size: 14px;"><i class="hgi-stroke hgi-information-circle"></i></button>
+                        </div>
+                        <input type="text" class="files-search-bar" id="files-search" placeholder="Search Files">
+                    </div>
+                    <main class="finder-content" id="finder-content-grid">
+                        <!-- Populated dynamically -->
+                    </main>
+                </div>
+                
+                <!-- Properties Sidebar -->
+                <aside class="finder-properties-sidebar collapsed" id="finder-properties-sidebar">
+                    <div class="properties-header">
+                        <span>Properties</span>
+                        <button id="properties-close-btn" class="properties-close-btn" title="Close properties pane">×</button>
+                    </div>
+                    <div class="properties-content" id="properties-content">
+                        <div class="properties-placeholder">Select an item to view details</div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+
+        <!-- App 4: Browser (Rebranded Safari) -->
+        <div class="window" id="browser-window" style="display: none; width: 800px; height: 500px;">
+            <div class="window-titlebar">
+                <div class="window-controls">
+                    <span class="window-btn close" data-target="browser-window"></span>
+                    <span class="window-btn minimize"></span>
+                    <span class="window-btn maximize"></span>
+                </div>
+                <div class="window-title">Web Browser</div>
+            </div>
+            <div class="browser-container">
+                <div class="browser-toolbar">
+                    <div class="browser-nav-arrows">
+                        <button class="browser-nav-btn" id="browser-back">
+                            <i class="hgi-stroke hgi-arrow-left-01" style="font-size: 13px;"></i>
+                        </button>
+                        <button class="browser-nav-btn" id="browser-forward">
+                            <i class="hgi-stroke hgi-arrow-right-01" style="font-size: 13px;"></i>
+                        </button>
+                        <button class="browser-nav-btn" id="browser-reload">
+                            <i class="hgi-stroke hgi-reload" style="font-size: 13px;"></i>
+                        </button>
+                    </div>
+                    <input type="text" class="browser-url-input" id="browser-url" value="https://felbic.aios.org">
+                </div>
+                <div class="browser-viewport">
+                    <!-- Embedded web simulator -->
+                    <div class="browser-mock-page" id="browser-page-content">
+                        <!-- Simulating loading sites -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- App 5: Software Center (Rebranded App Store) -->
+        <div class="window" id="store-window" style="display: none; width: 750px; height: 460px;">
+            <div class="window-titlebar">
+                <div class="window-controls">
+                    <span class="window-btn close" data-target="store-window"></span>
+                    <span class="window-btn minimize"></span>
+                    <span class="window-btn maximize"></span>
+                </div>
+                <div class="window-title">Software Center</div>
+            </div>
+            <div class="store-container">
+                <aside class="store-sidebar">
+                    <div class="store-sidebar-item active" data-category="featured">
+                        <i class="hgi-stroke hgi-compass" style="font-size: 12px; margin-right: 6px;"></i>Explore
+                    </div>
+                    <div class="store-sidebar-item" data-category="developer">
+                        <i class="hgi-stroke hgi-code" style="font-size: 12px; margin-right: 6px;"></i>Develop
+                    </div>
+                    <div class="store-sidebar-item" data-category="graphics">
+                        <i class="hgi-stroke hgi-brush" style="font-size: 12px; margin-right: 6px;"></i>Create
+                    </div>
+                    <div class="store-sidebar-item" data-category="utilities">
+                        <i class="hgi-stroke hgi-settings-01" style="font-size: 12px; margin-right: 6px;"></i>Utilities
+                    </div>
+                </aside>
+                <div class="store-content">
+                    <div class="store-header">
+                        <h2>Explore</h2>
+                        <input type="text" class="store-search-bar" id="store-search" placeholder="Search Software Repository">
+                    </div>
+                    <div class="store-apps-grid" id="store-apps-list">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- App 6: Task Manager (Rebranded Activity Monitor) -->
+        <div class="window" id="monitor-window" style="display: none; width: 700px; height: 440px;">
+            <div class="window-titlebar">
+                <div class="window-controls">
+                    <span class="window-btn close" data-target="monitor-window"></span>
+                    <span class="window-btn minimize"></span>
+                    <span class="window-btn maximize"></span>
+                </div>
+                <div class="window-title">Task Manager</div>
+            </div>
+            <div class="monitor-container">
+                <div class="monitor-tabs">
+                    <div class="monitor-tab active" data-tab="cpu">CPU</div>
+                    <div class="monitor-tab" data-tab="memory">Memory</div>
+                    <div class="monitor-tab" data-tab="processes">Processes</div>
+                </div>
+                <div class="monitor-content">
+                    <div class="monitor-pane" id="monitor-pane-graphs">
+                        <div class="monitor-graph-section">
+                            <span class="graph-label">CPU System Core Load</span>
+                            <div class="monitor-graph-wrapper">
+                                <svg class="monitor-svg-chart" viewBox="0 0 100 40" preserveAspectRatio="none">
+                                    <path id="cpu-chart-path" d="M0 40 L100 40" fill="rgba(96, 165, 250, 0.15)" stroke="#60a5fa" stroke-width="1.5"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="monitor-graph-section">
+                            <span class="graph-label">Physical Memory Active Usage</span>
+                            <div class="monitor-graph-wrapper">
+                                <svg class="monitor-svg-chart" viewBox="0 0 100 40" preserveAspectRatio="none">
+                                    <path id="mem-chart-path" d="M0 40 L100 40" fill="rgba(236, 72, 153, 0.15)" stroke="#ec4899" stroke-width="1.5"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="monitor-pane" id="monitor-pane-processes" style="display: none;">
+                        <div class="monitor-toolbar">
+                            <button class="monitor-kill-btn" id="monitor-kill-process" disabled>Force Quit Task</button>
+                            <span class="monitor-selected-hint" id="monitor-selected-label">Select a process...</span>
+                        </div>
+                        <div class="monitor-table-wrapper">
+                            <table class="monitor-table">
+                                <thead>
+                                    <tr>
+                                        <th>Process Name</th>
+                                        <th>PID</th>
+                                        <th>CPU %</th>
+                                        <th>Memory</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="monitor-process-tbody">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- App 7: Text Editor (NEW) -->
+        <div class="window" id="editor-window" style="display: none; width: 620px; height: 400px;">
+            <div class="window-titlebar">
+                <div class="window-controls">
+                    <span class="window-btn close" data-target="editor-window"></span>
+                    <span class="window-btn minimize"></span>
+                    <span class="window-btn maximize"></span>
+                </div>
+                <div class="window-title" id="editor-window-title">Text Editor</div>
+            </div>
+            <div class="editor-container">
+                <!-- Tabs Bar -->
+                <div class="editor-tabs-bar" id="editor-tabs-bar"></div>
+                
+                <div class="editor-toolbar" style="display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <button class="editor-btn" id="editor-save">
+                            <i class="hgi-stroke hgi-floppy-disk" style="font-size: 11px; margin-right: 6px;"></i>Save Changes
+                        </button>
+                        <span class="editor-file-path" id="editor-file-label">unsaved_draft.txt</span>
+                    </div>
+                    <div>
+                        <select id="editor-syntax-select" class="editor-syntax-select" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 4px; color: var(--color-topbar-text); font-size: 10px; padding: 2px 6px; outline: none; cursor: pointer;">
+                            <option value="text">Plain Text</option>
+                            <option value="javascript">JavaScript</option>
+                            <option value="markdown">Markdown</option>
+                            <option value="html">HTML/CSS</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Gutter and Textarea wrapped in body -->
+                <div class="editor-body" style="display: flex; flex: 1; overflow: hidden; position: relative;">
+                    <div class="editor-gutter" id="editor-gutter" style="width: 40px; padding: 16px 0; background-color: rgba(0, 0, 0, 0.15); border-right: 1px solid rgba(255, 255, 255, 0.05); color: rgba(255, 255, 255, 0.25); text-align: right; padding-right: 8px; font-family: var(--font-mono); font-size: var(--font-size-sm); line-height: 1.5; user-select: none; overflow: hidden; box-sizing: border-box;">
+                        <div>1</div>
+                    </div>
+                    <textarea class="editor-textarea" id="editor-content" placeholder="Write or edit files here..." style="flex: 1; border: none; outline: none; background: transparent; color: var(--color-topbar-text); font-family: var(--font-mono); font-size: var(--font-size-sm); padding: 16px; resize: none; line-height: 1.5; overflow-y: auto; box-sizing: border-box; margin: 0;"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- App 8: Calamares Installer (NEW) -->
+        <div class="window" id="installer-window" style="display: none; width: 680px; height: 460px;">
+            <div class="window-titlebar">
+                <div class="window-controls">
+                    <span class="window-btn close" data-target="installer-window"></span>
+                    <span class="window-btn minimize"></span>
+                    <span class="window-btn maximize"></span>
+                </div>
+                <div class="window-title">Install FELBIC OS (Calamares)</div>
+            </div>
+            <div class="installer-container">
+                <!-- Sidebar for steps -->
+                <aside class="installer-sidebar">
+                    <div class="installer-step-item active" data-step="1">
+                        <i class="hgi-stroke hgi-ai-brain-01" style="font-size: 12px;"></i>
+                        <span>Welcome</span>
+                    </div>
+                    <div class="installer-step-item" data-step="2">
+                        <i class="hgi-stroke hgi-keyboard" style="font-size: 12px;"></i>
+                        <span>Keyboard</span>
+                    </div>
+                    <div class="installer-step-item" data-step="3">
+                        <i class="hgi-stroke hgi-partition-01" style="font-size: 12px;"></i>
+                        <span>Partitions</span>
+                    </div>
+                    <div class="installer-step-item" data-step="4">
+                        <i class="hgi-stroke hgi-user" style="font-size: 12px;"></i>
+                        <span>Users</span>
+                    </div>
+                    <div class="installer-step-item" data-step="5">
+                        <i class="hgi-stroke hgi-download-01" style="font-size: 12px;"></i>
+                        <span>Install</span>
+                    </div>
+                    <div class="installer-step-item" data-step="6">
+                        <i class="hgi-stroke hgi-tick-double-02" style="font-size: 12px;"></i>
+                        <span>Finish</span>
+                    </div>
+                </aside>
+                <!-- Content area -->
+                <div class="installer-content-wrapper">
+                    <div class="installer-page-content" id="installer-pages">
+                        <!-- Step 1: Welcome -->
+                        <div class="installer-page active" data-page="1">
+                            <h2>Welcome to the FELBIC OS Installer</h2>
+                            <p>This wizard will guide you through installing FELBIC OS on your system.</p>
+                            <div class="installer-input-group">
+                                <label for="install-lang">Select Language:</label>
+                                <select id="install-lang" class="installer-select">
+                                    <option value="en">English (US)</option>
+                                    <option value="es">Español</option>
+                                    <option value="fr">Français</option>
+                                    <option value="de">Deutsch</option>
+                                    <option value="zh">中文</option>
+                                    <option value="ja">日本語</option>
+                                </select>
+                            </div>
+                            <div class="installer-welcome-banner">
+                                <i class="hgi-stroke hgi-ai-brain-01" style="font-size: 48px; color: var(--color-accent);"></i>
+                                <span style="margin-top: 10px; font-weight: 500;">FELBIC OS AI-Native Environment</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Step 2: Keyboard -->
+                        <div class="installer-page" data-page="2">
+                            <h2>Select Keyboard Layout</h2>
+                            <p>Choose the layout that matches your keyboard.</p>
+                            <div class="installer-input-group">
+                                <label for="install-kbd">Layout:</label>
+                                <select id="install-kbd" class="installer-select">
+                                    <option value="us">English (US)</option>
+                                    <option value="us-intl">English (US, intl. with dead keys)</option>
+                                    <option value="uk">United Kingdom</option>
+                                    <option value="de">Germany</option>
+                                    <option value="fr">France</option>
+                                </select>
+                            </div>
+                            <div class="installer-input-group">
+                                <label for="kbd-test-input">Test keyboard layout here:</label>
+                                <input type="text" id="kbd-test-input" class="installer-input" placeholder="Type here or click the virtual keys below to test...">
+                            </div>
+                            <div class="keyboard-visual-picker">
+                                <div class="kb-row">
+                                    <span class="kb-key">Esc</span>
+                                    <span class="kb-key">1</span>
+                                    <span class="kb-key">2</span>
+                                    <span class="kb-key">3</span>
+                                    <span class="kb-key">4</span>
+                                    <span class="kb-key">5</span>
+                                    <span class="kb-key">6</span>
+                                    <span class="kb-key">7</span>
+                                    <span class="kb-key">8</span>
+                                    <span class="kb-key">9</span>
+                                    <span class="kb-key">0</span>
+                                    <span class="kb-key kb-backspace">Backspace</span>
+                                </div>
+                                <div class="kb-row">
+                                    <span class="kb-key kb-tab">Tab</span>
+                                    <span class="kb-key">Q</span>
+                                    <span class="kb-key">W</span>
+                                    <span class="kb-key">E</span>
+                                    <span class="kb-key">R</span>
+                                    <span class="kb-key">T</span>
+                                    <span class="kb-key">Y</span>
+                                    <span class="kb-key">U</span>
+                                    <span class="kb-key">I</span>
+                                    <span class="kb-key">O</span>
+                                    <span class="kb-key">P</span>
+                                    <span class="kb-key">[</span>
+                                    <span class="kb-key">]</span>
+                                </div>
+                                <div class="kb-row">
+                                    <span class="kb-key kb-caps">Caps</span>
+                                    <span class="kb-key">A</span>
+                                    <span class="kb-key">S</span>
+                                    <span class="kb-key">D</span>
+                                    <span class="kb-key">F</span>
+                                    <span class="kb-key">G</span>
+                                    <span class="kb-key">H</span>
+                                    <span class="kb-key">J</span>
+                                    <span class="kb-key">K</span>
+                                    <span class="kb-key">L</span>
+                                    <span class="kb-key">;</span>
+                                    <span class="kb-key">'</span>
+                                    <span class="kb-key kb-enter">Enter</span>
+                                </div>
+                                <div class="kb-row">
+                                    <span class="kb-key kb-shift">Shift</span>
+                                    <span class="kb-key">Z</span>
+                                    <span class="kb-key">X</span>
+                                    <span class="kb-key">C</span>
+                                    <span class="kb-key">V</span>
+                                    <span class="kb-key">B</span>
+                                    <span class="kb-key">N</span>
+                                    <span class="kb-key">M</span>
+                                    <span class="kb-key">,</span>
+                                    <span class="kb-key">.</span>
+                                    <span class="kb-key">/</span>
+                                    <span class="kb-key kb-shift">Shift</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Partitioning -->
+                        <div class="installer-page" data-page="3">
+                            <h2>Partitioning</h2>
+                            <p>Select how you want to partition the storage drive.</p>
+                            <div class="partition-options">
+                                <div class="partition-option active" id="part-erase">
+                                    <div class="partition-opt-icon">
+                                        <i class="hgi-stroke hgi-delete-02"></i>
+                                    </div>
+                                    <div class="partition-opt-text">
+                                        <span class="partition-opt-title">Erase Disk</span>
+                                        <span class="partition-opt-desc">Delete all data and install FELBIC OS on the entire virtual drive (Recommended).</span>
+                                    </div>
+                                </div>
+                                <div class="partition-option" id="part-manual">
+                                    <div class="partition-opt-icon">
+                                        <i class="hgi-stroke hgi-settings-01"></i>
+                                    </div>
+                                    <div class="partition-opt-text">
+                                        <span class="partition-opt-title">Manual Partitioning</span>
+                                        <span class="partition-opt-desc">Create or resize partitions manually (For advanced users).</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="partition-drive-visual">
+                                <div class="drive-bar" id="drive-visual-bar">
+                                    <div class="drive-segment root-seg" style="width: 100%; background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+                                        /dev/vda1 (ext4) - 64.0 GiB (Erase & Install)
+                                    </div>
+                                </div>
+                                <div class="drive-legend" id="drive-visual-legend">
+                                    <span>Disk Path: /dev/vda (QEMU Virtual Harddisk) — Total Size: 64.0 GiB</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 4: User settings -->
+                        <div class="installer-page" data-page="4">
+                            <h2>User Information</h2>
+                            <p>Configure details for your primary user account.</p>
+                            <div class="user-setup-form">
+                                <div class="form-row">
+                                    <label for="inst-username">What is your name?</label>
+                                    <input type="text" id="inst-username" placeholder="e.g. felbic" value="felbic">
+                                </div>
+                                <div class="form-row">
+                                    <label for="inst-hostname">What is the name of this computer?</label>
+                                    <input type="text" id="inst-hostname" placeholder="e.g. felbicos-pc" value="felbicos-pc">
+                                </div>
+                                <div class="form-row">
+                                    <label for="inst-password">Choose a password to keep your account secure</label>
+                                    <input type="password" id="inst-password" value="password123">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 5: Progress -->
+                        <div class="installer-page" data-page="5">
+                            <h2>Installing FELBIC OS...</h2>
+                            <p>Please wait while the system files are copied and configured.</p>
+                            <div class="installer-progress-container">
+                                <div class="installer-progress-bar">
+                                    <div class="installer-progress-fill" id="inst-progress-fill" style="width: 0%"></div>
+                                </div>
+                                <span class="progress-percent" id="inst-progress-percent">0%</span>
+                            </div>
+                            <div class="installer-console" id="installer-console-log">
+                                <!-- Console statements will be appended here -->
+                            </div>
+                        </div>
+
+                        <!-- Step 6: Finish -->
+                        <div class="installer-page" data-page="6">
+                            <h2>Installation Complete!</h2>
+                            <p>FELBIC OS has been successfully installed on your computer.</p>
+                            <div class="installer-finish-banner">
+                                <i class="hgi-stroke hgi-tick-double-02" style="font-size: 64px; color: var(--color-success);"></i>
+                                <p style="margin-top: 16px; font-weight: 500;">You may now restart into your new system.</p>
+                                <button class="installer-btn primary" id="inst-restart-btn" style="margin-top: 20px; padding: 10px 24px;">Restart Now</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Bottom control bar -->
+                    <footer class="installer-footer">
+                        <button class="installer-btn secondary" id="inst-btn-back">Back</button>
+                        <div style="flex: 1;"></div>
+                        <button class="installer-btn primary" id="inst-btn-next">Next</button>
+                    </footer>
+                </div>
+            </div>
+        </div>
+
+        <!-- App 9: Paint Window (GIMP) -->
+        <div class="window" id="paint-window" style="display: none; width: 640px; height: 460px;">
+            <div class="window-titlebar">
+                <div class="window-controls">
+                    <span class="window-btn close" data-target="paint-window"></span>
+                    <span class="window-btn minimize"></span>
+                    <span class="window-btn maximize"></span>
+                </div>
+                <div class="window-title">GIMP Editor</div>
+            </div>
+            <div class="window-content" style="padding: 0; display: flex; flex-direction: column; overflow: hidden; background: #1e1e1e;">
+                <div class="paint-toolbar" style="display: flex; gap: 10px; align-items: center; padding: 10px; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.1); flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <span style="color: #fff; font-size: 12px;">Color:</span>
+                        <input type="color" id="paint-color" value="#3b82f6" style="border: none; background: transparent; cursor: pointer; width: 30px; height: 30px;">
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <span style="color: #fff; font-size: 12px;">Size:</span>
+                        <input type="range" id="paint-size" min="1" max="50" value="5" style="width: 80px;">
+                        <span id="paint-size-val" style="color: #fff; font-size: 12px; width: 30px;">5px</span>
+                    </div>
+                    <button id="paint-clear" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; color: #fff; padding: 4px 10px; font-size: 12px; cursor: pointer;">Clear Board</button>
+                    <div style="display: flex; gap: 6px; margin-left: 8px;">
+                        <button class="paint-preset-color" data-color="#ffffff" style="background: #ffffff; width: 20px; height: 20px; border: 1px solid #000; cursor: pointer; border-radius: 50%;"></button>
+                        <button class="paint-preset-color" data-color="#ef4444" style="background: #ef4444; width: 20px; height: 20px; border: none; cursor: pointer; border-radius: 50%;"></button>
+                        <button class="paint-preset-color" data-color="#10b981" style="background: #10b981; width: 20px; height: 20px; border: none; cursor: pointer; border-radius: 50%;"></button>
+                        <button class="paint-preset-color" data-color="#3b82f6" style="background: #3b82f6; width: 20px; height: 20px; border: none; cursor: pointer; border-radius: 50%;"></button>
+                        <button class="paint-preset-color" data-color="#f59e0b" style="background: #f59e0b; width: 20px; height: 20px; border: none; cursor: pointer; border-radius: 50%;"></button>
+                        <button class="paint-preset-color" data-color="#000000" style="background: #000000; width: 20px; height: 20px; border: 1px solid #555; cursor: pointer; border-radius: 50%;"></button>
+                    </div>
+                </div>
+                <div class="canvas-container" style="flex: 1; position: relative; overflow: hidden; background: #ffffff;">
+                    <canvas id="paint-canvas" style="display: block; width: 100%; height: 100%; cursor: crosshair;"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- App 10: Media Window (VLC) -->
+        <div class="window" id="media-window" style="display: none; width: 620px; height: 420px;">
+            <div class="window-titlebar">
+                <div class="window-controls">
+                    <span class="window-btn close" data-target="media-window"></span>
+                    <span class="window-btn minimize"></span>
+                    <span class="window-btn maximize"></span>
+                </div>
+                <div class="window-title">VLC Media Player</div>
+            </div>
+            <div class="window-content" style="padding: 0; display: flex; flex-direction: column; overflow: hidden; background: #000;">
+                <div class="media-display" style="flex: 1; display: flex; align-items: center; justify-content: center; position: relative; background: #111;">
+                    <div id="media-visualizer" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: #fff; width: 100%; height: 100%;">
+                        <i class="hgi-stroke hgi-music-note-01" style="font-size: 64px; color: #f97316; margin-bottom: 16px;" id="media-icon"></i>
+                        <div id="media-now-playing" style="font-size: 14px; font-weight: 500;">No Media Loaded</div>
+                        <div id="media-visual-waves" style="display: flex; gap: 4px; align-items: flex-end; height: 40px; margin-top: 15px;">
+                            <div class="wave-bar" style="width: 4px; height: 8px; background: #f97316; transition: height 0.1s; border-radius: 2px;"></div>
+                            <div class="wave-bar" style="width: 4px; height: 8px; background: #f97316; transition: height 0.1s; border-radius: 2px;"></div>
+                            <div class="wave-bar" style="width: 4px; height: 8px; background: #f97316; transition: height 0.1s; border-radius: 2px;"></div>
+                            <div class="wave-bar" style="width: 4px; height: 8px; background: #f97316; transition: height 0.1s; border-radius: 2px;"></div>
+                            <div class="wave-bar" style="width: 4px; height: 8px; background: #f97316; transition: height 0.1s; border-radius: 2px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="media-playlist-panel" style="height: 100px; background: #1a1a1a; border-top: 1px solid rgba(255,255,255,0.1); overflow-y: auto; padding: 10px;">
+                    <div style="color: #888; font-size: 10px; font-weight: 600; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;">Playlist</div>
+                    <div id="media-playlist" style="display: flex; flex-direction: column; gap: 4px;"></div>
+                </div>
+                <div class="media-controls" style="padding: 12px; background: #222; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span id="media-time-current" style="color: #aaa; font-size: 10px; font-family: monospace;">00:00</span>
+                        <input type="range" id="media-progress" min="0" max="100" value="0" style="flex: 1; cursor: pointer; height: 4px; background: rgba(255,255,255,0.1); border: none; outline: none; border-radius: 2px;">
+                        <span id="media-time-duration" style="color: #aaa; font-size: 10px; font-family: monospace;">00:00</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <button id="media-btn-prev" style="background: transparent; border: none; color: #fff; cursor: pointer; display: flex; align-items: center;"><i class="hgi-stroke hgi-previous-item-01" style="font-size: 18px;"></i></button>
+                            <button id="media-btn-play" style="background: #f97316; border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="hgi-stroke hgi-play" style="font-size: 18px;" id="media-play-icon"></i></button>
+                            <button id="media-btn-next" style="background: transparent; border: none; color: #fff; cursor: pointer; display: flex; align-items: center;"><i class="hgi-stroke hgi-next-item-01" style="font-size: 18px;"></i></button>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px; color: #fff;">
+                            <i class="hgi-stroke hgi-volume-high" style="font-size: 14px; color: #aaa;"></i>
+                            <input type="range" id="media-volume" min="0" max="100" value="80" style="width: 80px; height: 4px; cursor: pointer;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- App 11: Chat Window (Discord) -->
+        <div class="window" id="chat-window" style="display: none; width: 650px; height: 450px;">
+            <div class="window-titlebar">
+                <div class="window-controls">
+                    <span class="window-btn close" data-target="chat-window"></span>
+                    <span class="window-btn minimize"></span>
+                    <span class="window-btn maximize"></span>
+                </div>
+                <div class="window-title">Discord Client</div>
+            </div>
+            <div class="window-content" style="padding: 0; display: flex; overflow: hidden; background: #313338; font-family: sans-serif;">
+                <aside style="width: 180px; background: #2b2d31; display: flex; flex-direction: column; border-right: 1px solid rgba(0,0,0,0.2); flex-shrink: 0;">
+                    <div style="padding: 12px; font-weight: bold; color: #fff; border-bottom: 1px solid rgba(0,0,0,0.2); font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">FELBIC OS Community</div>
+                    <div style="flex: 1; padding: 8px; display: flex; flex-direction: column; gap: 4px; overflow-y: auto;">
+                        <div style="color: #949ba4; font-size: 10px; font-weight: bold; text-transform: uppercase; padding: 4px 6px; letter-spacing: 0.5px;">Text Channels</div>
+                        <div class="chat-channel" data-channel="general" style="display: flex; align-items: center; padding: 6px 8px; border-radius: 4px; color: #fff; background: rgba(255,255,255,0.06); cursor: pointer; font-size: 13px;">
+                            <span style="color: #949ba4; margin-right: 6px;">#</span>general
+                        </div>
+                        <div class="chat-channel" data-channel="announcements" style="display: flex; align-items: center; padding: 6px 8px; border-radius: 4px; color: #949ba4; cursor: pointer; font-size: 13px;">
+                            <span style="color: #949ba4; margin-right: 6px;">#</span>announcements
+                        </div>
+                        <div class="chat-channel" data-channel="bot-playground" style="display: flex; align-items: center; padding: 6px 8px; border-radius: 4px; color: #949ba4; cursor: pointer; font-size: 13px;">
+                            <span style="color: #949ba4; margin-right: 6px;">#</span>bot-playground
+                        </div>
+                    </div>
+                    <div style="padding: 8px 12px; background: #232428; display: flex; align-items: center; gap: 8px;">
+                        <div style="width: 32px; height: 32px; border-radius: 50%; background: #3b82f6; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 12px; flex-shrink: 0;">LU</div>
+                        <div style="flex: 1; overflow: hidden; display: flex; flex-direction: column;">
+                            <span style="color: #fff; font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Live User</span>
+                            <span style="color: #949ba4; font-size: 10px;">#0001</span>
+                        </div>
+                    </div>
+                </aside>
+                <main style="flex: 1; display: flex; flex-direction: column; background: #313338; min-width: 0;">
+                    <div style="padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                        <span style="color: #80848e; font-size: 20px;">#</span>
+                        <span id="chat-channel-title" style="color: #fff; font-weight: bold; font-size: 14px;">general</span>
+                        <span style="color: #949ba4; font-size: 12px; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 8px; margin-left: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Welcome to the general chat!</span>
+                    </div>
+                    <div id="chat-messages" style="flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+                        <div style="display: flex; gap: 12px;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: #5865f2; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; flex-shrink: 0;">BOT</div>
+                            <div style="display: flex; flex-direction: column;">
+                                <div style="display: flex; align-items: center;">
+                                    <span style="color: #fff; font-weight: 600; font-size: 14px;">FELBIC Bot</span>
+                                    <span style="background: #5865f2; color: #fff; font-size: 9px; padding: 1px 4px; border-radius: 3px; font-weight: bold; margin-left: 6px;">BOT</span>
+                                    <span style="color: #949ba4; font-size: 11px; margin-left: 8px;">Today at 4:10 PM</span>
+                                </div>
+                                <span style="color: #dbdee1; font-size: 14px; margin-top: 4px;">Welcome to FELBIC OS! Chat with me here, or try other channels.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding: 0 16px 20px 16px; flex-shrink: 0;">
+                        <form id="chat-form" style="background: #383a40; border-radius: 8px; display: flex; align-items: center; padding: 10px 16px;">
+                            <input type="text" id="chat-input" placeholder="Message #general" autocomplete="off" style="background: transparent; border: none; outline: none; color: #dbdee1; flex: 1; font-size: 14px;">
+                        </form>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ── FULLSCREEN APP DRAWER (Rebranded Launchpad) ── -->
+    <div class="launchpad-overlay" id="launchpad-overlay">
+        <div class="launchpad-search-container">
+            <input type="text" id="launchpad-search" placeholder="Search Applications" autocomplete="off">
+        </div>
+        
+        <div class="launchpad-grid" id="launchpad-apps-grid">
+            <!-- Dynamic Grid Items -->
+        </div>
+
+        <div class="launchpad-pagination">
+            <span class="pagination-dot active"></span>
+            <span class="pagination-dot"></span>
+        </div>
+    </div>
+
+    <!-- ── BOTTOM DOCK ── -->
+    <div class="dock-container">
+        <div class="dock">
+            <div class="dock-item dock-launchpad" data-app="launchpad" title="App Drawer">
+                <i class="hgi-stroke hgi-grid-view"></i>
+            </div>
+            <div class="dock-item dock-files" data-app="files" title="Files Explorer">
+                <i class="hgi-stroke hgi-folder-open"></i>
+            </div>
+            <div class="dock-item dock-browser" data-app="browser" title="Web Browser">
+                <i class="hgi-stroke hgi-compass"></i>
+            </div>
+            <div class="dock-item dock-software" data-app="software" title="Software Center">
+                <i class="hgi-stroke hgi-app-store"></i>
+            </div>
+            <div class="dock-item dock-terminal" data-app="terminal" title="Terminal Console">
+                <i class="hgi-stroke hgi-command-line"></i>
+            </div>
+            <div class="dock-item dock-monitor" data-app="monitor" title="Task Manager">
+                <i class="hgi-stroke hgi-activity-01"></i>
+            </div>
+            <div class="dock-item dock-settings" data-app="settings" title="System Settings">
+                <i class="hgi-stroke hgi-settings-01"></i>
+            </div>
+            
+            <div class="dock-separator"></div>
+            
+            <div class="dock-item dock-installer" data-app="installer" title="Install System">
+                <i class="hgi-stroke hgi-download-01"></i>
+            </div>
+            
+            <div class="dock-separator"></div>
+            
+            <div class="dock-item dock-trash" data-app="trash" title="Trash">
+                <i class="hgi-stroke hgi-delete-02"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── DESKTOP EXTRA UTILITIES & OVERLAYS ── -->
+    <!-- Snap Preview Ghost Window -->
+    <div class="snap-preview" id="snap-preview"></div>
+
+    <!-- Desktop Grid of Icons -->
+    <div class="desktop-icon-grid" id="desktop-icon-grid"></div>
+
+    <!-- Right-click Glassmorphic Context Menu -->
+    <div class="desktop-context-menu" id="desktop-context-menu"></div>
+
+    <!-- Slide-in Toast Notifications Container -->
+    <div class="notifications-container" id="notifications-container"></div>
+
+    <!-- Virtual Desktop / Workspace Switcher Overlay -->
+    <div class="workspace-switcher-overlay" id="workspace-switcher-overlay"></div>
+
+    <!-- Selection marquee lasso -->
+    <div class="selection-lasso" id="selection-lasso"></div>
+
+    <!-- JS Core Loader -->
+    <script type="module" src="./js/app.js"></script>
+</body>
+</html>

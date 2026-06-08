@@ -1,0 +1,153 @@
+# FELBIC OS package list for x86_64
+# Used by archiso mkarchiso to build the live ISO
+# Format: one package per line, comments allowed
+
+# Base System
+base
+base-devel
+linux
+linux-headers
+linux-firmware
+amd-ucode
+intel-ucode
+mkinitcpio
+
+# Init + Services
+systemd
+systemd-sysvcompat
+dbus
+polkit
+
+# Bootloader
+grub
+efibootmgr
+dosfstools
+mtools
+os-prober
+sbctl
+sbsigntools
+
+# Filesystem
+e2fsprogs
+btrfs-progs
+cryptsetup
+lvm2
+ntfs-3g
+exfatprogs
+
+# Networking
+networkmanager
+network-manager-applet
+iwd
+wget
+curl
+openssh
+
+# Display: Wayland + Sway Desktop
+wayland
+wayland-protocols
+sway
+swaylock
+swayidle
+xorg-xwayland
+qt5-wayland
+qt6-wayland
+wofi
+waybar
+grim
+slurp
+mako
+brightnessctl
+xdg-user-dirs
+xdg-desktop-portal
+xdg-desktop-portal-wlr
+gtk4
+libadwaita
+gtk4-layer-shell
+
+# Display: GPU drivers
+mesa
+vulkan-icd-loader
+vulkan-intel
+vulkan-radeon
+libva-intel-driver
+intel-media-driver
+
+# Audio
+pipewire
+pipewire-alsa
+pipewire-pulse
+pipewire-jack
+wireplumber
+pavucontrol
+
+# Boot Splash
+plymouth
+
+# Fonts
+inter-font
+ttf-jetbrains-mono
+noto-fonts
+noto-fonts-emoji
+adobe-source-sans-fonts
+otf-font-awesome
+terminus-font
+
+# Terminal + Shell
+foot
+bash
+zsh
+vim
+neovim
+
+# System Tools
+sudo
+htop
+fastfetch
+pciutils
+usbutils
+lshw
+dmidecode
+iproute2
+iptables
+nftables
+strace
+gdb
+libseccomp
+
+# Security: TPM2 + disk encryption
+tpm2-tools
+tpm2-tss
+sbctl
+
+# Python installer module dependencies
+python-tomli
+python-pyaml
+python-jsonschema
+python-requests
+python-gobject
+python-msgpack
+
+# Archiso live tools
+archiso
+mkinitcpio-archiso
+arch-install-scripts
+squashfs-tools
+memtest86+
+syslinux
+
+# Installer
+calamares
+python
+
+# Misc
+git
+rsync
+unzip
+7zip
+man-db
+man-pages
+chromium
+
+# Local AI Inference Engine
+llama.cpp

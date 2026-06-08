@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIOS — Desktop Shell</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.hugeicons.com/font/hgi-stroke-rounded.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="icon" href="data:,">
+</head>
+<body>
+
+    <!-- Wallpaper background layer (always behind everything) -->
+    <div class="wallpaper-bg" id="wallpaper-bg"></div>
+
+    <!-- Dynamic Components Containers -->
+    <div id="topbar-container"></div>
+    <div id="control-center-container"></div>
+    <div id="spotlight-container"></div>
+    <div id="dock-container"></div>
+
+    <!-- ── WORKSPACE ── -->
+    <main class="workspace" id="windows-container">
+        <!-- Windows will be loaded here -->
+    </main>
+
+    <!-- ── FULLSCREEN APP DRAWER (Rebranded Launchpad) ── -->
+    <div class="launchpad-overlay" id="launchpad-overlay">
+        <div class="launchpad-search-container">
+            <input type="text" id="launchpad-search" placeholder="Search Applications" autocomplete="off">
+        </div>
+        
+        <div class="launchpad-grid" id="launchpad-apps-grid">
+            <!-- Dynamic Grid Items -->
+        </div>
+
+        <div class="launchpad-pagination">
+            <span class="pagination-dot active"></span>
+            <span class="pagination-dot"></span>
+        </div>
+    </div>
+
+    <!-- ── DESKTOP EXTRA UTILITIES & OVERLAYS ── -->
+    <!-- Snap Preview Ghost Window -->
+    <div class="snap-preview" id="snap-preview"></div>
+
+    <!-- Desktop Grid of Icons -->
+    <div class="desktop-icon-grid" id="desktop-icon-grid"></div>
+
+    <!-- Right-click Glassmorphic Context Menu -->
+    <div class="desktop-context-menu" id="desktop-context-menu"></div>
+
+    <!-- Slide-in Toast Notifications Container -->
+    <div class="notifications-container" id="notifications-container"></div>
+
+    <!-- Virtual Desktop / Workspace Switcher Overlay -->
+    <div class="workspace-switcher-overlay" id="workspace-switcher-overlay"></div>
+
+    <!-- Selection marquee lasso -->
+    <div class="selection-lasso" id="selection-lasso"></div>
+
+    <!-- JS Core Loader -->
+    <script type="module" src="./js/app.js"></script>
+</body>
+</html>

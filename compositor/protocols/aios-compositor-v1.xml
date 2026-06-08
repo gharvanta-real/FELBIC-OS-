@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<protocol name="aios_compositor_v1">
+  <copyright>
+    Copyright © 2026 AIOS Product Team
+    Permission to use, copy, modify, and distribute this software is licensed under the MIT License.
+  </copyright>
+
+  <interface name="aios_compositor_manager_v1" version="1">
+    <description summary="privileged AI OS compositor management">
+      This interface allows a privileged client (the AI System Daemon) to monitor
+      and control windows, capture frames, and inject input events into the AI session.
+      Only clients running as root (UID 0) are permitted to bind to this interface.
+    </description>
+
+    <request name="destroy" type="destructor">
+      <description summary="destroy the manager">
+        Destroy the management interface.
+      </description>
+    </request>
+
+    <request name="get_session">
+      <description summary="get session control interface">
+        Request control over a specific desktop session.
+        session_type 0 = Human session (read-only monitoring allowed),
+        session_type 1 = AI session (full write/input control allowed).
+      </description>
+      <arg name="id" type="new_id" interface="aios_session_v1"/>
+      <arg name="session_type" type="uint" summary="0 for human, 1 for AI"/>
+    </request>
+  </interface>
+
+  <interface name="aios_session_v1" version="1">
+    <description summary="session-specific control">
+      Interface for inspecting and controlling windows and inputs within a session.
+    </description>
+
+    <request name="destroy" type="destructor">
+      <description summary="destroy the session control">
+        Release the session control interface.
+      </description>
+    </request>
+
+    <!-- Window Management -->
+    <request name="get_windows">
+      <description summary="query all active windows">
+        Requests the compositor to send info for all mapped windows in this session.
+      </description>
+    </request>
+
+    <event name="window_info">
+      <description summary="window state information">
+        Sent in response to get_windows for each window.
+      </description>
+      <arg name="window_id" type="uint" summary="compositor-defined unique ID"/>
+      <arg name="title" type="string" summary="window title"/>
+      <arg name="app_id" type="string" summary="application identifier"/>
+      <arg name="x" type="int" summary="x coordinate"/>
+      <arg name="y" type="int" summary="y coordinate"/>
+      <arg name="width" type="int" summary="window width"/>
+      <arg name="height" type="int" summary="window height"/>
+      <arg name="is_focused" type="uint" summary="1 if focused, 0 otherwise"/>
+    </event>
+
+    <event name="window_list_done">
+      <description summary="end of window list">
+        Sent after all window_info events have been dispatched.
+      </description>
+    </event>
+
+    <!-- Screen Capture (Vision Grounding) -->
+    <request name="capture_screen">
+      <description summary="request a screenshot of the session">
+        Triggers a screenshot capture. The compositor will send a capture_buffer event
+        containing the frame dimensions and a shared memory file descriptor.
+      </description>
+    </request>
+
+    <event name="capture_buffer">
+      <description summary="screenshot frame buffer data">
+        Provides screen buffer data via a shared memory file descriptor (shm).
+      </description>
+      <arg name="fd" type="fd" summary="shared memory file descriptor"/>
+      <arg name="width" type="uint" summary="buffer width in pixels"/>
+      <arg name="height" type="uint" summary="buffer height in pixels"/>
+      <arg name="stride" type="uint" summary="row stride in bytes"/>
+      <arg name="format" type="uint" summary="DRM fourcc format code"/>
+    </event>
+
+    <event name="capture_failed">
+      <description summary="screenshot capture failed">
+        Sent if a screenshot capture request could not be completed.
+      </description>
+    </event>
+
+    <!-- Synthetic Input Injection (AI session only) -->
+    <request name="inject_key">
+      <description summary="simulate a keyboard key press or release">
+        Injects a keyboard event into this session's seat input pipeline.
+      </description>
+      <arg name="key" type="uint" summary="xkb keycode"/>
+      <arg name="state" type="uint" summary="0 for released, 1 for pressed"/>
+    </request>
+
+    <request name="inject_pointer_motion">
+      <description summary="simulate relative or absolute pointer movement">
+        Moves the pointer inside this session. If absolute is non-zero, moves to
+        coordinates (x, y); otherwise, moves relatively by dx, dy.
+      </description>
+      <arg name="absolute" type="uint" summary="boolean absolute flag"/>
+      <arg name="x" type="int" summary="target x or delta x"/>
+      <arg name="y" type="int" summary="target y or delta y"/>
+    </request>
+
+    <request name="inject_pointer_button">
+      <description summary="simulate mouse click or release">
+        Injects a pointer button click/release.
+      </description>
+      <arg name="button" type="uint" summary="linux input button code (e.g. BTN_LEFT)"/>
+      <arg name="state" type="uint" summary="0 for released, 1 for pressed"/>
+    </request>
+  </interface>
+</protocol>

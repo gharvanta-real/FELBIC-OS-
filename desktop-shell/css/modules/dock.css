@@ -1,0 +1,147 @@
+/* ============================================================
+   AIOS — Dock & Trash
+   Zero hardcoded values — all tokens, !important minimized
+   ============================================================ */
+
+.dock-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 10px;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.dock {
+    height: var(--dock-height);
+    background-color: var(--color-dock-bg);
+    border: 1px solid var(--color-dock-border);
+    backdrop-filter: var(--blur-sm);
+    -webkit-backdrop-filter: var(--blur-sm);
+    border-radius: var(--dock-radius);
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: var(--shadow-dock);
+    pointer-events: auto;
+    transition: background-color var(--transition-normal) var(--curve-smooth),
+                border-color var(--transition-normal) var(--curve-smooth);
+}
+
+.dock-item {
+    width: var(--dock-item-size);
+    height: var(--dock-item-size);
+    border-radius: var(--dock-item-radius);
+    background-color: var(--app-icon-bg);
+    border: 1px solid var(--app-icon-border);
+    backdrop-filter: var(--blur-sm);
+    -webkit-backdrop-filter: var(--blur-sm);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: var(--text-primary);
+    box-shadow: var(--app-icon-shadow);
+    position: relative;
+    flex-shrink: 0;
+    transition: transform var(--transition-fast) var(--curve-smooth),
+                background-color var(--transition-fast) var(--curve-smooth),
+                border-color var(--transition-fast) var(--curve-smooth);
+}
+
+.dock-item:hover {
+    transform: scale(1.06) translateY(-3px);
+    background-color: var(--app-icon-hover-bg);
+    border-color: var(--app-icon-hover-border);
+}
+
+.dock-item:active {
+    transform: scale(0.96);
+    background-color: var(--surface-active);
+}
+
+.dock-item svg,
+.dock-item i {
+    width: var(--icon-dock);
+    height: var(--icon-dock);
+    font-size: var(--icon-dock);
+    line-height: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    fill: currentColor;
+    color: currentColor;
+    pointer-events: none;
+}
+
+.dock-separator {
+    width: 1px;
+    height: 56%;
+    background-color: var(--border-subtle);
+    margin: 0 2px;
+    flex-shrink: 0;
+}
+
+/* ── Running indicator dot ── */
+.dock-item.running::after {
+    content: "";
+    position: absolute;
+    bottom: 3px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: var(--accent-primary);
+    box-shadow: var(--shadow-xs);
+}
+
+/* ── Trash ── */
+.dock-item.dock-trash {
+    background-color: transparent;
+    border: 1px solid transparent;
+    box-shadow: none;
+    opacity: 0.75;
+}
+
+.dock-item.dock-trash:hover {
+    opacity: 1;
+    transform: scale(1.06) translateY(-3px);
+    background-color: var(--surface-1);
+    border-color: var(--border-default);
+}
+
+.dock-item.dock-trash i,
+.dock-item.dock-trash svg {
+    color: var(--text-secondary);
+    fill: var(--text-secondary);
+}
+
+/* Drag-over danger feedback */
+.dock-item.dock-trash.drag-hover {
+    transform: scale(1.06) translateY(-3px);
+    background-color: var(--accent-soft);
+    border-color: var(--danger);
+    box-shadow: var(--shadow-danger);
+    color: var(--danger);
+}
+
+.dock-item.dock-trash.drag-hover i {
+    color: var(--danger);
+    fill: var(--danger);
+}
+
+/* ── Launch bounce animation ── */
+@keyframes dock-launch-bounce {
+    0%, 100% { transform: translateY(0) scale(1); }
+    30%       { transform: translateY(-14px) scale(1.08); }
+    60%       { transform: translateY(3px) scale(0.97); }
+    85%       { transform: translateY(-5px) scale(1.03); }
+}
+
+.dock-item.bouncing {
+    animation: dock-launch-bounce 0.7s var(--curve-elastic);
+    animation-iteration-count: 2;
+}

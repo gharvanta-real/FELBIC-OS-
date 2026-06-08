@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=FELBIC OS
+Description=FELBIC OS AI-Native Operating System boot splash
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/felbicos
+ScriptFile=/usr/share/plymouth/themes/felbicos/felbicos.script

@@ -1,0 +1,26 @@
+---
+componentName: felbicos
+strings:
+    productName:         "FELBIC OS"
+    shortProductName:    "FELBIC OS"
+    version:             "0.1.0"
+    shortVersion:        "0.1"
+    versionedName:       "FELBIC OS 0.1.0"
+    shortVersionedName:  "FELBIC OS 0.1"
+    bootloaderEntryName: "FELBIC OS"
+    productUrl:          "https://felbicos.dev"
+    supportUrl:          "https://felbicos.dev"
+    knownIssuesUrl:      "https://felbicos.dev"
+    releaseNotesUrl:     "https://felbicos.dev"
+images:
+    productLogo:         "logo.png"
+    productIcon:         "logo.png"
+    productWelcome:      "welcome.png"
+style:
+   sidebarBackground:    "#111118"
+   sidebarText:          "#FFFFFF"
+   sidebarTextSelect:    "#FFFFFF"
+   sidebarTextHighlight: "#7C3AED"
+   windowExpanding:      false
+   windowSize:           1000px,680px
+slideshow:               "show.qml"

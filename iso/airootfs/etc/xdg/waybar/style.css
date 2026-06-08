@@ -1,0 +1,80 @@
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "SF Pro Display", "Inter", "Helvetica Neue", sans-serif;
+    font-size: 13px;
+    min-height: 0;
+}
+
+/* ── TOP BAR ── */
+window#waybar.topbar {
+    background-color: rgba(20, 20, 30, 0.65);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+}
+
+#custom-logo {
+    font-weight: 800;
+    padding: 0 14px;
+    color: #ffffff;
+}
+
+#workspaces button {
+    padding: 0 8px;
+    background-color: transparent;
+    color: #a0a0a8;
+}
+
+#workspaces button.focused {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+#workspaces button:hover {
+    color: #ffffff;
+}
+
+#clock,
+#cpu,
+#memory,
+#network,
+#keyboard-state,
+#pulseaudio,
+#tray {
+    padding: 0 10px;
+    color: #e4e4e7;
+}
+
+#clock {
+    font-weight: 600;
+}
+
+/* ── BOTTOM DOCK ── */
+window#waybar.dock {
+    background-color: rgba(25, 25, 35, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+window#waybar.dock #custom-term,
+window#waybar.dock #custom-web,
+window#waybar.dock #custom-fileman,
+window#waybar.dock #custom-install {
+    font-size: 20px;
+    padding: 0 16px;
+    margin: 4px 4px;
+    border-radius: 12px;
+    color: #ffffff;
+    transition: all 0.2s ease-in-out;
+}
+
+window#waybar.dock #custom-term:hover,
+window#waybar.dock #custom-web:hover,
+window#waybar.dock #custom-fileman:hover,
+window#waybar.dock #custom-install:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: scale(1.15);
+}

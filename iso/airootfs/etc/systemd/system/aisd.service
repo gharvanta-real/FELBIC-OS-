@@ -1,0 +1,40 @@
+[Unit]
+Description=AIOS AI System Daemon
+Documentation=https://aios.dev/docs/aisd
+After=network.target dbus.socket
+Requires=dbus.socket
+ConditionPathExists=/usr/bin/aisd
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/aisd
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+RestartSec=5
+WatchdogSec=30
+
+User=root
+Group=root
+NoNewPrivileges=false
+PrivateTmp=true
+ProtectHome=read-only
+ProtectSystem=false
+ReadWritePaths=/var/lib/aios /var/log/aios /run/aios /home/felbic
+RuntimeDirectory=aios
+RuntimeDirectoryMode=0750
+LogsDirectory=aios
+LogsDirectoryMode=0750
+StateDirectory=aios
+StateDirectoryMode=0750
+
+Environment=AISD_SOCKET=/run/aios/aisd.sock
+Environment=AISD_FS_ROOT=/home/felbic
+
+LimitNOFILE=65536
+LimitMEMLOCK=infinity
+MemoryMax=512M
+CPUQuota=50%
+OOMScoreAdjust=-500
+
+[Install]
+WantedBy=multi-user.target
