@@ -427,9 +427,17 @@
         <div class="window-title">Command Workspace</div>
     </div>
     <div class="finder-container">
+        <!-- Finder Tabs Bar -->
+        <div class="finder-tab-bar" id="finder-tabs-header">
+            <div class="finder-tabs-list" id="finder-tabs-list">
+                <!-- Tabs will be rendered here dynamically -->
+            </div>
+            <button class="finder-add-tab-btn" id="finder-add-tab" title="New Tab">+</button>
+        </div>
         <!-- Top Command Bar (Full Width) -->
         <div class="files-toolbar">
             <button class="files-nav-btn" id="files-back-btn" disabled>←</button>
+            <button class="files-nav-btn" id="files-forward-btn" disabled>→</button>
             <span class="files-path-breadcrumb" id="files-breadcrumb">Workspace</span>
             <div class="files-action-buttons files-action-buttons-group">
                 <button class="files-nav-btn" id="files-new-file" title="New File" ><i class="hgi-stroke hgi-file-add"></i></button>
@@ -439,6 +447,8 @@
                 <div class="files-toolbar-divider"></div>
                 <button class="files-nav-btn active" id="files-view-grid" title="Grid View" ><i class="hgi-stroke hgi-grid-view"></i></button>
                 <button class="files-nav-btn" id="files-view-list" title="List View" ><i class="hgi-stroke hgi-menu-01"></i></button>
+                <button class="files-nav-btn" id="files-view-columns" title="Column View" ><i class="hgi-stroke hgi-layout-column"></i></button>
+                <button class="files-nav-btn" id="files-view-gallery" title="Gallery View" ><i class="hgi-stroke hgi-image-02"></i></button>
                 <div class="files-toolbar-divider"></div>
                 <select class="files-sort-select" id="files-sort" title="Sort Items">
                     <option value="name">Sort by Name</option>
@@ -447,6 +457,7 @@
                 </select>
                 <div class="files-toolbar-divider"></div>
                 <button class="files-nav-btn" id="files-toggle-properties" title="Toggle Properties Pane" ><i class="hgi-stroke hgi-information-circle"></i></button>
+                <button class="files-nav-btn" id="files-toggle-view-options" title="View Options" ><i class="hgi-stroke hgi-settings-02"></i></button>
             </div>
             <input type="text" class="files-search-bar" id="files-search" placeholder="Search Workspace">
         </div>
@@ -485,39 +496,89 @@
                 </div>
                 
                 <div class="app-sidebar-section sidebar-section-mt">Locations</div>
-                <div class="app-sidebar-item" data-folder="aios-drive">
+                <div class="app-sidebar-item" data-folder="aios-drive" id="sidebar-aios-drive">
                     <span class="app-sidebar-icon"><i class="hgi-stroke hgi-cloud-server"></i></span>
                     <span>AIOS Drive</span>
+                    <span class="sidebar-status-icon sync-icon" style="margin-left: auto; display: flex; align-items: center; opacity: 0.6;"><i class="hgi-stroke hgi-sync-dash"></i></span>
                 </div>
-                <div class="app-sidebar-item" data-folder="network">
+                <div class="app-sidebar-item" data-folder="network" id="sidebar-network">
                     <span class="app-sidebar-icon"><i class="hgi-stroke hgi-wifi-01"></i></span>
                     <span>Network</span>
+                    <span class="sidebar-status-icon scan-icon" style="margin-left: auto; display: flex; align-items: center; opacity: 0.6;"><i class="hgi-stroke hgi-loading"></i></span>
                 </div>
                 
+                <div class="app-sidebar-section sidebar-section-mt">Smart Folders</div>
+                <div class="app-sidebar-item smart-folder-item" data-smart="recents">
+                    <span class="app-sidebar-icon"><i class="hgi-stroke hgi-time-02"></i></span>
+                    <span>Recents</span>
+                </div>
+                <div class="app-sidebar-item smart-folder-item" data-smart="images">
+                    <span class="app-sidebar-icon"><i class="hgi-stroke hgi-image-01"></i></span>
+                    <span>All Images</span>
+                </div>
+                <div class="app-sidebar-item smart-folder-item" data-smart="documents">
+                    <span class="app-sidebar-icon"><i class="hgi-stroke hgi-note-01"></i></span>
+                    <span>All Docs</span>
+                </div>
+                <div class="app-sidebar-item smart-folder-item" data-smart="code">
+                    <span class="app-sidebar-icon"><i class="hgi-stroke hgi-code"></i></span>
+                    <span>All Code</span>
+                </div>
+                <div class="app-sidebar-item smart-folder-item" data-smart="trash">
+                    <span class="app-sidebar-icon"><i class="hgi-stroke hgi-delete-01"></i></span>
+                    <span>Trash</span>
+                </div>
+
                 <div class="app-sidebar-section sidebar-section-mt">Tags</div>
                 <div class="app-sidebar-item tag-item" data-tag="Work">
-                    <span class="app-sidebar-icon"><i class="hgi-stroke hgi-tag-01"></i></span>
+                    <span class="tag-dot" style="background-color: #ef4444; width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 10px;"></span>
                     <span>Work</span>
                 </div>
                 <div class="app-sidebar-item tag-item" data-tag="Personal">
-                    <span class="app-sidebar-icon"><i class="hgi-stroke hgi-tag-01"></i></span>
+                    <span class="tag-dot" style="background-color: #10b981; width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 10px;"></span>
                     <span>Personal</span>
                 </div>
                 <div class="app-sidebar-item tag-item" data-tag="Projects">
-                    <span class="app-sidebar-icon"><i class="hgi-stroke hgi-tag-01"></i></span>
+                    <span class="tag-dot" style="background-color: #a855f7; width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 10px;"></span>
                     <span>Projects</span>
                 </div>
                 <div class="app-sidebar-item tag-item" data-tag="Important">
-                    <span class="app-sidebar-icon"><i class="hgi-stroke hgi-tag-01"></i></span>
+                    <span class="tag-dot" style="background-color: #f59e0b; width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 10px;"></span>
                     <span>Important</span>
                 </div>
             </aside>
             
             <!-- Main Folder Explorer (Content Area) -->
-            <div class="files-view-container">
-                <main class="finder-content" id="finder-content-grid">
+            <div class="files-view-container" style="position: relative; display: flex; flex: 1; min-width: 0; height: 100%;">
+                <main class="finder-content" id="finder-content-grid" style="flex: 1; overflow-y: auto; padding: 16px;">
                     <!-- Populated dynamically -->
                 </main>
+                
+                <!-- Slide-out View Options Pane -->
+                <div class="view-options-pane" id="view-options-pane" style="display: none; position: absolute; right: 0; top: 0; width: 200px; height: 100%; background: var(--bg-secondary); border-left: 1px solid var(--border-default); z-index: 100; padding: 14px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; box-shadow: -4px 0 12px rgba(0,0,0,0.15);">
+                    <div class="view-options-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-default); padding-bottom: 8px;">
+                        <span style="font-size: var(--font-size-sm); font-weight: 700; color: var(--text-primary);">View Options</span>
+                        <button id="view-options-close" class="view-options-close-btn" style="background: none; border: none; color: var(--text-primary); cursor: pointer; font-size: 16px;">×</button>
+                    </div>
+                    <div class="view-options-body" style="display: flex; flex-direction: column; gap: 12px; font-size: 11px;">
+                        <div class="option-row" style="display: flex; flex-direction: column; gap: 4px;">
+                            <label style="color: var(--text-muted);">Icon Size: <span id="icon-size-val">64px</span></label>
+                            <input type="range" id="option-icon-size" min="40" max="96" value="64" class="slider-control" style="width: 100%;">
+                        </div>
+                        <div class="option-row" style="display: flex; flex-direction: column; gap: 4px;">
+                            <label style="color: var(--text-muted);">Grid Spacing: <span id="grid-spacing-val">12px</span></label>
+                            <input type="range" id="option-grid-spacing" min="6" max="24" value="12" class="slider-control" style="width: 100%;">
+                        </div>
+                        <div class="option-row" style="display: flex; align-items: center; gap: 6px; margin-top: 4px;">
+                            <input type="checkbox" id="option-show-hidden">
+                            <label for="option-show-hidden" style="color: var(--text-primary); cursor: pointer;">Show Hidden Files</label>
+                        </div>
+                        <div class="option-row" style="display: flex; align-items: center; gap: 6px;">
+                            <input type="checkbox" id="option-show-item-info" checked>
+                            <label for="option-show-item-info" style="color: var(--text-primary); cursor: pointer;">Show Item Info</label>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <!-- Context Panel (AI Info Panel) -->
@@ -1033,6 +1094,73 @@
                 <div class="media-volume-controls">
                     <i class="hgi-stroke hgi-volume-high" ></i>
                     <input type="range" id="media-volume" min="0" max="100" value="80" class="media-volume-slider">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- App 5: Quick Look Overlay -->
+<div class="quick-look-modal" id="quick-look-modal" style="display: none; position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; z-index: 99999; display: flex; align-items: center; justify-content: center;">
+    <div class="quick-look-backdrop" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(12px);"></div>
+    <div class="quick-look-glass" style="position: relative; width: 640px; height: 440px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius-lg); box-shadow: 0 24px 64px rgba(0,0,0,0.5); backdrop-filter: blur(20px); display: flex; flex-direction: column; overflow: hidden; z-index: 2;">
+        <div class="quick-look-header" style="height: 36px; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02);">
+            <span class="quick-look-title" id="quick-look-title" style="font-size: var(--font-size-sm); font-weight: 600; color: #fff;">Quick Look</span>
+            <button class="quick-look-close-btn" id="quick-look-close" style="background: none; border: none; color: #fff; opacity: 0.6; cursor: pointer; font-size: 20px;">×</button>
+        </div>
+        <div class="quick-look-content" id="quick-look-content" style="flex: 1; display: flex; align-items: center; justify-content: center; overflow: auto; padding: 20px; color: #fff;">
+            <!-- Dynamic Content -->
+        </div>
+        <div class="quick-look-footer" id="quick-look-footer" style="height: 32px; padding: 0 16px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.02); font-size: var(--font-size-2xs); color: rgba(255,255,255,0.6);">
+            <span id="quick-look-meta">File details</span>
+        </div>
+    </div>
+</div>
+
+<!-- App 6: Get Info Window -->
+<div class="window get-info-window" id="get-info-window" style="display: none; width: 320px; height: auto; min-height: 360px; max-height: 520px; position: fixed; left: 350px; top: 120px; z-index: 10000; box-shadow: 0 16px 40px rgba(0,0,0,0.4); display: flex; flex-direction: column; overflow: hidden;">
+    <div class="window-titlebar">
+        <div class="window-controls">
+            <span class="window-btn close" data-target="get-info-window"></span>
+        </div>
+        <div class="window-title" id="get-info-title" style="font-size: 11px;">Info: README.md</div>
+    </div>
+    <div class="get-info-body" style="flex: 1; overflow-y: auto; padding: 14px; background: var(--bg-primary); display: flex; flex-direction: column; gap: 14px;">
+        <div class="get-info-section" style="border-bottom: 1px solid var(--border-default); padding-bottom: 12px; display: flex; gap: 14px; align-items: center;">
+            <span class="get-info-icon" id="get-info-icon" style="font-size: 32px; color: var(--color-accent); display: flex; align-items: center; justify-content: center;"><i class="hgi-stroke hgi-file-01"></i></span>
+            <div class="get-info-name-column" style="display: flex; flex-direction: column; min-width: 0; flex: 1;">
+                <strong id="get-info-name" style="font-size: var(--font-size-sm); color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">README.md</strong>
+                <span id="get-info-size-label" style="font-size: var(--font-size-2xs); color: var(--text-muted);">274 Bytes</span>
+            </div>
+        </div>
+        
+        <div class="get-info-section" style="border-bottom: 1px solid var(--border-default); padding-bottom: 12px; display: flex; flex-direction: column; gap: 8px;">
+            <h4 style="margin: 0; font-size: var(--font-size-xs); text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 4px;">General Info</h4>
+            <div class="info-row" style="display: flex; justify-content: space-between; font-size: 11px;"><span style="color: var(--text-muted);">Kind:</span><strong id="get-info-kind" style="color: var(--text-primary);">Markdown Document</strong></div>
+            <div class="info-row" style="display: flex; justify-content: space-between; font-size: 11px;"><span style="color: var(--text-muted);">Size:</span><strong id="get-info-size" style="color: var(--text-primary);">274 Bytes</strong></div>
+            <div class="info-row" style="display: flex; justify-content: space-between; font-size: 11px; flex-direction: column; gap: 2px;"><span style="color: var(--text-muted);">Where:</span><strong id="get-info-path" style="color: var(--text-primary); font-family: var(--font-mono); font-size: 9px; word-break: break-all;">/workspace/README.md</strong></div>
+            <div class="info-row" style="display: flex; justify-content: space-between; font-size: 11px;"><span style="color: var(--text-muted);">Created:</span><strong id="get-info-created" style="color: var(--text-primary); font-weight: 500;">Jun 8, 2026</strong></div>
+            <div class="info-row" style="display: flex; justify-content: space-between; font-size: 11px;"><span style="color: var(--text-muted);">Modified:</span><strong id="get-info-modified" style="color: var(--text-primary); font-weight: 500;">Jun 8, 2026</strong></div>
+        </div>
+        
+        <div class="get-info-section" style="display: flex; flex-direction: column; gap: 8px;">
+            <h4 style="margin: 0; font-size: var(--font-size-xs); text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 4px;">Privileges & Access</h4>
+            <div class="permissions-table" style="display: flex; flex-direction: column; gap: 8px; font-size: 11px;">
+                <div class="perm-row" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: var(--text-primary);">Owner (aios):</span>
+                    <select id="perm-owner" style="background: var(--surface-1); border: 1px solid var(--border-default); color: var(--text-primary); border-radius: var(--radius-xs); padding: 2px 4px; font-size: 10px;">
+                        <option value="rw">Read & Write</option>
+                        <option value="r">Read Only</option>
+                        <option value="none">No Access</option>
+                    </select>
+                </div>
+                <div class="perm-row" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: var(--text-primary);">Everyone:</span>
+                    <select id="perm-everyone" style="background: var(--surface-1); border: 1px solid var(--border-default); color: var(--text-primary); border-radius: var(--radius-xs); padding: 2px 4px; font-size: 10px;">
+                        <option value="r">Read Only</option>
+                        <option value="rw">Read & Write</option>
+                        <option value="none">No Access</option>
+                    </select>
                 </div>
             </div>
         </div>
