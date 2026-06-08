@@ -76,6 +76,9 @@
     --success: #10b981;
     --warning: #f59e0b;
     --danger:  #ef4444;
+    --danger-soft:  rgba(239, 68, 68, 0.15);
+    --success-soft: rgba(16, 185, 129, 0.14);
+    --warning-soft: rgba(245, 158, 11, 0.14);
 
     /* ── On-Color Text (for colored backgrounds) ── */
     --text-on-accent:  #ffffff;

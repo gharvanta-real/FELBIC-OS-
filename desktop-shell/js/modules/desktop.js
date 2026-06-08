@@ -469,8 +469,8 @@ function createDesktopIcon(name, iconClass, doubleClickAction, initialIndex = 0,
     });
 }
 
-function createNewFolder() {
-    const folderName = prompt('Enter folder name:', 'New Folder');
+async function createNewFolder() {
+    const folderName = await showDialog.prompt('Enter folder name:', 'New Folder', 'Create Folder');
     if (!folderName) return;
 
     const existingIconsCount = document.querySelectorAll('.desktop-icon').length;

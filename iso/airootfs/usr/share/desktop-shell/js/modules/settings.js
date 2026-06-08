@@ -3,7 +3,8 @@
 export function initSettings() {
     console.log('[felbicos] Initializing Settings Module...');
 
-    const sidebarItems = document.querySelectorAll('.settings-sidebar-item');
+    // Settings sidebar uses .app-sidebar-item[data-tab] (not settings-sidebar-item)
+    const sidebarItems = document.querySelectorAll('.settings-sidebar-list .app-sidebar-item[data-tab]');
     const panes = document.querySelectorAll('.settings-tab-pane');
 
     // ── 1. Tab Switching ──
@@ -196,14 +197,10 @@ export function initSettings() {
             wallThumbs.forEach(t => t.classList.remove('active'));
             thumb.classList.add('active');
 
-            const bgStyle = thumb.style.background;
+            // Read the computed background from the CSS class (not inline style)
+            const computedBg = getComputedStyle(thumb).background;
             if (window.setWallpaper) {
-                window.setWallpaper(bgStyle);
-            } else {
-                document.body.style.backgroundImage = 'none'; // clear default PNG image
-                document.body.style.background = bgStyle;
-                document.body.style.backgroundSize = 'cover';
-                document.body.style.backgroundPosition = 'center';
+                window.setWallpaper(computedBg);
             }
         });
     });
@@ -219,13 +216,12 @@ export function initSettings() {
             let hexColor = '#ffffff';
 
             switch (selectedColor) {
-                case 'blue': hexColor = '#3b82f6'; break;
-                case 'purple': hexColor = '#a855f7'; break;
-                case 'pink': hexColor = '#ec4899'; break;
-                case 'red': hexColor = '#ef4444'; break;
-                case 'orange': hexColor = '#f97316'; break;
+                case 'blue': hexColor = '#4f7cff'; break;
+                case 'navy': hexColor = '#20293a'; break;
+                case 'graphite': hexColor = '#475569'; break;
                 case 'green': hexColor = '#10b981'; break;
-                default: hexColor = '#ffffff';
+                case 'amber': hexColor = '#f59e0b'; break;
+                default: hexColor = '#f4f6fb';
             }
 
             document.documentElement.style.setProperty('--color-accent', hexColor);
@@ -246,12 +242,10 @@ export function initSettings() {
             }
 
             sidebarItems.forEach(item => {
-                const label = item.querySelector('span:last-child').textContent.toLowerCase();
-                if (label.includes(query)) {
-                    item.style.display = 'flex';
-                } else {
-                    item.style.display = 'none';
-                }
+                // Get text from the last span child (label)
+                const spans = item.querySelectorAll('span');
+                const label = spans[spans.length - 1]?.textContent?.toLowerCase() || '';
+                item.style.display = label.includes(query) ? 'flex' : 'none';
             });
         });
     }
@@ -261,16 +255,23 @@ export function initSettings() {
     const btnLight = document.getElementById('theme-btn-light');
 
     if (btnDark && btnLight) {
+        const themeToggleIcon = document.getElementById('theme-toggle-icon');
         btnDark.addEventListener('click', () => {
             document.body.classList.remove('light-theme');
             btnDark.classList.add('active');
             btnLight.classList.remove('active');
+            if (themeToggleIcon) {
+                themeToggleIcon.className = 'hgi-stroke hgi-sun-01';
+            }
         });
 
         btnLight.addEventListener('click', () => {
             document.body.classList.add('light-theme');
             btnLight.classList.add('active');
             btnDark.classList.remove('active');
+            if (themeToggleIcon) {
+                themeToggleIcon.className = 'hgi-stroke hgi-moon';
+            }
         });
     }
 

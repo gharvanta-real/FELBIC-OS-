@@ -1,0 +1,239 @@
+/* ============================================================
+   AIOS — Window Chrome, Workspace, Snap, Resize
+   Zero hardcoded values — all tokens
+   ============================================================ */
+
+/* ── WORKSPACE ── */
+.workspace {
+    position: absolute;
+    top: var(--topbar-height);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 10;
+    /* No padding — windows use absolute positioning */
+    transform: scale(var(--workspace-scale, 1));
+    transform-origin: center center;
+    transition: transform var(--transition-normal) var(--curve-smooth);
+}
+
+/* ── BASE WINDOW ── */
+.window {
+    width: 680px;
+    height: 420px;
+    min-width: 450px;
+    min-height: 300px;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-default);
+    backdrop-filter: var(--blur-intensity-light);
+    -webkit-backdrop-filter: var(--blur-intensity-light);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-window);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: absolute;
+    animation: windowFadeIn 0.4s var(--curve-swift);
+    transition: transform var(--transition-slow) var(--curve-swift),
+                opacity var(--transition-slow) ease,
+                box-shadow var(--transition-normal) var(--curve-smooth),
+                border-color var(--transition-normal) var(--curve-smooth),
+                left var(--transition-slow) var(--curve-smooth),
+                top var(--transition-slow) var(--curve-smooth),
+                width var(--transition-slow) var(--curve-smooth),
+                height var(--transition-slow) var(--curve-smooth);
+}
+
+/* No transition lag while dragging / resizing */
+.window.dragging,
+.window.resizing {
+    transition: none !important;
+}
+
+.window.active-focus {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-window);
+}
+
+@keyframes windowFadeIn {
+    from { opacity: 0; transform: scale(0.95) translateY(14px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ── TITLE BAR ── */
+.window-titlebar {
+    height: 34px;
+    /* Match sidebar color — same bg-secondary so controls tray feels unified */
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    position: relative;
+    flex-shrink: 0;
+    cursor: move;
+}
+
+.window-controls {
+    display: flex;
+    gap: 8px;
+    position: absolute;
+    left: 14px;
+    cursor: default;
+    align-items: center;
+    z-index: 10;
+}
+
+/* Window control buttons */
+.window-btn {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    transition: background-color var(--transition-fast) var(--curve-smooth);
+}
+
+.window-btn.close          { background-color: #ff5f56; }
+.window-btn.minimize       { background-color: #ffbd2e; }
+.window-btn.maximize       { background-color: #27c93f; }
+
+/* Icon glyphs via Hugeicons font */
+.window-btn::after {
+    font-family: "hgi-stroke-rounded" !important;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    color: rgba(0, 0, 0, 0.55);
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity var(--transition-fast) var(--curve-smooth);
+}
+
+.window-btn.close::after    { content: "\3d42"; font-size: 7px; font-weight: bold; }  /* hgi-cancel-01   */
+.window-btn.minimize::after { content: "\43b0"; font-size: 7px; font-weight: bold; }  /* hgi-minus-sign  */
+.window-btn.maximize::after { content: "\47d8"; font-size: 7px; font-weight: bold; }  /* hgi-square      */
+
+/* Show icons when hovering the window-controls container */
+.window-controls:hover .window-btn::after {
+    opacity: 1;
+}
+
+/* Dim buttons on unfocused window */
+.window:not(.active-focus) .window-controls .window-btn {
+    background-color: var(--border-strong) !important;
+}
+
+.window:not(.active-focus) .window-controls:hover .window-btn::after {
+    opacity: 0.85;
+}
+
+/* Window title text */
+.window-title {
+    width: 100%;
+    text-align: center;
+    margin: 0;
+    padding: 0 80px;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    user-select: none;
+}
+
+/* Generic window content area */
+.window-content {
+    flex: 1;
+    padding: 14px;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    color: var(--color-topbar-text);
+    line-height: 1.5;
+    overflow-y: auto;          /* scrollable by default */
+    overflow-x: hidden;
+    min-height: 0;             /* allow flex child to shrink */
+}
+
+/* ── SNAP GHOST ── */
+.snap-preview {
+    position: absolute;
+    background-color: var(--accent-soft);
+    border: 1px solid var(--accent-primary);
+    backdrop-filter: var(--blur-sm);
+    -webkit-backdrop-filter: var(--blur-sm);
+    border-radius: var(--radius-sm);
+    z-index: 900;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-normal) var(--curve-swift),
+                left var(--transition-normal) var(--curve-swift),
+                top var(--transition-normal) var(--curve-swift),
+                width var(--transition-normal) var(--curve-swift),
+                height var(--transition-normal) var(--curve-swift);
+}
+
+.snap-preview.visible { opacity: 1; }
+
+/* ── RESIZE HANDLES ── */
+.resize-handle { position: absolute; z-index: 1000; }
+
+.handle-t  { top: -4px;    left: 8px;    right: 8px;    height: 8px;  cursor: ns-resize; }
+.handle-b  { bottom: -4px; left: 8px;    right: 8px;    height: 8px;  cursor: ns-resize; }
+.handle-l  { left: -4px;   top: 8px;     bottom: 8px;   width: 8px;   cursor: ew-resize; }
+.handle-r  { right: -4px;  top: 8px;     bottom: 8px;   width: 8px;   cursor: ew-resize; }
+.handle-tl { top: -5px;    left: -5px;   width: 12px;   height: 12px; cursor: nwse-resize; }
+.handle-tr { top: -5px;    right: -5px;  width: 12px;   height: 12px; cursor: nesw-resize; }
+.handle-bl { bottom: -5px; left: -5px;   width: 12px;   height: 12px; cursor: nesw-resize; }
+.handle-br { bottom: -5px; right: -5px;  width: 12px;   height: 12px; cursor: nwse-resize; }
+
+/* ── OVERVIEW / EXPOSÉ MODE ── */
+.window.in-overview {
+    transition: transform 0.38s var(--curve-swift),
+                left 0.38s var(--curve-swift),
+                top 0.38s var(--curve-swift),
+                width 0.38s var(--curve-swift),
+                height 0.38s var(--curve-swift) !important;
+    cursor: pointer;
+}
+
+.window.in-overview:hover {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-md);
+}
+
+.window.in-overview .resize-handle { display: none; }
+
+/* ── VIRTUAL WORKSPACE TRANSITIONS ── */
+body[data-active-workspace="1"] .window[data-workspace="2"] {
+    transform: translateX(100vw) scale(0.94);
+    opacity: 0;
+    pointer-events: none;
+}
+
+body[data-active-workspace="2"] .window[data-workspace="1"] {
+    transform: translateX(-100vw) scale(0.94);
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ── PER-APP DEFAULT WINDOW SIZES ── */
+#settings-window   { width: 780px; height: 480px; min-width: 600px; min-height: 380px; }
+#files-window      { width: 960px; height: 560px; min-width: 720px; min-height: 400px; }
+#terminal-window   { width: 680px; height: 420px; min-width: 450px; min-height: 300px; }
+#browser-window    { width: 800px; height: 500px; min-width: 500px; min-height: 350px; }
+#store-window      { width: 750px; height: 460px; min-width: 600px; min-height: 380px; }
+#monitor-window    { width: 700px; height: 440px; min-width: 550px; min-height: 350px; }
+#editor-window     { width: 620px; height: 400px; min-width: 450px; min-height: 300px; }
+#installer-window  { width: 680px; height: 460px; min-width: 550px; min-height: 380px; }
+#paint-window      { width: 640px; height: 460px; min-width: 500px; min-height: 380px; }
+#media-window      { width: 620px; height: 420px; min-width: 450px; min-height: 300px; }
+#chat-window       { width: 650px; height: 450px; min-width: 500px; min-height: 350px; }

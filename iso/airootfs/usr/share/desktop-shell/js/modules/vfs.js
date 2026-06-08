@@ -35,17 +35,91 @@ const root = {
             type: 'folder',
             name: 'Documents',
             children: {
-                'Development_Roadmap.txt': { 
+                'Work': { type: 'folder', name: 'Work', children: {}, lastModified: 'May 24, 2024 10:30 AM', size: '12 items' },
+                'Personal': { type: 'folder', name: 'Personal', children: {}, lastModified: 'May 24, 2024 10:30 AM', size: '5 items' },
+                'Projects': { type: 'folder', name: 'Projects', children: {}, lastModified: 'May 24, 2024 10:30 AM', size: '8 items' },
+                'Assets': { type: 'folder', name: 'Assets', children: {}, lastModified: 'May 24, 2024 10:30 AM', size: '15 items' },
+                'Notes': { type: 'folder', name: 'Notes', children: {}, lastModified: 'May 24, 2024 10:30 AM', size: '4 items' },
+                'Archive': { type: 'folder', name: 'Archive', children: {}, lastModified: 'May 24, 2024 10:30 AM', size: '20 items' },
+                'Project Proposal.pdf': { 
                     type: 'file', 
-                    name: 'Development_Roadmap.txt', 
-                    content: 'FELBIC OS ROADMAP:\n------------------\nPhase 1: Build high-fidelity glassmorphic HTML shell\nPhase 2: Code loopback WebSocket Rust daemon (aisd)\nPhase 3: Package Live ISO profile\nPhase 4: Integrate local embedding models (Nomic, Llama)\n', 
-                    lastModified: new Date().toLocaleString() 
+                    name: 'Project Proposal.pdf', 
+                    content: 'Project proposal details and AIOS strategy plan.', 
+                    size: '2.4 MB', 
+                    tags: ['Work', 'Important'], 
+                    lastModified: 'May 24, 2024 10:30 AM' 
                 },
-                'System_Specifications.txt': { 
+                'Monthly Report.xlsx': { 
                     type: 'file', 
-                    name: 'System_Specifications.txt', 
-                    content: 'SYSTEM METADATA:\n----------------\nArchitecture: x86_64\nWindow System: Wayland (aios-comp / wlroots)\nDesktop Shell: Chromium Fullscreen Kiosk Mode\nDaemon IPC Protocol: WebSocket Loopback (port 8080)\n', 
-                    lastModified: new Date().toLocaleString() 
+                    name: 'Monthly Report.xlsx', 
+                    content: 'Spreadsheet containing active resource budgeting.', 
+                    size: '1.8 MB', 
+                    tags: ['Work'], 
+                    lastModified: 'May 23, 2024 09:15 AM' 
+                },
+                'Design System.sketch': { 
+                    type: 'file', 
+                    name: 'Design System.sketch', 
+                    content: 'Vector assets and design tokens for AIOS interface.', 
+                    size: '3.6 MB', 
+                    tags: ['Projects'], 
+                    lastModified: 'May 22, 2024 04:40 PM' 
+                },
+                'Presentation.pptx': { 
+                    type: 'file', 
+                    name: 'Presentation.pptx', 
+                    content: 'Slide deck for seed round presentation.', 
+                    size: '5.2 MB', 
+                    tags: ['Work', 'Projects'], 
+                    lastModified: 'May 21, 2024 11:00 AM' 
+                },
+                'Notes.txt': { 
+                    type: 'file', 
+                    name: 'Notes.txt', 
+                    content: 'Simple developer notes, command listings, and todo items.', 
+                    size: '120 KB', 
+                    tags: ['Personal'], 
+                    lastModified: 'May 20, 2024 02:30 PM' 
+                },
+                'Meeting Record.wav': { 
+                    type: 'file', 
+                    name: 'Meeting Record.wav', 
+                    content: 'Audio log from general developer sprint alignment.', 
+                    size: '3.1 MB', 
+                    tags: ['Work'], 
+                    lastModified: 'May 20, 2024 10:00 AM' 
+                },
+                'Prototype.fig': { 
+                    type: 'file', 
+                    name: 'Prototype.fig', 
+                    content: 'Figma canvas link for responsive layout designs.', 
+                    size: '7.8 MB', 
+                    tags: ['Projects'], 
+                    lastModified: 'May 19, 2024 05:12 PM' 
+                },
+                'Budget 2024.numbers': { 
+                    type: 'file', 
+                    name: 'Budget 2024.numbers', 
+                    content: 'Budget planning worksheets and calculations.', 
+                    size: '2.2 MB', 
+                    tags: ['Work'], 
+                    lastModified: 'May 18, 2024 08:45 AM' 
+                },
+                'Archive.zip': { 
+                    type: 'file', 
+                    name: 'Archive.zip', 
+                    content: 'Compressed backup directory containing release 0.0.9 source.', 
+                    size: '9.3 MB', 
+                    tags: ['Important'], 
+                    lastModified: 'May 17, 2024 06:10 PM' 
+                },
+                'Readme.md': { 
+                    type: 'file', 
+                    name: 'Readme.md', 
+                    content: '# AIOS Documents\nWelcome to your command documents directory.', 
+                    size: '18 KB', 
+                    tags: ['Work', 'Projects'], 
+                    lastModified: 'May 16, 2024 01:25 PM' 
                 }
             },
             lastModified: new Date().toLocaleString()
@@ -75,6 +149,36 @@ const root = {
             },
             lastModified: new Date().toLocaleString()
         },
+        'Desktop': {
+            type: 'folder',
+            name: 'Desktop',
+            children: {},
+            lastModified: new Date().toLocaleString()
+        },
+        'Music': {
+            type: 'folder',
+            name: 'Music',
+            children: {},
+            lastModified: new Date().toLocaleString()
+        },
+        'Videos': {
+            type: 'folder',
+            name: 'Videos',
+            children: {},
+            lastModified: new Date().toLocaleString()
+        },
+        'AIOS Drive': {
+            type: 'folder',
+            name: 'AIOS Drive',
+            children: {},
+            lastModified: new Date().toLocaleString()
+        },
+        'Network': {
+            type: 'folder',
+            name: 'Network',
+            children: {},
+            lastModified: new Date().toLocaleString()
+        },
         'todo.md': {
             type: 'file',
             name: 'todo.md',
@@ -94,6 +198,11 @@ const root = {
 root.children['documents'] = root.children['Documents'];
 root.children['downloads'] = root.children['Downloads'];
 root.children['pictures'] = root.children['Pictures'];
+root.children['desktop'] = root.children['Desktop'];
+root.children['music'] = root.children['Music'];
+root.children['videos'] = root.children['Videos'];
+root.children['aios-drive'] = root.children['AIOS Drive'];
+root.children['network'] = root.children['Network'];
 
 // Helper to deep clone a node
 function cloneNode(node, newName) {

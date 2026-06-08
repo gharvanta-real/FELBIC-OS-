@@ -82,7 +82,7 @@ export function initInstaller() {
     }
 
     if (btnNext) {
-        btnNext.addEventListener('click', () => {
+        btnNext.addEventListener('click', async () => {
             if (currentStep === 4) {
                 // Validate user info before moving to install page
                 const username = document.getElementById('inst-username')?.value.trim();
@@ -91,7 +91,7 @@ export function initInstaller() {
                     if (window.showNotification) {
                         window.showNotification('Validation Error', 'Please enter a username and computer name.', 'hgi-alert-01');
                     } else {
-                        alert('Please enter a username and computer name.');
+                        await showDialog.alert('Please enter a username and computer name.', 'Installer Validation');
                     }
                     return;
                 }
@@ -233,11 +233,11 @@ export function initInstaller() {
         }
     });
 
-    function handleRestartAction() {
+    async function handleRestartAction() {
         if (window.showNotification) {
             window.showNotification('System Rebooting', 'Rebooting into your new FELBIC OS installation...', 'hgi-reload');
         } else {
-            alert('Rebooting system...');
+            await showDialog.alert('Rebooting system...', 'System Reboot');
         }
 
         // Close the window

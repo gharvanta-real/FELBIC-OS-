@@ -392,14 +392,15 @@ function createDesktopIcon(name, iconClass, doubleClickAction, initialIndex = 0,
         <span class="desktop-icon-label">${name}</span>
     `;
 
-    // Position in grid layout initially
+    // Position in vertical-first grid layout initially
     const gridWidth = 90;
     const gridHeight = 100;
     const paddingX = 24;
     const paddingY = 60; // below topbar
 
-    const col = initialIndex % 5;
-    const row = Math.floor(initialIndex / 5);
+    const maxRows = Math.max(1, Math.floor((window.innerHeight - paddingY - 120) / gridHeight));
+    const col = Math.floor(initialIndex / maxRows);
+    const row = initialIndex % maxRows;
 
     const initialX = col * gridWidth + paddingX;
     const initialY = row * gridHeight + paddingY;
@@ -468,8 +469,8 @@ function createDesktopIcon(name, iconClass, doubleClickAction, initialIndex = 0,
     });
 }
 
-function createNewFolder() {
-    const folderName = prompt('Enter folder name:', 'New Folder');
+async function createNewFolder() {
+    const folderName = await showDialog.prompt('Enter folder name:', 'New Folder', 'Create Folder');
     if (!folderName) return;
 
     const existingIconsCount = document.querySelectorAll('.desktop-icon').length;

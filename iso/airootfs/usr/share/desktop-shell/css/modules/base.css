@@ -1,0 +1,74 @@
+/* ============================================================
+   AIOS — Base, Scrollbars & Typography
+   Zero hardcoded values — all tokens
+   ============================================================ */
+
+@import url("../design-tokens.css");
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    font-family: var(--font-sans);
+    font-size: var(--font-size-sm);
+    color: var(--color-topbar-text);
+    background: transparent;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── macOS-style custom scrollbar ── */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: var(--radius-full);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+/* ── Global theme transition targets ── */
+body,
+.topbar,
+.dock,
+.dock-item,
+.window,
+.control-center,
+.spotlight,
+.settings-window,
+.finder-sidebar,
+.store-sidebar,
+.monitor-content,
+.editor-container,
+.notifications-container,
+.desktop-context-menu {
+    transition: background-color var(--transition-slow) var(--curve-smooth),
+                color var(--transition-slow) var(--curve-smooth),
+                border-color var(--transition-slow) var(--curve-smooth),
+                box-shadow var(--transition-slow) var(--curve-smooth),
+                backdrop-filter var(--transition-slow) var(--curve-smooth);
+}

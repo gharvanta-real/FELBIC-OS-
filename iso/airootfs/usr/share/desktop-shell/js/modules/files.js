@@ -6,6 +6,9 @@ export function initFiles() {
     let currentFolder = '/workspace';
     let navigationHistory = ['/workspace'];
     let searchFilter = '';
+    let currentTagFilter = '';
+    let activePanelTab = 'details';
+    let lastSelectedFile = null;
 
     const contentGrid = document.getElementById('finder-content-grid');
     const sidebarItems = document.querySelectorAll('.finder-sidebar-item');
@@ -33,6 +36,17 @@ export function initFiles() {
         document.body.appendChild(contextMenu);
     }
 
+    // Tab switching for properties sidebar
+    const propTabs = document.querySelectorAll('.properties-tab');
+    propTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            propTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            activePanelTab = tab.getAttribute('data-tab');
+            updatePropertiesPane(lastSelectedFile);
+        });
+    });
+
     function getFileType(fileName) {
         const ext = fileName.split('.').pop().toLowerCase();
         if (['js', 'c', 'rs', 'py', 'html', 'css', 'conf'].includes(ext) || fileName === 'Makefile') {
@@ -43,6 +57,85 @@ export function initFiles() {
             return 'archive';
         }
         return 'text';
+    }
+
+    function formatMetaDate(dateStr) {
+        if (!dateStr) return '—';
+        const parts = dateStr.split(' ');
+        if (parts.length >= 2) {
+            return `${parts[0]} ${parts[1].replace(',', '')}`;
+        }
+        return dateStr;
+    }
+
+    function getFileInfo(fileName) {
+        const ext = fileName.split('.').pop().toLowerCase();
+        if (ext === 'pdf') {
+            return { icon: 'hgi-pdf-01', color: '#ef4444', label: 'PDF Document' };
+        } else if (['xlsx', 'xls', 'csv'].includes(ext)) {
+            return { icon: 'hgi-excel-01', color: '#10b981', label: 'Spreadsheet' };
+        } else if (ext === 'sketch') {
+            return { icon: 'hgi-diamond', color: '#f59e0b', label: 'Sketch Design' };
+        } else if (['pptx', 'ppt'].includes(ext)) {
+            return { icon: 'hgi-presentation-01', color: '#f97316', label: 'Presentation' };
+        } else if (ext === 'txt') {
+            return { icon: 'hgi-file-01', color: '#94a3b8', label: 'Text Document' };
+        } else if (['wav', 'mp3', 'ogg', 'flac'].includes(ext)) {
+            return { icon: 'hgi-music-note-01', color: '#ec4899', label: 'Audio Record' };
+        } else if (ext === 'fig') {
+            return { icon: 'hgi-figma', color: '#a855f7', label: 'Figma Design' };
+        } else if (ext === 'numbers') {
+            return { icon: 'hgi-chart-bar-01', color: '#10b981', label: 'Numbers Sheet' };
+        } else if (['zip', 'rar', 'tar', 'gz', '7z'].includes(ext)) {
+            return { icon: 'hgi-package', color: '#8b5cf6', label: 'Archive Package' };
+        } else if (ext === 'md') {
+            return { icon: 'hgi-note-01', color: '#3b82f6', label: 'Markdown Document' };
+        } else if (['js', 'c', 'rs', 'py', 'html', 'css', 'conf'].includes(ext) || fileName === 'Makefile') {
+            return { icon: 'hgi-code', color: '#10b981', label: 'Source Code' };
+        } else if (ext === 'sh') {
+            return { icon: 'hgi-code', color: '#10b981', label: 'Shell Script' };
+        }
+        return { icon: 'hgi-file-01', color: '#94a3b8', label: 'File' };
+    }
+
+    function bindItemEvents(item, file) {
+        // Selection styles (Single Click)
+        item.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.querySelectorAll('.finder-folder-card, .finder-file-card').forEach(i => i.classList.remove('active-select'));
+            item.classList.add('active-select');
+            updatePropertiesPane(file);
+            updateToolbarState();
+        });
+
+        // Navigation or open trigger (Double Click)
+        item.addEventListener('dblclick', () => {
+            if (file.type === 'folder') {
+                const nextFolder = currentFolder === '/' ? `/${file.name}` : `${currentFolder}/${file.name}`;
+                currentFolder = nextFolder;
+                navigationHistory.push(currentFolder);
+                searchFilter = '';
+                currentTagFilter = ''; // Clear tag filter on folder navigation
+                // Sync sidebar items focus to none active if we went inside a folder
+                sidebarItems.forEach(i => i.classList.remove('active'));
+                if (searchInput) searchInput.value = '';
+                renderFolder();
+                updatePropertiesPane(null);
+            } else {
+                openFile(file);
+            }
+        });
+
+        // HTML5 Drag and Drop events
+        item.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', currentFolder === '/' ? `/${file.name}` : `${currentFolder}/${file.name}`);
+            e.dataTransfer.effectAllowed = 'move';
+            item.classList.add('dragging');
+        });
+
+        item.addEventListener('dragend', () => {
+            item.classList.remove('dragging');
+        });
     }
 
     function renderFolder() {
@@ -56,6 +149,8 @@ export function initFiles() {
                 name: node.name,
                 type: node.type === 'folder' ? 'folder' : getFileType(node.name),
                 content: node.content,
+                size: node.size || (node.type === 'folder' ? '—' : (node.content ? `${new Blob([node.content]).size} B` : '0 B')),
+                tags: node.tags || [],
                 lastModified: node.lastModified
             };
         });
@@ -64,176 +159,210 @@ export function initFiles() {
             files = files.filter(f => f.name.toLowerCase().includes(searchFilter.toLowerCase()));
         }
 
-        // Format breadcrumb path: Workspace > Subfolder
-        breadcrumb.textContent = currentFolder
-            .split('/')
-            .filter(p => p !== '')
-            .map(p => p.charAt(0).toUpperCase() + p.slice(1))
-            .join(' > ') || 'Root';
-            
+        if (currentTagFilter) {
+            files = files.filter(f => f.tags.includes(currentTagFilter));
+        }
+
+        // Format breadcrumb path: Home > Documents
+        const cleanBreadcrumb = currentFolder === '/workspace' ? 'Home > Documents' : 
+                                currentFolder.startsWith('/workspace/') ? 'Home > Documents > ' + currentFolder.split('/').slice(2).join(' > ') :
+                                currentFolder === '/Documents' ? 'Home > Documents' :
+                                currentFolder.startsWith('/Documents/') ? 'Home > Documents > ' + currentFolder.split('/').slice(2).join(' > ') :
+                                currentFolder
+                                    .split('/')
+                                    .filter(p => p !== '')
+                                    .map(p => p.charAt(0).toUpperCase() + p.slice(1))
+                                    .join(' > ') || 'Root';
+        
+        breadcrumb.textContent = cleanBreadcrumb;
         backBtn.disabled = navigationHistory.length <= 1;
 
         if (files.length === 0) {
-            contentGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--color-topbar-text-muted); padding-top: 40px;">No files found</div>`;
+            contentGrid.innerHTML = `<div style="text-align: center; color: var(--color-topbar-text-muted); padding-top: 40px; width: 100%;">No items found</div>`;
             updateToolbarState();
             return;
         }
 
-        files.forEach(file => {
-            const item = document.createElement('div');
-            item.className = 'finder-grid-item';
-            item.setAttribute('draggable', 'true');
+        // Separate folders and files
+        const folders = files.filter(f => f.type === 'folder');
+        const normalFiles = files.filter(f => f.type !== 'folder');
 
-            // Resolve symbols from Hugeicons
-            let iconClass = 'hgi-folder-01'; 
-            let iconColor = '#3b82f6'; // Folders default blue
-            
-            if (file.type === 'text') {
-                iconClass = 'hgi-file-01';
-                iconColor = '#94a3b8';
-            } else if (file.type === 'code' || file.type === 'script') {
-                iconClass = 'hgi-code';
-                iconColor = '#10b981';
-            } else if (file.type === 'archive') {
-                iconClass = 'hgi-package';
-                iconColor = '#f59e0b';
-            }
+        // Render Folders section
+        if (folders.length > 0) {
+            const heading = document.createElement('div');
+            heading.className = 'finder-section-header';
+            heading.textContent = 'Folders';
+            contentGrid.appendChild(heading);
 
-            item.innerHTML = `
-                <span class="finder-grid-icon" style="color: ${iconColor};"><i class="hgi-stroke ${iconClass}"></i></span>
-                <span class="finder-grid-label">${file.name}</span>
-            `;
+            const grid = document.createElement('div');
+            grid.className = 'finder-folders-grid';
+            contentGrid.appendChild(grid);
 
-            // Selection styles (Single Click)
-            item.addEventListener('click', (e) => {
-                e.stopPropagation();
-                document.querySelectorAll('.finder-grid-item').forEach(i => i.classList.remove('active-select'));
-                item.classList.add('active-select');
-                updatePropertiesPane(file);
-                updateToolbarState();
+            folders.forEach(file => {
+                const item = document.createElement('div');
+                item.className = 'finder-folder-card';
+                item.setAttribute('draggable', 'true');
+                item.innerHTML = `
+                    <span class="finder-grid-icon" style="color: #3b82f6;"><i class="hgi-stroke hgi-folder-01"></i></span>
+                    <span class="finder-grid-label">${file.name}</span>
+                `;
+                bindItemEvents(item, file);
+                grid.appendChild(item);
             });
+        }
 
-            // Navigation or open trigger (Double Click)
-            item.addEventListener('dblclick', () => {
-                if (file.type === 'folder') {
-                    const nextFolder = currentFolder === '/' ? `/${file.name}` : `${currentFolder}/${file.name}`;
-                    currentFolder = nextFolder;
-                    navigationHistory.push(currentFolder);
-                    searchFilter = '';
-                    if (searchInput) searchInput.value = '';
-                    renderFolder();
-                    updatePropertiesPane(null);
-                } else if (file.type === 'text' || file.type === 'code' || file.type === 'script') {
-                    openFile(file);
-                } else {
-                    alert(`Binary File: ${file.name} cannot be opened in text format.`);
-                }
+        // Render Files section
+        if (normalFiles.length > 0) {
+            const heading = document.createElement('div');
+            heading.className = 'finder-section-header';
+            heading.textContent = 'Files';
+            contentGrid.appendChild(heading);
+
+            const grid = document.createElement('div');
+            grid.className = 'finder-files-grid';
+            contentGrid.appendChild(grid);
+
+            normalFiles.forEach(file => {
+                const info = getFileInfo(file.name);
+                const item = document.createElement('div');
+                item.className = 'finder-file-card';
+                item.setAttribute('draggable', 'true');
+
+                const cleanDate = formatMetaDate(file.lastModified);
+
+                item.innerHTML = `
+                    <span class="finder-grid-icon" style="color: ${info.color};"><i class="hgi-stroke ${info.icon}"></i></span>
+                    <span class="finder-grid-label" title="${file.name}">${file.name}</span>
+                    <div class="finder-file-meta">
+                        <span class="finder-file-size">${file.size}</span>
+                        <span class="finder-file-date">${cleanDate}</span>
+                    </div>
+                `;
+                bindItemEvents(item, file);
+                grid.appendChild(item);
             });
-
-            // HTML5 Drag and Drop events
-            item.addEventListener('dragstart', (e) => {
-                e.dataTransfer.setData('text/plain', currentFolder === '/' ? `/${file.name}` : `${currentFolder}/${file.name}`);
-                e.dataTransfer.effectAllowed = 'move';
-                item.classList.add('dragging');
-            });
-
-            item.addEventListener('dragend', () => {
-                item.classList.remove('dragging');
-            });
-
-            contentGrid.appendChild(item);
-        });
+        }
 
         updateToolbarState();
     }
 
     // Properties Pane updating logic
     function updatePropertiesPane(file) {
+        lastSelectedFile = file;
         if (!propertiesContent) return;
 
-        if (!file) {
-            // Show properties of the current folder
-            const filesInDir = window.VFS.listDirectory(currentFolder) || [];
-            const folderSize = filesInDir.length;
+        const isFolderContext = !file;
+        const name = isFolderContext ? (currentFolder.split('/').pop() || 'Workspace') : file.name;
+        const typeStr = isFolderContext ? 'Folder' : getFileInfo(file.name).label;
+        const sizeStr = isFolderContext ? '1.2 GB • 24 items' : file.size;
+        const iconClass = isFolderContext ? 'hgi-folder-01' : getFileInfo(file.name).icon;
+        const iconColor = isFolderContext ? '#3b82f6' : getFileInfo(file.name).color;
+        const tags = isFolderContext ? ['Work', 'Projects'] : (file.tags || []);
+        const modified = isFolderContext ? 'Jun 8, 2025 06:45 PM' : (file.lastModified || 'May 24, 2024 10:30 AM');
+        const created = isFolderContext ? 'May 24, 2024 10:30 AM' : 'May 24, 2024 10:30 AM';
+
+        // Update properties header title
+        const propertiesTitle = document.getElementById('properties-title');
+        if (propertiesTitle) {
+            propertiesTitle.textContent = isFolderContext ? 'Folder Info' : 'File Info';
+        }
+
+        if (activePanelTab === 'activity') {
             propertiesContent.innerHTML = `
-                <div class="properties-detail">
-                    <div class="properties-preview-box">
-                        <i class="hgi-stroke hgi-folder-01" style="font-size: 48px; color: #3b82f6;"></i>
+                <div class="properties-detail" style="display: flex; flex-direction: column; gap: 14px;">
+                    <div style="display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px;">
+                        <span style="font-size: 28px; color: ${iconColor}; display: flex;"><i class="hgi-stroke ${iconClass}"></i></span>
+                        <div style="display: flex; flex-direction: column; min-width: 0;">
+                            <span style="font-size: 13px; font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${name}</span>
+                            <span style="font-size: 10px; color: var(--text-muted);">${typeStr}</span>
+                        </div>
                     </div>
-                    <div class="properties-row">
-                        <strong>Name</strong>
-                        <span>${currentFolder.split('/').pop()}</span>
-                    </div>
-                    <div class="properties-row">
-                        <strong>Type</strong>
-                        <span>Folder</span>
-                    </div>
-                    <div class="properties-row">
-                        <strong>Size</strong>
-                        <span>${folderSize} items</span>
-                    </div>
-                    <div class="properties-row">
-                        <strong>Path</strong>
-                        <span>${currentFolder}</span>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 10px; font-size: 11px;">
+                        <div style="display: flex; gap: 8px; align-items: flex-start;">
+                            <span style="color: var(--success); font-size: 12px;">●</span>
+                            <div style="display: flex; flex-direction: column;">
+                                <strong style="color: var(--text-primary);">Created by aios</strong>
+                                <span style="color: var(--text-muted); font-size: 10px;">${created}</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px; align-items: flex-start;">
+                            <span style="color: var(--color-accent); font-size: 12px;">●</span>
+                            <div style="display: flex; flex-direction: column;">
+                                <strong style="color: var(--text-primary);">Modified contents</strong>
+                                <span style="color: var(--text-muted); font-size: 10px;">${modified}</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px; align-items: flex-start;">
+                            <span style="color: var(--text-muted); font-size: 12px;">●</span>
+                            <div style="display: flex; flex-direction: column;">
+                                <strong style="color: var(--text-primary);">Sync daemon update</strong>
+                                <span style="color: var(--text-muted); font-size: 10px;">Just now</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
             return;
         }
 
-        let iconClass = 'hgi-folder-01'; 
-        let iconColor = '#3b82f6';
-        let cleanType = 'Folder';
-        let sizeStr = '—';
-
-        if (file.type === 'text') {
-            iconClass = 'hgi-file-01';
-            iconColor = '#94a3b8';
-            cleanType = 'Text Document';
-            sizeStr = file.content ? `${new Blob([file.content]).size} bytes` : '0 bytes';
-        } else if (file.type === 'code') {
-            iconClass = 'hgi-code';
-            iconColor = '#10b981';
-            cleanType = 'Source Code';
-            sizeStr = file.content ? `${new Blob([file.content]).size} bytes` : '0 bytes';
-        } else if (file.type === 'script') {
-            iconClass = 'hgi-code';
-            iconColor = '#10b981';
-            cleanType = 'Shell Script';
-            sizeStr = file.content ? `${new Blob([file.content]).size} bytes` : '0 bytes';
-        } else if (file.type === 'archive') {
-            iconClass = 'hgi-package';
-            iconColor = '#f59e0b';
-            cleanType = 'Archive Package';
-            sizeStr = '12.4 MB'; // mock size
-        }
-
-        const modifiedStr = file.lastModified || new Date().toLocaleString();
+        // Details view (default)
+        const tagsHtml = tags.map(tag => {
+            let dotColor = '#3b82f6';
+            if (tag === 'Personal') dotColor = '#10b981';
+            else if (tag === 'Projects') dotColor = '#a855f7';
+            else if (tag === 'Important') dotColor = '#ef4444';
+            return `
+                <span style="font-size: 9px; padding: 3px 8px; background: var(--bg-primary); border: 1px solid var(--border-subtle); border-radius: 99px; color: var(--text-secondary); display: flex; align-items: center; gap: 5px;">
+                    <span style="width: 6px; height: 6px; border-radius: 50%; background-color: ${dotColor};"></span>
+                    ${tag}
+                </span>
+            `;
+        }).join('');
 
         propertiesContent.innerHTML = `
-            <div class="properties-detail">
-                <div class="properties-preview-box">
-                    <i class="hgi-stroke ${iconClass}" style="font-size: 48px; color: ${iconColor};"></i>
+            <div class="properties-detail" style="display: flex; flex-direction: column; gap: 14px;">
+                <div style="display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px;">
+                    <span style="font-size: 28px; color: ${iconColor}; display: flex;"><i class="hgi-stroke ${iconClass}"></i></span>
+                    <div style="display: flex; flex-direction: column; min-width: 0;">
+                        <span style="font-size: 13px; font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${name}</span>
+                        <span style="font-size: 10px; color: var(--text-muted);">${typeStr}</span>
+                    </div>
                 </div>
-                <div class="properties-row">
-                    <strong>Name</strong>
-                    <span>${file.name}</span>
+                
+                <div style="display: flex; flex-direction: column; gap: 8px; font-size: 11px;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-muted);">Type</span>
+                        <span style="color: var(--text-primary); font-weight: 500;">${typeStr}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-muted);">Size</span>
+                        <span style="color: var(--text-primary); font-weight: 500;">${sizeStr}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; flex-direction: column; gap: 2px;">
+                        <span style="color: var(--text-muted);">Location</span>
+                        <span style="color: var(--text-primary); font-weight: 500; font-family: var(--font-mono); font-size: 9px; word-break: break-all;">/home/aios${currentFolder}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-muted);">Created</span>
+                        <span style="color: var(--text-primary); font-size: 10px;">${created}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-muted);">Modified</span>
+                        <span style="color: var(--text-primary); font-size: 10px;">${modified}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-muted);">Owner</span>
+                        <span style="color: var(--text-primary); font-weight: 500;">aios</span>
+                    </div>
                 </div>
-                <div class="properties-row">
-                    <strong>Type</strong>
-                    <span>${cleanType}</span>
-                </div>
-                <div class="properties-row">
-                    <strong>Size</strong>
-                    <span>${sizeStr}</span>
-                </div>
-                <div class="properties-row">
-                    <strong>Modified</strong>
-                    <span>${modifiedStr}</span>
-                </div>
-                <div class="properties-row">
-                    <strong>Path</strong>
-                    <span>${currentFolder === '/' ? `/${file.name}` : `${currentFolder}/${file.name}`}</span>
+
+                <div style="border-top: 1px solid var(--border-subtle); padding-top: 12px; display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px;">Tags</span>
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 2px;">
+                        ${tagsHtml || '<span style="font-size: 10px; color: var(--text-muted); font-style: italic;">No tags</span>'}
+                    </div>
+                    <span style="font-size: 9px; color: var(--color-accent); cursor: pointer; font-weight: 600; margin-top: 4px; display: inline-block;">+ Add Tag</span>
                 </div>
             </div>
         `;
@@ -241,7 +370,7 @@ export function initFiles() {
 
     // Toggle disabled toolbar actions based on selection
     function updateToolbarState() {
-        const selectedItem = document.querySelector('.finder-grid-item.active-select');
+        const selectedItem = document.querySelector('.finder-folder-card.active-select, .finder-file-card.active-select');
         if (selectedItem) {
             if (renameBtn) renameBtn.disabled = false;
             if (deleteBtn) deleteBtn.disabled = false;
@@ -265,13 +394,13 @@ export function initFiles() {
     }
 
     // Create New File Action
-    function createNewFilePrompt() {
-        const name = prompt('Enter new file name:', 'untitled.txt');
+    async function createNewFilePrompt() {
+        const name = await showDialog.prompt('Enter new file name:', 'untitled.txt', 'New File');
         if (!name) return;
 
         const fullPath = currentFolder === '/' ? `/${name}` : `${currentFolder}/${name}`;
         if (window.VFS.exists(fullPath)) {
-            alert('A file or folder with that name already exists.');
+            await showDialog.alert('A file or folder with that name already exists.', 'Create File');
             return;
         }
 
@@ -281,18 +410,18 @@ export function initFiles() {
                 window.showNotification('File Created', `Created file "${name}"`, 'hgi-file-add');
             }
         } else {
-            alert('Failed to create file.');
+            await showDialog.alert('Failed to create file.', 'Create File');
         }
     }
 
     // Create New Folder Action
-    function createNewFolderPrompt() {
-        const name = prompt('Enter new folder name:', 'New Folder');
+    async function createNewFolderPrompt() {
+        const name = await showDialog.prompt('Enter new folder name:', 'New Folder', 'Create Folder');
         if (!name) return;
 
         const fullPath = currentFolder === '/' ? `/${name}` : `${currentFolder}/${name}`;
         if (window.VFS.exists(fullPath)) {
-            alert('A file or folder with that name already exists.');
+            await showDialog.alert('A file or folder with that name already exists.', 'Create Folder');
             return;
         }
 
@@ -302,19 +431,19 @@ export function initFiles() {
                 window.showNotification('Folder Created', `Created folder "${name}"`, 'hgi-folder-add');
             }
         } else {
-            alert('Failed to create folder.');
+            await showDialog.alert('Failed to create folder.', 'Create Folder');
         }
     }
 
     // Rename file/folder Action
-    function renameFile(file) {
-        const newName = prompt('Enter new name:', file.name);
+    async function renameFile(file) {
+        const newName = await showDialog.prompt('Enter new name:', file.name, 'Rename');
         if (!newName || newName === file.name) return;
 
         const currentPath = currentFolder === '/' ? `/${file.name}` : `${currentFolder}/${file.name}`;
         const newPath = currentFolder === '/' ? `/${newName}` : `${currentFolder}/${newName}`;
         if (window.VFS.exists(newPath)) {
-            alert('A file or folder with that name already exists.');
+            await showDialog.alert('A file or folder with that name already exists.', 'Rename');
             return;
         }
 
@@ -326,7 +455,7 @@ export function initFiles() {
             }
             // Keep renamed item selected after re-render completes
             setTimeout(() => {
-                const matchItem = Array.from(document.querySelectorAll('.finder-grid-item')).find(i => i.querySelector('.finder-grid-label').textContent === newName);
+                const matchItem = Array.from(document.querySelectorAll('.finder-folder-card, .finder-file-card')).find(i => i.querySelector('.finder-grid-label').textContent === newName);
                 if (matchItem) {
                     matchItem.classList.add('active-select');
                     const contents = window.VFS.listDirectory(currentFolder) || [];
@@ -344,13 +473,14 @@ export function initFiles() {
                 }
             }, 50);
         } else {
-            alert('Failed to rename.');
+            await showDialog.alert('Failed to rename.', 'Rename');
         }
     }
 
     // Delete file/folder Action
-    function deleteFile(file) {
-        if (!confirm(`Are you sure you want to delete "${file.name}"?`)) return;
+    async function deleteFile(file) {
+        const confirmed = await showDialog.confirm(`Are you sure you want to delete "${file.name}"?`, 'Delete File', true);
+        if (!confirmed) return;
 
         const filePath = currentFolder === '/' ? `/${file.name}` : `${currentFolder}/${file.name}`;
         const success = window.VFS.deletePath(filePath);
@@ -361,13 +491,14 @@ export function initFiles() {
             updatePropertiesPane(null);
             updateToolbarState();
         } else {
-            alert('Failed to delete file.');
+            await showDialog.alert('Failed to delete file.', 'Delete File');
         }
     }
 
     // Delete file by path (Drag-and-Drop Dock Trash helper)
-    function deleteFileByPath(filePath) {
-        if (confirm(`Are you sure you want to move "${filePath.split('/').pop()}" to the Trash?`)) {
+    async function deleteFileByPath(filePath) {
+        const confirmed = await showDialog.confirm(`Are you sure you want to move "${filePath.split('/').pop()}" to the Trash?`, 'Move to Trash', true);
+        if (confirmed) {
             const success = window.VFS.deletePath(filePath);
             if (success) {
                 if (window.showNotification) {
@@ -380,16 +511,36 @@ export function initFiles() {
     // Sidebar Category clicks
     sidebarItems.forEach(item => {
         item.addEventListener('click', () => {
-            let targetFolder = '/' + item.getAttribute('data-folder');
-            if (targetFolder === '/documents') targetFolder = '/Documents';
-            if (targetFolder === '/downloads') targetFolder = '/Downloads';
-            if (targetFolder === '/pictures') targetFolder = '/Pictures';
-            
-            if (targetFolder === currentFolder) return;
+            const tagAttr = item.getAttribute('data-tag');
+            if (tagAttr) {
+                sidebarItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                currentTagFilter = tagAttr;
+                renderFolder();
+                updatePropertiesPane(null);
+                return;
+            }
+
+            let folderAttr = item.getAttribute('data-folder');
+            if (!folderAttr) return;
+
+            let targetFolder = '/' + folderAttr;
+            if (folderAttr === 'workspace') targetFolder = '/workspace';
+            else if (folderAttr === 'desktop') targetFolder = '/Desktop';
+            else if (folderAttr === 'documents') targetFolder = '/Documents';
+            else if (folderAttr === 'downloads') targetFolder = '/Downloads';
+            else if (folderAttr === 'pictures') targetFolder = '/Pictures';
+            else if (folderAttr === 'music') targetFolder = '/Music';
+            else if (folderAttr === 'videos') targetFolder = '/Videos';
+            else if (folderAttr === 'aios-drive') targetFolder = '/AIOS Drive';
+            else if (folderAttr === 'network') targetFolder = '/Network';
+
+            if (targetFolder === currentFolder && currentTagFilter === '') return;
 
             sidebarItems.forEach(i => i.classList.remove('active'));
             item.classList.add('active');
 
+            currentTagFilter = '';
             currentFolder = targetFolder;
             navigationHistory = [currentFolder];
             searchFilter = '';
@@ -433,7 +584,7 @@ export function initFiles() {
     // Clear selection on container click
     if (contentGrid) {
         contentGrid.addEventListener('click', () => {
-            document.querySelectorAll('.finder-grid-item').forEach(i => i.classList.remove('active-select'));
+            document.querySelectorAll('.finder-folder-card, .finder-file-card').forEach(i => i.classList.remove('active-select'));
             updatePropertiesPane(null);
             updateToolbarState();
         });
@@ -445,7 +596,7 @@ export function initFiles() {
             e.preventDefault();
             e.stopPropagation();
 
-            const gridItem = e.target.closest('.finder-grid-item');
+            const gridItem = e.target.closest('.finder-folder-card, .finder-file-card');
             let selectedFile = null;
 
             if (gridItem) {
@@ -457,17 +608,19 @@ export function initFiles() {
                         name: node.name,
                         type: node.type === 'folder' ? 'folder' : getFileType(node.name),
                         content: node.content,
+                        size: node.size || (node.type === 'folder' ? '—' : (node.content ? `${new Blob([node.content]).size} B` : '0 B')),
+                        tags: node.tags || [],
                         lastModified: node.lastModified
                     };
                 }
 
                 // Set selection active
-                document.querySelectorAll('.finder-grid-item').forEach(i => i.classList.remove('active-select'));
+                document.querySelectorAll('.finder-folder-card, .finder-file-card').forEach(i => i.classList.remove('active-select'));
                 gridItem.classList.add('active-select');
                 updatePropertiesPane(selectedFile);
                 updateToolbarState();
             } else {
-                document.querySelectorAll('.finder-grid-item').forEach(i => i.classList.remove('active-select'));
+                document.querySelectorAll('.finder-folder-card, .finder-file-card').forEach(i => i.classList.remove('active-select'));
                 updatePropertiesPane(null);
                 updateToolbarState();
             }
@@ -561,7 +714,7 @@ export function initFiles() {
     if (renameBtn) {
         renameBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            const selectedItem = document.querySelector('.finder-grid-item.active-select');
+            const selectedItem = document.querySelector('.finder-folder-card.active-select, .finder-file-card.active-select');
             if (selectedItem) {
                 const name = selectedItem.querySelector('.finder-grid-label').textContent;
                 const contents = window.VFS.listDirectory(currentFolder) || [];
@@ -582,7 +735,7 @@ export function initFiles() {
     if (deleteBtn) {
         deleteBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            const selectedItem = document.querySelector('.finder-grid-item.active-select');
+            const selectedItem = document.querySelector('.finder-folder-card.active-select, .finder-file-card.active-select');
             if (selectedItem) {
                 const name = selectedItem.querySelector('.finder-grid-label').textContent;
                 const contents = window.VFS.listDirectory(currentFolder) || [];
@@ -643,7 +796,7 @@ export function initFiles() {
         window.VFS.writeFile(path, content);
         
         // Update properties pane if active select is the saved file
-        const activeSelect = document.querySelector('.finder-grid-item.active-select');
+        const activeSelect = document.querySelector('.finder-folder-card.active-select, .finder-file-card.active-select');
         if (activeSelect) {
             const name = activeSelect.querySelector('.finder-grid-label').textContent;
             const fullPath = currentFolder === '/' ? `/${name}` : `${currentFolder}/${name}`;
@@ -666,7 +819,7 @@ export function initFiles() {
     // Listen for general VFS updates
     document.addEventListener('vfs-updated', (e) => {
         renderFolder();
-        const activeSelect = document.querySelector('.finder-grid-item.active-select');
+        const activeSelect = document.querySelector('.finder-folder-card.active-select, .finder-file-card.active-select');
         if (activeSelect) {
             const name = activeSelect.querySelector('.finder-grid-label').textContent;
             const contents = window.VFS.listDirectory(currentFolder) || [];

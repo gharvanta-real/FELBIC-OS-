@@ -9,16 +9,9 @@ export function initAesthetics() {
         mainBg = document.createElement('div');
         mainBg.id = 'wallpaper-bg';
         mainBg.className = 'wallpaper-bg';
-        // Get initial background image or color of body
-        const bodyBg = getComputedStyle(document.body).backgroundImage;
-        if (bodyBg && bodyBg !== 'none') {
-            mainBg.style.backgroundImage = bodyBg;
-        } else {
-            mainBg.style.background = getComputedStyle(document.body).background;
-        }
+        // Apply default wallpaper — CSS class already handles the gradient token
+        // Don't read body.background (it's transparent) — just let the CSS class do its work
         document.body.insertBefore(mainBg, document.body.firstChild);
-        document.body.style.backgroundImage = 'none';
-        document.body.style.background = 'transparent';
     }
 
     // Set wallpaper function exposed globally for Settings integration

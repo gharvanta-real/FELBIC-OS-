@@ -7,21 +7,22 @@ export function initClock(elementId) {
     function updateTime() {
         const now = new Date();
         
-        // Format options resembling macOS top menu bar clock
-        const options = { 
-            weekday: 'short', 
-            month: 'short', 
-            day: 'numeric',
-            hour: '2-digit', 
-            minute: '2-digit',
-            hour12: true 
-        };
+        const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         
-        let timeString = now.toLocaleDateString('en-US', options);
-        // Clean double spaces if any
-        timeString = timeString.replace(/\s+/g, ' ');
+        const w = weekdays[now.getDay()];
+        const m = months[now.getMonth()];
+        const d = now.getDate();
         
-        clockElement.textContent = timeString;
+        let hr = now.getHours();
+        const min = String(now.getMinutes()).padStart(2, '0');
+        const ampm = hr >= 12 ? 'PM' : 'AM';
+        
+        hr = hr % 12;
+        hr = hr ? hr : 12;
+        const hrStr = String(hr).padStart(2, '0');
+        
+        clockElement.textContent = `${w}, ${m} ${d} • ${hrStr}:${min} ${ampm}`;
     }
 
     // Run immediately

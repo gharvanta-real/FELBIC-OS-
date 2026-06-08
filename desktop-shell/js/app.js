@@ -16,6 +16,7 @@ import { initAesthetics } from './modules/aesthetics.js';
 import { initPaintApp } from './modules/apps/paint-app.js';
 import { initMediaApp } from './modules/apps/media-app.js';
 import { initChatApp } from './modules/apps/chat-app.js';
+import { initDialog } from './modules/dialog.js';
 import { initVFS } from './modules/vfs.js';
 import { loadComponents } from './modules/component-loader.js';
 
@@ -25,6 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('[felbicos] Components loaded. Initializing Desktop Shell...');
 
     // ── 1. Init Base & System Modules ──
+    initDialog();
     initVFS();
     initNotifications();
     initWindowManager();
@@ -243,9 +245,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // CC Power Actions
-    document.getElementById('btn-lock').addEventListener('click', () => alert('Locking screen...'));
-    document.getElementById('btn-restart').addEventListener('click', () => alert('Rebooting system...'));
-    document.getElementById('btn-shutdown').addEventListener('click', () => alert('Shutting down...'));
+    document.getElementById('btn-lock').addEventListener('click', () => showDialog.alert('Locking screen...', 'System Lock'));
+    document.getElementById('btn-restart').addEventListener('click', () => showDialog.alert('Rebooting system...', 'System Restart'));
+    document.getElementById('btn-shutdown').addEventListener('click', () => showDialog.alert('Shutting down...', 'System Shutdown'));
 
 
     // ── 4. Spotlight Search Overlay ──
@@ -425,7 +427,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else if (appName === 'installer') {
                 openWindow('installer-window');
             } else if (appName === 'trash') {
-                alert('Trash is empty.');
+                showDialog.alert('Trash is empty.', 'Trash Bin');
             }
         });
     });

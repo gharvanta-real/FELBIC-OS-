@@ -1,0 +1,57 @@
+<!-- ── CONTROL CENTER DROPDOWN ── -->
+<div class="control-center" id="control-center-panel">
+    <div class="cc-grid">
+        <!-- Toggles Card -->
+        <div class="cc-card cc-toggles">
+            <div class="cc-toggle-item active" id="toggle-wifi">
+                <span class="cc-toggle-icon">
+                    <i class="hgi-stroke hgi-wifi-01"></i>
+                </span>
+                <div class="cc-toggle-text">
+                    <span class="cc-toggle-label">Wi-Fi</span>
+                    <span class="cc-toggle-sub">Connected</span>
+                </div>
+            </div>
+            <div class="cc-toggle-item active" id="toggle-bluetooth">
+                <span class="cc-toggle-icon">
+                    <i class="hgi-stroke hgi-bluetooth"></i>
+                </span>
+                <div class="cc-toggle-text">
+                    <span class="cc-toggle-label">Bluetooth</span>
+                    <span class="cc-toggle-sub">On</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- DND / Focus Card -->
+        <div class="cc-card cc-focus" id="toggle-dnd">
+            <span class="cc-focus-icon">
+                <i class="hgi-stroke hgi-moon"></i>
+            </span>
+            <span class="cc-focus-label">Do Not Disturb</span>
+        </div>
+    </div>
+
+    <!-- Sliders -->
+    <div class="cc-card cc-sliders">
+        <div class="cc-slider-row">
+            <span class="cc-slider-icon">
+                <i class="hgi-stroke hgi-volume-high"></i>
+            </span>
+            <input type="range" class="cc-slider" min="0" max="100" value="75" id="volume-slider">
+        </div>
+        <div class="cc-slider-row">
+            <span class="cc-slider-icon">
+                <i class="hgi-stroke hgi-sun-01"></i>
+            </span>
+            <input type="range" class="cc-slider" min="0" max="100" value="80" id="brightness-slider">
+        </div>
+    </div>
+
+    <!-- Power Row -->
+    <div class="cc-power-row">
+        <button class="cc-power-btn" id="btn-lock">Lock Screen</button>
+        <button class="cc-power-btn" id="btn-restart">Restart...</button>
+        <button class="cc-power-btn danger" id="btn-shutdown">Shutdown...</button>
+    </div>
+</div>

@@ -202,7 +202,7 @@ export function initEditor() {
     if (saveBtn) {
         saveBtn.addEventListener('click', () => {
             if (activeTabIndex === -1 || !activeFilePath) {
-                alert('No active file is loaded to save.');
+                showDialog.alert('No active file is loaded to save.', 'Text Editor');
                 return;
             }
 
@@ -213,7 +213,7 @@ export function initEditor() {
             if (window.showNotification) {
                 window.showNotification('File Saved', `Changes saved to ${activeFilePath.split('/').pop()} successfully!`, 'hgi-floppy-disk');
             } else {
-                alert(`Saved changes to ${activeFilePath} successfully!`);
+                showDialog.alert(`Saved changes to ${activeFilePath} successfully!`, 'Text Editor');
             }
             console.log(`[editor] Saved ${activeFilePath}:`, updatedContent);
 

@@ -88,7 +88,7 @@ export function initSoftware() {
                     id: app.id,
                     name: app.name,
                     icon: app.icon,
-                    action: () => alert(`Running installed program: ${app.name}`)
+                    action: () => showDialog.alert(`Running installed program: ${app.name}`, 'Software Center')
                 }
             });
             document.dispatchEvent(installEvent);
@@ -159,7 +159,7 @@ export function initSoftware() {
                         id: app.id,
                         name: app.name,
                         icon: app.icon,
-                        action: () => alert(`Running installed program: ${app.name}`)
+                        action: () => showDialog.alert(`Running installed program: ${app.name}`, 'Software Center')
                     }
                 });
                 document.dispatchEvent(installEvent);

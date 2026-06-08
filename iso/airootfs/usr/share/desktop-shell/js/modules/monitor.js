@@ -169,7 +169,7 @@ export function initMonitor() {
 
     // Force Quit Task handler
     if (killBtn) {
-        killBtn.addEventListener('click', () => {
+        killBtn.addEventListener('click', async () => {
             if (selectedPid === null) return;
             
             const currentProcesses = getProcesses();
@@ -177,7 +177,8 @@ export function initMonitor() {
             
             if (proc) {
                 // Confirm action
-                if (confirm(`Are you sure you want to force quit ${proc.name} (PID ${selectedPid})?`)) {
+                const confirmed = await showDialog.confirm(`Are you sure you want to force quit ${proc.name} (PID ${selectedPid})?`, 'Force Quit Process', true);
+                if (confirmed) {
                     if (proc.type === 'app' && proc.windowId) {
                         const win = document.getElementById(proc.windowId);
                         if (win) {

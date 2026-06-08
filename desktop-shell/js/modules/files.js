@@ -394,13 +394,13 @@ export function initFiles() {
     }
 
     // Create New File Action
-    function createNewFilePrompt() {
-        const name = prompt('Enter new file name:', 'untitled.txt');
+    async function createNewFilePrompt() {
+        const name = await showDialog.prompt('Enter new file name:', 'untitled.txt', 'New File');
         if (!name) return;
 
         const fullPath = currentFolder === '/' ? `/${name}` : `${currentFolder}/${name}`;
         if (window.VFS.exists(fullPath)) {
-            alert('A file or folder with that name already exists.');
+            await showDialog.alert('A file or folder with that name already exists.', 'Create File');
             return;
         }
 
@@ -410,18 +410,18 @@ export function initFiles() {
                 window.showNotification('File Created', `Created file "${name}"`, 'hgi-file-add');
             }
         } else {
-            alert('Failed to create file.');
+            await showDialog.alert('Failed to create file.', 'Create File');
         }
     }
 
     // Create New Folder Action
-    function createNewFolderPrompt() {
-        const name = prompt('Enter new folder name:', 'New Folder');
+    async function createNewFolderPrompt() {
+        const name = await showDialog.prompt('Enter new folder name:', 'New Folder', 'Create Folder');
         if (!name) return;
 
         const fullPath = currentFolder === '/' ? `/${name}` : `${currentFolder}/${name}`;
         if (window.VFS.exists(fullPath)) {
-            alert('A file or folder with that name already exists.');
+            await showDialog.alert('A file or folder with that name already exists.', 'Create Folder');
             return;
         }
 
@@ -431,19 +431,19 @@ export function initFiles() {
                 window.showNotification('Folder Created', `Created folder "${name}"`, 'hgi-folder-add');
             }
         } else {
-            alert('Failed to create folder.');
+            await showDialog.alert('Failed to create folder.', 'Create Folder');
         }
     }
 
     // Rename file/folder Action
-    function renameFile(file) {
-        const newName = prompt('Enter new name:', file.name);
+    async function renameFile(file) {
+        const newName = await showDialog.prompt('Enter new name:', file.name, 'Rename');
         if (!newName || newName === file.name) return;
 
         const currentPath = currentFolder === '/' ? `/${file.name}` : `${currentFolder}/${file.name}`;
         const newPath = currentFolder === '/' ? `/${newName}` : `${currentFolder}/${newName}`;
         if (window.VFS.exists(newPath)) {
-            alert('A file or folder with that name already exists.');
+            await showDialog.alert('A file or folder with that name already exists.', 'Rename');
             return;
         }
 
@@ -473,13 +473,14 @@ export function initFiles() {
                 }
             }, 50);
         } else {
-            alert('Failed to rename.');
+            await showDialog.alert('Failed to rename.', 'Rename');
         }
     }
 
     // Delete file/folder Action
-    function deleteFile(file) {
-        if (!confirm(`Are you sure you want to delete "${file.name}"?`)) return;
+    async function deleteFile(file) {
+        const confirmed = await showDialog.confirm(`Are you sure you want to delete "${file.name}"?`, 'Delete File', true);
+        if (!confirmed) return;
 
         const filePath = currentFolder === '/' ? `/${file.name}` : `${currentFolder}/${file.name}`;
         const success = window.VFS.deletePath(filePath);
@@ -490,13 +491,14 @@ export function initFiles() {
             updatePropertiesPane(null);
             updateToolbarState();
         } else {
-            alert('Failed to delete file.');
+            await showDialog.alert('Failed to delete file.', 'Delete File');
         }
     }
 
     // Delete file by path (Drag-and-Drop Dock Trash helper)
-    function deleteFileByPath(filePath) {
-        if (confirm(`Are you sure you want to move "${filePath.split('/').pop()}" to the Trash?`)) {
+    async function deleteFileByPath(filePath) {
+        const confirmed = await showDialog.confirm(`Are you sure you want to move "${filePath.split('/').pop()}" to the Trash?`, 'Move to Trash', true);
+        if (confirmed) {
             const success = window.VFS.deletePath(filePath);
             if (success) {
                 if (window.showNotification) {

@@ -1,0 +1,171 @@
+/* ============================================================
+   AIOS — macOS-style Custom Alert / Confirm / Prompt Dialogs
+   Zero hardcoded values — all tokens, responsive, premium glassmorphism
+   ============================================================ */
+
+.dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--overlay-scrim-dark);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 99999; /* higher than anything */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-normal) var(--curve-smooth);
+}
+
+.dialog-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.dialog-box {
+    width: 270px; /* standard macOS dialog width is narrow */
+    background-color: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    backdrop-filter: var(--blur-lg);
+    -webkit-backdrop-filter: var(--blur-lg);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transform: scale(0.9) translateY(10px);
+    transition: transform var(--transition-normal) var(--curve-elastic);
+    text-align: center; /* macOS text alignment is centered in dialogs */
+    box-sizing: border-box;
+}
+
+.dialog-overlay.active .dialog-box {
+    transform: scale(1) translateY(0);
+}
+
+.dialog-header-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.dialog-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    box-shadow: var(--shadow-xs);
+}
+
+.dialog-icon.info    { background-color: var(--accent-soft); color: var(--accent-primary); }
+.dialog-icon.danger  { background-color: var(--danger-soft); color: var(--danger); }
+.dialog-icon.help    { background-color: var(--surface-3); color: var(--text-secondary); }
+.dialog-icon.prompt  { background-color: var(--accent-soft); color: var(--accent-primary); }
+
+.dialog-header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.dialog-title {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.3;
+}
+
+.dialog-message {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.dialog-input-wrapper {
+    width: 100%;
+}
+
+.dialog-prompt-input {
+    width: 100%;
+    height: 28px;
+    background-color: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xs);
+    color: var(--text-primary);
+    padding: 0 10px;
+    font-size: var(--font-size-sm);
+    font-family: var(--font-sans);
+    outline: none;
+    text-align: center;
+    box-sizing: border-box;
+    transition: border-color var(--transition-fast) var(--curve-smooth);
+}
+
+.dialog-prompt-input:focus {
+    border-color: var(--accent-primary);
+    background-color: var(--surface-2);
+}
+
+.dialog-buttons {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.dialog-btn {
+    flex: 1;
+    height: 32px;
+    border-radius: var(--radius-xs);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    transition: background-color var(--transition-fast) var(--curve-smooth),
+                color var(--transition-fast) var(--curve-smooth),
+                border-color var(--transition-fast) var(--curve-smooth);
+    outline: none;
+}
+
+.dialog-btn.primary {
+    background-color: var(--accent-primary);
+    color: var(--text-on-accent);
+}
+
+.dialog-btn.primary:hover {
+    background-color: var(--accent-hover);
+}
+
+.dialog-btn.primary.danger {
+    background-color: var(--danger);
+    color: var(--text-on-danger);
+}
+
+.dialog-btn.primary.danger:hover {
+    filter: brightness(1.1);
+}
+
+.dialog-btn.secondary {
+    background-color: var(--surface-3);
+    border-color: var(--border-strong);
+    color: var(--text-primary);
+}
+
+.dialog-btn.secondary:hover {
+    background-color: var(--surface-hover);
+}

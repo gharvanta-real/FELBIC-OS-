@@ -1,9 +1,9 @@
 /* FELBIC OS — Advanced Window Manager Module */
 
 let maxZIndex = 100;
-let cascadeX = 80;
-let cascadeY = 100;
+let cascadeOffset = 0;          // small stagger for multiple windows
 const TOPBAR_HEIGHT = 28;
+const DOCK_HEIGHT   = 80;       // approximate dock height
 const SNAP_THRESHOLD = 20;
 
 // Track window positions and sizes before they are maximized or snapped
@@ -34,7 +34,8 @@ function ensureSnapPreview() {
         preview = document.createElement('div');
         preview.id = 'snap-preview';
         preview.className = 'snap-preview';
-        document.body.appendChild(preview);
+        const workspace = document.getElementById('windows-container') || document.body;
+        workspace.appendChild(preview);
     }
     return preview;
 }
@@ -134,20 +135,31 @@ export function focusWindow(win) {
 }
 
 /**
- * Positions a window in a cascaded layout.
+ * Opens windows centered in the workspace area.
+ * Each successive window is offset by 30px so they don't stack exactly.
  */
 function cascadePosition(win) {
-    win.style.left = `${cascadeX}px`;
-    win.style.top = `${cascadeY}px`;
+    const OFFSET = 30;
+    const workspace = document.getElementById('windows-container') || document.body;
+    const wsRect = workspace.getBoundingClientRect();
 
-    cascadeX += 30;
-    cascadeY += 30;
+    const availW = wsRect.width;
+    const availH = wsRect.height;
 
-    // Reset cascade position if it goes too far
-    if (cascadeX > window.innerWidth * 0.4 || cascadeY > window.innerHeight * 0.4) {
-        cascadeX = 80;
-        cascadeY = 100;
-    }
+    // Compute window dimensions (use CSS min-width/min-height as fallback)
+    const computedStyle = window.getComputedStyle(win);
+    const winW = parseFloat(win.style.width)  || parseFloat(computedStyle.width)  || 680;
+    const winH = parseFloat(win.style.height) || parseFloat(computedStyle.height) || 420;
+
+    // Center in workspace area (relative coordinates)
+    const centerLeft = Math.round((availW - winW) / 2) + cascadeOffset;
+    const centerTop  = Math.round((availH - winH) / 2) + cascadeOffset;
+
+    win.style.left = `${Math.max(0, centerLeft)}px`;
+    win.style.top  = `${Math.max(0, centerTop)}px`;
+
+    // Increment offset so next window is slightly staggered
+    cascadeOffset = (cascadeOffset + OFFSET) % (OFFSET * 5);
 }
 
 /**
@@ -158,10 +170,13 @@ function saveWindowState(win) {
         return; // Don't save snapped state as the restore geometry
     }
 
+    const workspace = document.getElementById('windows-container') || document.body;
+    const wsRect = workspace.getBoundingClientRect();
     const rect = win.getBoundingClientRect();
+
     windowStates.set(win.id, {
-        left: win.style.left || `${rect.left}px`,
-        top: win.style.top || `${rect.top}px`,
+        left: win.style.left || `${rect.left - wsRect.left}px`,
+        top: win.style.top || `${rect.top - wsRect.top}px`,
         width: win.style.width || `${rect.width}px`,
         height: win.style.height || `${rect.height}px`
     });
@@ -188,7 +203,6 @@ function setupTitlebarDoubleClick(win, titlebar) {
     titlebar.addEventListener('doubleclick', () => {
         toggleMaximize(win);
     });
-    // In case 'doubleclick' is named 'dblclick' in some standards
     titlebar.addEventListener('dblclick', () => {
         toggleMaximize(win);
     });
@@ -211,9 +225,9 @@ function maximizeWindow(win) {
     win.classList.add('maximized');
     
     win.style.left = '0px';
-    win.style.top = `${TOPBAR_HEIGHT}px`;
-    win.style.width = '100vw';
-    win.style.height = `calc(100vh - ${TOPBAR_HEIGHT}px)`;
+    win.style.top = '0px';
+    win.style.width = '100%';
+    win.style.height = '100%';
 }
 
 function snapWindowLeft(win) {
@@ -222,9 +236,9 @@ function snapWindowLeft(win) {
     win.classList.add('snapped-left');
 
     win.style.left = '0px';
-    win.style.top = `${TOPBAR_HEIGHT}px`;
-    win.style.width = '50vw';
-    win.style.height = `calc(100vh - ${TOPBAR_HEIGHT}px)`;
+    win.style.top = '0px';
+    win.style.width = '50%';
+    win.style.height = '100%';
 }
 
 function snapWindowRight(win) {
@@ -232,10 +246,10 @@ function snapWindowRight(win) {
     win.classList.remove('maximized', 'snapped-left');
     win.classList.add('snapped-right');
 
-    win.style.left = '50vw';
-    win.style.top = `${TOPBAR_HEIGHT}px`;
-    win.style.width = '50vw';
-    win.style.height = `calc(100vh - ${TOPBAR_HEIGHT}px)`;
+    win.style.left = '50%';
+    win.style.top = '0px';
+    win.style.width = '50%';
+    win.style.height = '100%';
 }
 
 /**
@@ -258,6 +272,8 @@ function setupDragging(win, titlebar) {
         win.classList.add('dragging');
         focusWindow(win);
 
+        const workspace = document.getElementById('windows-container') || document.body;
+        const wsRect = workspace.getBoundingClientRect();
         const rect = win.getBoundingClientRect();
 
         // If maximized or snapped, dragging restores it
@@ -271,8 +287,8 @@ function setupDragging(win, titlebar) {
             if (state) {
                 // We will position the restored window under the mouse
                 const targetWidth = parseFloat(state.width);
-                const restoredLeft = e.clientX - (targetWidth * restoreOffsetPct);
-                const restoredTop = e.clientY - (e.clientY - rect.top); // keep top delta
+                const restoredLeft = e.clientX - (targetWidth * restoreOffsetPct) - wsRect.left;
+                const restoredTop = e.clientY - (e.clientY - rect.top) - wsRect.top; // keep top delta
 
                 win.style.width = state.width;
                 win.style.height = state.height;
@@ -302,43 +318,42 @@ function setupDragging(win, titlebar) {
     const onMouseMove = (e) => {
         if (!isDragging) return;
 
-        let left = e.clientX - startX;
-        let top = e.clientY - startY;
-
-        // Keep titlebar within viewport bounds
+        const workspace = document.getElementById('windows-container') || document.body;
+        const wsRect = workspace.getBoundingClientRect();
         const rect = win.getBoundingClientRect();
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
 
-        // Clamping bounds
-        left = Math.max(0, Math.min(left, viewportWidth - rect.width));
-        top = Math.max(TOPBAR_HEIGHT, Math.min(top, viewportHeight - 40));
+        let left = (e.clientX - startX) - wsRect.left;
+        let top = (e.clientY - startY) - wsRect.top;
+
+        // Keep titlebar within workspace bounds
+        left = Math.max(0, Math.min(left, wsRect.width - rect.width));
+        top = Math.max(0, Math.min(top, wsRect.height - 40));
 
         win.style.left = `${left}px`;
         win.style.top = `${top}px`;
 
-        // Check for snapping
+        // Check for snapping (using viewport coordinates)
         const snapPreview = ensureSnapPreview();
-        if (e.clientX < SNAP_THRESHOLD) {
+        if (e.clientX < wsRect.left + SNAP_THRESHOLD) {
             // Snap Left
             snapPreview.style.left = '0px';
-            snapPreview.style.top = `${TOPBAR_HEIGHT}px`;
-            snapPreview.style.width = '50vw';
-            snapPreview.style.height = `calc(100vh - ${TOPBAR_HEIGHT}px)`;
+            snapPreview.style.top = '0px';
+            snapPreview.style.width = '50%';
+            snapPreview.style.height = '100%';
             snapPreview.classList.add('visible');
-        } else if (e.clientX > viewportWidth - SNAP_THRESHOLD) {
+        } else if (e.clientX > wsRect.right - SNAP_THRESHOLD) {
             // Snap Right
-            snapPreview.style.left = '50vw';
-            snapPreview.style.top = `${TOPBAR_HEIGHT}px`;
-            snapPreview.style.width = '50vw';
-            snapPreview.style.height = `calc(100vh - ${TOPBAR_HEIGHT}px)`;
+            snapPreview.style.left = '50%';
+            snapPreview.style.top = '0px';
+            snapPreview.style.width = '50%';
+            snapPreview.style.height = '100%';
             snapPreview.classList.add('visible');
-        } else if (e.clientY < TOPBAR_HEIGHT + SNAP_THRESHOLD) {
+        } else if (e.clientY < wsRect.top + SNAP_THRESHOLD) {
             // Snap Maximize
             snapPreview.style.left = '0px';
-            snapPreview.style.top = `${TOPBAR_HEIGHT}px`;
-            snapPreview.style.width = '100vw';
-            snapPreview.style.height = `calc(100vh - ${TOPBAR_HEIGHT}px)`;
+            snapPreview.style.top = '0px';
+            snapPreview.style.width = '100%';
+            snapPreview.style.height = '100%';
             snapPreview.classList.add('visible');
         } else {
             snapPreview.classList.remove('visible');
@@ -357,13 +372,15 @@ function setupDragging(win, titlebar) {
         const snapPreview = ensureSnapPreview();
         snapPreview.classList.remove('visible');
 
-        // Apply Snap if threshold hit
-        const viewportWidth = window.innerWidth;
-        if (e.clientX < SNAP_THRESHOLD) {
+        const workspace = document.getElementById('windows-container') || document.body;
+        const wsRect = workspace.getBoundingClientRect();
+
+        // Apply Snap if threshold hit (using viewport coordinates)
+        if (e.clientX < wsRect.left + SNAP_THRESHOLD) {
             snapWindowLeft(win);
-        } else if (e.clientX > viewportWidth - SNAP_THRESHOLD) {
+        } else if (e.clientX > wsRect.right - SNAP_THRESHOLD) {
             snapWindowRight(win);
-        } else if (e.clientY < TOPBAR_HEIGHT + SNAP_THRESHOLD) {
+        } else if (e.clientY < wsRect.top + SNAP_THRESHOLD) {
             maximizeWindow(win);
         } else {
             // Normal release, save normal position
@@ -401,6 +418,9 @@ function setupResizing(win) {
             focusWindow(win);
             saveWindowState(win);
 
+            const workspace = document.getElementById('windows-container') || document.body;
+            const wsRect = workspace.getBoundingClientRect();
+
             const initialRect = win.getBoundingClientRect();
             const initialMouseX = e.clientX;
             const initialMouseY = e.clientY;
@@ -414,8 +434,11 @@ function setupResizing(win) {
                 let newLeft = initialRect.left;
                 let newTop = initialRect.top;
 
-                const minWidth = 320;
-                const minHeight = 200;
+                const computedStyle = window.getComputedStyle(win);
+                const minWidthVal = parseFloat(computedStyle.minWidth);
+                const minHeightVal = parseFloat(computedStyle.minHeight);
+                const minWidth = !isNaN(minWidthVal) && minWidthVal > 0 ? minWidthVal : 320;
+                const minHeight = !isNaN(minHeightVal) && minHeightVal > 0 ? minHeightVal : 200;
 
                 // Horizontal resize
                 if (dir.includes('r')) {
@@ -439,18 +462,18 @@ function setupResizing(win) {
                     }
                 }
 
-                // Prevent top from going above topbar
-                if (newTop < TOPBAR_HEIGHT) {
-                    const diff = TOPBAR_HEIGHT - newTop;
+                // Prevent top from going above workspace top (equivalent to wsRect.top)
+                if (newTop < wsRect.top) {
+                    const diff = wsRect.top - newTop;
                     newHeight -= diff;
-                    newTop = TOPBAR_HEIGHT;
+                    newTop = wsRect.top;
                 }
 
-                // Apply styles
+                // Apply styles (converted to workspace-relative)
                 win.style.width = `${newWidth}px`;
                 win.style.height = `${newHeight}px`;
-                win.style.left = `${newLeft}px`;
-                win.style.top = `${newTop}px`;
+                win.style.left = `${newLeft - wsRect.left}px`;
+                win.style.top = `${newTop - wsRect.top}px`;
             };
 
             const onMouseUp = () => {
