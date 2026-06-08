@@ -840,6 +840,30 @@ export function initFiles() {
         }
     });
 
+    // Listen for custom folder navigation events (e.g. from topbar menus)
+    document.addEventListener('navigate-folder', (e) => {
+        const path = e.detail.path;
+        if (!path) return;
+
+        currentFolder = path;
+        navigationHistory = [currentFolder];
+        searchFilter = '';
+        if (searchInput) searchInput.value = '';
+        
+        // Sync sidebar active state
+        const category = path.split('/')[1]?.toLowerCase() || '';
+        sidebarItems.forEach(item => {
+            if (item.getAttribute('data-folder') === category) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+
+        renderFolder();
+        updatePropertiesPane(null);
+    });
+
     // Initial render and properties setup
     renderFolder();
     updatePropertiesPane(null);

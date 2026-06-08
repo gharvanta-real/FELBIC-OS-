@@ -9,6 +9,9 @@ let savedWindowPositions = new Map(); // to restore post-overview positions
 export function initDesktop() {
     console.log('[felbicos] Initializing Desktop Features...');
 
+    // Expose switchWorkspace globally
+    window.switchWorkspace = switchWorkspace;
+
     // 1. Initialize workspaces (Assign default workspace to existing windows)
     initWorkspaces();
 

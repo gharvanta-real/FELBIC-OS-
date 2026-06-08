@@ -19,6 +19,7 @@ import { initChatApp } from './modules/apps/chat-app.js';
 import { initDialog } from './modules/dialog.js';
 import { initVFS } from './modules/vfs.js';
 import { loadComponents } from './modules/component-loader.js';
+import { initTopbarMenus } from './modules/topbar-menus.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('[felbicos] Loading components...');
@@ -32,6 +33,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initWindowManager();
     initDesktop();
     initAesthetics();
+    initTopbarMenus();
 
     initClock('topbar-clock');
     initStats('stat-cpu', 'stat-mem');
