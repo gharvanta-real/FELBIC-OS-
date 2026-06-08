@@ -108,8 +108,8 @@
         linear-gradient(135deg, #09090b, #27272a, #09090b);
 
     /* ── Overlay / Scrim ── */
-    --overlay-scrim:      rgba(0, 0, 0, 0.25);
-    --overlay-scrim-dark: rgba(0, 0, 0, 0.45);
+    --overlay-scrim:      rgba(0, 0, 0, 0.15);
+    --overlay-scrim-dark: rgba(0, 0, 0, 0.30);
 
     /* ── Semantic Variable Aliases (mapped from primitives) ── */
     --color-bg:               var(--bg-primary);
@@ -120,7 +120,7 @@
 
     --color-dock-bg:     var(--surface-1);
     --color-dock-border: var(--border-default);
-    --color-dock-shadow: rgba(0, 0, 0, 0.5);
+    --color-dock-shadow: rgba(0, 0, 0, 0.25);
 
     --color-window-bg: var(--bg-secondary);
 
@@ -134,7 +134,7 @@
     --color-danger:  var(--danger);
 
     /* Desktop Icon Theming */
-    --desktop-icon-shadow:     0 1px 3px rgba(0, 0, 0, 0.85);
+    --desktop-icon-shadow:     0 1px 2px rgba(0, 0, 0, 0.50);
     --desktop-icon-text-color: #ffffff;
 
     /* App Icon System (Dock + Desktop) */
@@ -154,14 +154,14 @@
     --radius-full: 9999px;
 
     /* ── Shadow System ── */
-    --shadow-xs:     0 1px 3px rgba(0, 0, 0, 0.20);
-    --shadow-sm:     0 2px 6px rgba(0, 0, 0, 0.28);
-    --shadow-md:     0 8px 24px rgba(0, 0, 0, 0.42);
-    --shadow-lg:     0 20px 40px rgba(0, 0, 0, 0.52);
-    --shadow-window: 0 28px 56px rgba(0, 0, 0, 0.62);
+    --shadow-xs:     0 1px 2px rgba(0, 0, 0, 0.12);
+    --shadow-sm:     0 2px 4px rgba(0, 0, 0, 0.16);
+    --shadow-md:     0 6px 16px rgba(0, 0, 0, 0.24);
+    --shadow-lg:     0 12px 28px rgba(0, 0, 0, 0.30);
+    --shadow-window: 0 16px 40px rgba(0, 0, 0, 0.35);
     --shadow-dock:   var(--shadow-md);
-    --shadow-danger: 0 0 12px rgba(239, 68, 68, 0.28);
-    --shadow-accent: 0 0 16px rgba(90, 127, 255, 0.28);
+    --shadow-danger: 0 0 8px rgba(239, 68, 68, 0.18);
+    --shadow-accent: 0 0 10px rgba(90, 127, 255, 0.18);
 
     /* Scrollbar tokens */
     --scrollbar-thumb:       rgba(255, 255, 255, 0.14);
@@ -176,9 +176,9 @@
     --dock-item-size:  46px;
     --dock-item-radius: 12px;
 
-    --blur-sm:    blur(8px);
-    --blur-md:    blur(16px);
-    --blur-lg:    blur(30px);
+    --blur-sm:    blur(4px);
+    --blur-md:    blur(8px);
+    --blur-lg:    blur(16px);
 
     /* Legacy aliases */
     --blur-intensity-light:  var(--blur-md);
@@ -232,19 +232,19 @@ body.light-theme {
     --app-icon-hover-bg:     rgba(255, 255, 255, 0.90);
     --app-icon-hover-border: rgba(0, 0, 0, 0.14);
 
-    --shadow-xs:     0 1px 3px rgba(0, 0, 0, 0.06);
-    --shadow-sm:     0 2px 6px rgba(0, 0, 0, 0.06);
-    --shadow-md:     0 8px 24px rgba(0, 0, 0, 0.07);
-    --shadow-lg:     0 20px 40px rgba(0, 0, 0, 0.08);
-    --shadow-window: 0 28px 56px rgba(0, 0, 0, 0.10);
+    --shadow-xs:     0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-sm:     0 2px 4px rgba(0, 0, 0, 0.04);
+    --shadow-md:     0 6px 16px rgba(0, 0, 0, 0.05);
+    --shadow-lg:     0 12px 28px rgba(0, 0, 0, 0.06);
+    --shadow-window: 0 16px 40px rgba(0, 0, 0, 0.07);
 
     --scrollbar-thumb:       rgba(0, 0, 0, 0.14);
     --scrollbar-thumb-hover: rgba(0, 0, 0, 0.26);
 
-    --overlay-scrim:      rgba(0, 0, 0, 0.12);
-    --overlay-scrim-dark: rgba(0, 0, 0, 0.22);
+    --overlay-scrim:      rgba(0, 0, 0, 0.08);
+    --overlay-scrim-dark: rgba(0, 0, 0, 0.15);
 
-    --color-dock-shadow: rgba(0, 0, 0, 0.08);
+    --color-dock-shadow: rgba(0, 0, 0, 0.05);
 
     --gradient-wallpaper-default:
         linear-gradient(135deg, #e0e7ff 0%, #ede9fe 50%, #fce7f3 100%);
