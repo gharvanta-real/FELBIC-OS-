@@ -57,6 +57,30 @@ export function initSettings() {
                     <span>${net.secure ? '🔒' : '🔓'}</span>
                 </div>
             `;
+            row.addEventListener('click', async () => {
+                if (net.status === 'Connected') {
+                    net.status = 'Available';
+                    if (window.showNotification) {
+                        window.showNotification('Wi-Fi Disconnected', `Disconnected from ${net.name}`, 'hgi-wifi-01');
+                    }
+                } else {
+                    if (net.secure) {
+                        let pwd = '';
+                        if (window.showDialog && window.showDialog.prompt) {
+                            pwd = await window.showDialog.prompt(`Enter password for "${net.name}":`, '', 'Wi-Fi Password');
+                        } else {
+                            pwd = prompt(`Enter password for "${net.name}":`);
+                        }
+                        if (pwd === null || pwd === '') return;
+                    }
+                    networks.forEach(n => n.status = 'Available');
+                    net.status = 'Connected';
+                    if (window.showNotification) {
+                        window.showNotification('Wi-Fi Connected', `Connected to ${net.name}`, 'hgi-wifi-01');
+                    }
+                }
+                renderWifi();
+            });
             wifiList.appendChild(row);
         });
     }
@@ -76,6 +100,12 @@ export function initSettings() {
         { name: 'Logitech MX Master 3S', status: 'Connected' },
         { name: 'Beats Studio Pro Headphones', status: 'Not Connected' }
     ];
+    const availableDevices = [
+        { name: 'Sony WH-1000XM4', status: 'Ready to Pair' },
+        { name: 'Bose QC45', status: 'Ready to Pair' }
+    ];
+    let isScanning = false;
+    let scanCompleted = false;
 
     function renderBluetooth() {
         bluetoothList.innerHTML = '';
@@ -87,6 +117,17 @@ export function initSettings() {
 
         if (ccBtSub) ccBtSub.textContent = 'On';
 
+        // Render My Devices
+        const myDevicesHeader = document.createElement('div');
+        myDevicesHeader.className = 'settings-section-title';
+        myDevicesHeader.textContent = 'My Devices';
+        myDevicesHeader.style.marginTop = '10px';
+        bluetoothList.appendChild(myDevicesHeader);
+
+        const myDevicesGroup = document.createElement('div');
+        myDevicesGroup.className = 'settings-row-group';
+        bluetoothList.appendChild(myDevicesGroup);
+
         btDevices.forEach(dev => {
             const row = document.createElement('div');
             row.className = 'settings-row';
@@ -95,8 +136,97 @@ export function initSettings() {
                 <span class="row-label">${dev.name}</span>
                 <span style="font-size:10px; color: ${dev.status === 'Connected' ? 'var(--color-success)' : 'var(--color-topbar-text-muted)'};">${dev.status}</span>
             `;
-            bluetoothList.appendChild(row);
+            row.addEventListener('click', () => {
+                if (dev.status === 'Connected') {
+                    dev.status = 'Not Connected';
+                    if (window.showNotification) {
+                        window.showNotification('Bluetooth Disconnected', `Disconnected from ${dev.name}`, 'hgi-bluetooth');
+                    }
+                } else {
+                    dev.status = 'Connected';
+                    if (window.showNotification) {
+                        window.showNotification('Bluetooth Connected', `Connected to ${dev.name}`, 'hgi-bluetooth');
+                    }
+                }
+                renderBluetooth();
+            });
+            myDevicesGroup.appendChild(row);
         });
+
+        // Scan Container
+        const scanContainer = document.createElement('div');
+        scanContainer.style.marginTop = '20px';
+        scanContainer.style.display = 'flex';
+        scanContainer.style.flexDirection = 'column';
+        scanContainer.style.gap = '10px';
+        bluetoothList.appendChild(scanContainer);
+
+        const scanBtn = document.createElement('button');
+        scanBtn.className = 'settings-select';
+        scanBtn.style.alignSelf = 'flex-start';
+        scanBtn.textContent = isScanning ? 'Scanning...' : 'Scan for Devices';
+        scanBtn.disabled = isScanning;
+        scanContainer.appendChild(scanBtn);
+
+        scanBtn.addEventListener('click', () => {
+            isScanning = true;
+            scanCompleted = false;
+            renderBluetooth();
+
+            setTimeout(() => {
+                isScanning = false;
+                scanCompleted = true;
+                const devNames = ['Sony WH-1000XM4', 'Bose QC45', 'Apple AirPods Max'];
+                devNames.forEach(name => {
+                    if (!btDevices.some(d => d.name === name) && !availableDevices.some(d => d.name === name)) {
+                        availableDevices.push({ name, status: 'Ready to Pair' });
+                    }
+                });
+                renderBluetooth();
+                if (window.showNotification) {
+                    window.showNotification('Bluetooth Scan', 'Scan complete. New devices found.', 'hgi-bluetooth');
+                }
+            }, 1500);
+        });
+
+        if (isScanning) {
+            const scanningHint = document.createElement('div');
+            scanningHint.style.fontSize = '11px';
+            scanningHint.style.color = 'var(--text-muted)';
+            scanningHint.style.fontStyle = 'italic';
+            scanningHint.textContent = 'Searching for active accessories nearby...';
+            scanContainer.appendChild(scanningHint);
+        }
+
+        if (scanCompleted && availableDevices.length > 0) {
+            const availableHeader = document.createElement('div');
+            availableHeader.className = 'settings-section-title';
+            availableHeader.textContent = 'Other Devices';
+            scanContainer.appendChild(availableHeader);
+
+            const availableGroup = document.createElement('div');
+            availableGroup.className = 'settings-row-group';
+            scanContainer.appendChild(availableGroup);
+
+            availableDevices.forEach((dev, index) => {
+                const row = document.createElement('div');
+                row.className = 'settings-row';
+                row.style.cursor = 'pointer';
+                row.innerHTML = `
+                    <span class="row-label">${dev.name}</span>
+                    <span style="font-size:10px; color: var(--color-accent); font-weight:600;">Pair Device</span>
+                `;
+                row.addEventListener('click', () => {
+                    btDevices.push({ name: dev.name, status: 'Connected' });
+                    availableDevices.splice(index, 1);
+                    if (window.showNotification) {
+                        window.showNotification('Bluetooth Paired', `Successfully paired with ${dev.name}`, 'hgi-bluetooth');
+                    }
+                    renderBluetooth();
+                });
+                availableGroup.appendChild(row);
+            });
+        }
     }
 
     if (bluetoothToggle) {
@@ -281,6 +411,14 @@ export function initSettings() {
         displaysScale.addEventListener('change', (e) => {
             const scale = e.target.value;
             document.documentElement.style.setProperty('--workspace-scale', scale);
+            // Handle preset scaling options for window container transform
+            const mainWorkspaces = document.querySelectorAll('.workspace-container');
+            mainWorkspaces.forEach(container => {
+                container.style.transform = `scale(${scale})`;
+                container.style.transformOrigin = 'top left';
+                container.style.width = `${100 / scale}%`;
+                container.style.height = `${100 / scale}%`;
+            });
             console.log(`[settings] Set workspace scale to: ${scale}`);
         });
         // Set initial scale value
@@ -320,6 +458,71 @@ export function initSettings() {
             
             aboutUptime.textContent = uptimeStr;
         }, 1000);
+    }
+
+    // ── 12. VFS Storage Usage Calculation ──
+    const storageSidebarItem = document.querySelector('.settings-sidebar-list .app-sidebar-item[data-tab="storage"]');
+    
+    function getVFSSize() {
+        const visited = new Set();
+        function calcSize(node) {
+            if (!node) return 0;
+            if (node.type === 'file') {
+                return node.content ? new Blob([node.content]).size : 0;
+            }
+            if (node.type === 'folder') {
+                if (visited.has(node)) return 0;
+                visited.add(node);
+                let total = 0;
+                if (node.children) {
+                    for (const key in node.children) {
+                        if (['documents', 'downloads', 'pictures', 'desktop', 'music', 'videos', 'aios-drive', 'network'].includes(key)) {
+                            continue;
+                        }
+                        total += calcSize(node.children[key]);
+                    }
+                }
+                return total;
+            }
+            return 0;
+        }
+        if (window.VFS && window.VFS.resolvePath) {
+            const res = window.VFS.resolvePath('/');
+            return res ? calcSize(res.node) : 0;
+        }
+        return 0;
+    }
+
+    const TOTAL_STORAGE = 50 * 1024 * 1024; // 50 MB
+
+    function formatBytes(bytes) {
+        if (bytes === 0) return '0 B';
+        const k = 1024;
+        const sizes = ['B', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    function updateStorageInfo() {
+        const usedBytes = getVFSSize();
+        const freeBytes = Math.max(0, TOTAL_STORAGE - usedBytes);
+        const usedPct = ((usedBytes / TOTAL_STORAGE) * 100).toFixed(1);
+
+        const storageUsedPct = document.getElementById('storage-used-pct');
+        const storageMeterBar = document.getElementById('storage-meter-bar');
+        const storageUsedTxt = document.getElementById('storage-used-txt');
+        const storageFreeTxt = document.getElementById('storage-free-txt');
+
+        if (storageUsedPct) storageUsedPct.textContent = `${usedPct}%`;
+        if (storageMeterBar) storageMeterBar.style.width = `${usedPct}%`;
+        if (storageUsedTxt) storageUsedTxt.textContent = `Used: ${formatBytes(usedBytes)}`;
+        if (storageFreeTxt) storageFreeTxt.textContent = `Free: ${formatBytes(freeBytes)}`;
+    }
+
+    updateStorageInfo();
+    document.addEventListener('vfs-updated', updateStorageInfo);
+    if (storageSidebarItem) {
+        storageSidebarItem.addEventListener('click', updateStorageInfo);
     }
 
     // ── 11. System Sound Effects Hooks ──

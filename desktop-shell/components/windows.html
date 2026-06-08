@@ -100,6 +100,12 @@
                     </span>
                     <span>Appearance</span>
                 </div>
+                <div class="app-sidebar-item" data-tab="storage">
+                    <span class="app-sidebar-icon">
+                        <i class="hgi-stroke hgi-database"></i>
+                    </span>
+                    <span>Storage</span>
+                </div>
                 <div class="app-sidebar-item" data-tab="about">
                     <span class="app-sidebar-icon">
                         <i class="hgi-stroke hgi-information-circle"></i>
@@ -254,9 +260,8 @@
                         <span class="row-label">Display Scale</span>
                         <select class="settings-select" id="settings-displays-scale">
                             <option value="1">100% (Normal)</option>
-                            <option value="1.1">110%</option>
-                            <option value="1.2">120%</option>
                             <option value="1.25">125%</option>
+                            <option value="1.5">150%</option>
                         </select>
                     </div>
                 </div>
@@ -336,6 +341,28 @@
                 </div>
             </section>
 
+            <!-- Tab: Storage -->
+            <section class="settings-tab-pane" id="pane-storage" style="display: none;">
+                <h2>Storage</h2>
+                <p class="settings-sub">Monitor virtual file system storage space.</p>
+                
+                <div class="settings-row-group">
+                    <div class="settings-column-row">
+                        <div class="slider-row-header" style="margin-bottom: 6px;">
+                            <span class="row-label">Virtual Disk Usage</span>
+                            <span id="storage-used-pct">Calculating...</span>
+                        </div>
+                        <div class="volume-mic-meter" style="width: 100%; height: 12px; border-radius: var(--radius-sm); background-color: var(--surface-1);">
+                            <div class="meter-bar" id="storage-meter-bar" style="width: 0%; height: 100%; background-color: var(--accent-primary); border-radius: inherit;"></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: var(--font-size-xs); color: var(--text-muted); margin-top: 6px;">
+                            <span id="storage-used-txt">Used: 0 B</span>
+                            <span id="storage-free-txt">Free: 50 MB</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Tab: About -->
             <section class="settings-tab-pane" id="pane-about" style="display: none;">
                 <div class="about-branding">
@@ -409,6 +436,15 @@
                 <button class="files-nav-btn" id="files-new-folder" title="New Folder" ><i class="hgi-stroke hgi-folder-add"></i></button>
                 <button class="files-nav-btn" id="files-rename" title="Rename"  disabled><i class="hgi-stroke hgi-edit-01"></i></button>
                 <button class="files-nav-btn" id="files-delete" title="Delete"  disabled><i class="hgi-stroke hgi-delete-02"></i></button>
+                <div class="files-toolbar-divider"></div>
+                <button class="files-nav-btn active" id="files-view-grid" title="Grid View" ><i class="hgi-stroke hgi-grid-view"></i></button>
+                <button class="files-nav-btn" id="files-view-list" title="List View" ><i class="hgi-stroke hgi-menu-01"></i></button>
+                <div class="files-toolbar-divider"></div>
+                <select class="files-sort-select" id="files-sort" title="Sort Items">
+                    <option value="name">Sort by Name</option>
+                    <option value="date">Sort by Date</option>
+                    <option value="size">Sort by Size</option>
+                </select>
                 <div class="files-toolbar-divider"></div>
                 <button class="files-nav-btn" id="files-toggle-properties" title="Toggle Properties Pane" ><i class="hgi-stroke hgi-information-circle"></i></button>
             </div>
