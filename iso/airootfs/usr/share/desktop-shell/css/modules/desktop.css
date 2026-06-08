@@ -54,8 +54,8 @@
 
 .desktop-icon {
     position: absolute;
-    width: 88px;
-    height: 102px;
+    width: 76px;
+    height: 90px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -71,13 +71,13 @@
 }
 
 .desktop-icon:hover {
-    background-color: var(--surface-1);
+    background-color: var(--surface-hover);
     border-color: var(--border-subtle);
 }
 
 .desktop-icon.active-select {
-    background-color: var(--surface-2);
-    border-color: var(--border-default);
+    background-color: var(--accent-soft);
+    border-color: rgba(90, 127, 255, 0.3);
 }
 
 .desktop-icon-visual {

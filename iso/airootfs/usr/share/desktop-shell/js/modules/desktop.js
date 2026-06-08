@@ -393,12 +393,13 @@ function createDesktopIcon(name, iconClass, doubleClickAction, initialIndex = 0,
     `;
 
     // Position in vertical-first grid layout initially
-    const gridWidth = 90;
-    const gridHeight = 100;
-    const paddingX = 24;
-    const paddingY = 60; // below topbar
+    const gridWidth = 100;
+    const gridHeight = 110;
+    const paddingX = 28;
+    const paddingY = 64; // below topbar
 
-    const maxRows = Math.max(1, Math.floor((window.innerHeight - paddingY - 120) / gridHeight));
+    const gridClientHeight = grid.clientHeight || (window.innerHeight - 118);
+    const maxRows = Math.max(1, Math.floor((gridClientHeight - paddingY) / gridHeight));
     const col = Math.floor(initialIndex / maxRows);
     const row = initialIndex % maxRows;
 
@@ -428,9 +429,9 @@ function createDesktopIcon(name, iconClass, doubleClickAction, initialIndex = 0,
         document.querySelectorAll('.desktop-icon').forEach(item => item.classList.remove('active-select'));
         iconItem.classList.add('active-select');
 
-        const rect = iconItem.getBoundingClientRect();
-        offsetLeft = e.clientX - rect.left;
-        offsetTop = e.clientY - rect.top;
+        // Calculate dragging offset relative to the parent coordinates
+        offsetLeft = e.clientX - iconItem.offsetLeft;
+        offsetTop = e.clientY - iconItem.offsetTop;
 
         const onMouseMove = (moveEvent) => {
             if (!isDragging) return;
@@ -445,14 +446,13 @@ function createDesktopIcon(name, iconClass, doubleClickAction, initialIndex = 0,
             document.removeEventListener('mousemove', onMouseMove);
             document.removeEventListener('mouseup', onMouseUp);
 
-            // Snap to nearest grid slot
-            const currentRect = iconItem.getBoundingClientRect();
-            const col = Math.round((currentRect.left - paddingX) / gridWidth);
-            const row = Math.round((currentRect.top - paddingY) / gridHeight);
+            // Snap to nearest grid slot using offset parent coordinates
+            const col = Math.round((iconItem.offsetLeft - paddingX) / gridWidth);
+            const row = Math.round((iconItem.offsetTop - paddingY) / gridHeight);
 
-            // Clamp inside viewport roughly
-            const maxCols = Math.floor((window.innerWidth - paddingX * 2) / gridWidth);
-            const maxRows = Math.floor((window.innerHeight - paddingY * 2 - 80) / gridHeight);
+            // Clamp inside grid boundaries
+            const maxCols = Math.floor((grid.clientWidth - paddingX * 2) / gridWidth);
+            const maxRows = Math.floor((grid.clientHeight - paddingY * 2) / gridHeight);
 
             const clampedCol = Math.max(0, Math.min(col, maxCols - 1));
             const clampedRow = Math.max(0, Math.min(row, maxRows - 1));
