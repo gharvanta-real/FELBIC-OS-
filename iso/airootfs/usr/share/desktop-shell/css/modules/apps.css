@@ -2384,3 +2384,92 @@ body.light-theme .paint-preset-color.color-black {
 }
 
 .sidebar-section-mt { margin-top: 10px; }
+
+/* ==========================================================================
+   FINDER LIST VIEW AND ACCENT CLASSES
+   ========================================================================== */
+
+.files-nav-btn.active {
+    background-color: var(--accent-soft) !important;
+    border-color: var(--accent-primary) !important;
+    color: var(--accent-primary) !important;
+}
+
+.finder-content.list-view .finder-folders-grid,
+.finder-content.list-view .finder-files-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 20px;
+}
+
+.finder-content.list-view .finder-folder-card,
+.finder-content.list-view .finder-file-card {
+    flex-direction: row;
+    align-items: center;
+    padding: 6px 12px;
+    gap: 12px;
+    width: 100%;
+    transform: none !important;
+    border: 1px solid transparent;
+    border-radius: var(--radius-xs);
+    background-color: transparent;
+}
+
+.finder-content.list-view .finder-folder-card:hover,
+.finder-content.list-view .finder-file-card:hover {
+    background-color: var(--surface-1);
+    transform: none;
+}
+
+.finder-content.list-view .finder-folder-card.active,
+.finder-content.list-view .finder-file-card.active {
+    background-color: var(--accent-soft);
+    border-color: var(--accent-primary);
+}
+
+.finder-content.list-view .finder-grid-icon {
+    font-size: var(--icon-md);
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.finder-content.list-view .finder-grid-label {
+    text-align: left;
+    margin: 0;
+    flex: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+}
+
+.finder-content.list-view .finder-file-meta {
+    flex: 1.5;
+    border-top: none;
+    padding-top: 0;
+    margin-top: 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+    align-items: center;
+}
+
+.finder-content.list-view .finder-file-size {
+    width: 80px;
+    text-align: right;
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+}
+
+.finder-content.list-view .finder-file-date {
+    width: 140px;
+    text-align: right;
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+}

@@ -5,6 +5,12 @@ import { registerWindow, focusWindow } from './window-manager.js';
 let activeWorkspace = 1;
 let overviewActive = false;
 let savedWindowPositions = new Map(); // to restore post-overview positions
+const wallpaperGradients = [
+    'var(--gradient-wallpaper-aurora)',
+    'var(--gradient-wallpaper-sunset)',
+    'var(--gradient-wallpaper-monochrome)'
+];
+let currentWallpaperIdx = -1;
 
 export function initDesktop() {
     console.log('[felbicos] Initializing Desktop Features...');
@@ -257,6 +263,9 @@ function setupContextMenu() {
             <div class="menu-item" id="menu-wallpaper">
                 <i class="hgi-stroke hgi-image-01"></i> Change Wallpaper
             </div>
+            <div class="menu-item" id="menu-cleanup">
+                <i class="hgi-stroke hgi-grid-view"></i> Clean Up Desktop
+            </div>
             <div class="menu-item" id="menu-terminal">
                 <i class="hgi-stroke hgi-command-line"></i> Open Terminal
             </div>
@@ -286,10 +295,22 @@ function setupContextMenu() {
         });
 
         document.getElementById('menu-wallpaper').addEventListener('click', () => {
-            openAppWindow('settings-window');
-            // Switch Settings app to Wallpaper tab
-            const tabBtn = document.querySelector('.settings-sidebar-item[data-tab="wallpaper"]');
-            if (tabBtn) tabBtn.click();
+            currentWallpaperIdx = (currentWallpaperIdx + 1) % wallpaperGradients.length;
+            const bgStyle = wallpaperGradients[currentWallpaperIdx];
+            if (window.setWallpaper) {
+                window.setWallpaper(bgStyle);
+            }
+            if (window.showNotification) {
+                let wallName = "Aurora Glow";
+                if (currentWallpaperIdx === 1) wallName = "Sunset Wave";
+                else if (currentWallpaperIdx === 2) wallName = "Ink Dark";
+                window.showNotification('Wallpaper Changed', `Switched theme to ${wallName}`, 'hgi-image-01');
+            }
+            menu.classList.remove('active');
+        });
+
+        document.getElementById('menu-cleanup').addEventListener('click', () => {
+            cleanUpDesktop();
             menu.classList.remove('active');
         });
 
@@ -488,6 +509,42 @@ async function createNewFolder() {
 
     if (window.showNotification) {
         window.showNotification('Folder Created', `Created new folder "${folderName}"`, 'hgi-folder-add');
+    }
+}
+
+function cleanUpDesktop() {
+    const grid = document.getElementById('desktop-icon-grid');
+    if (!grid) return;
+
+    const icons = Array.from(grid.querySelectorAll('.desktop-icon'));
+    const gridWidth = 100;
+    const gridHeight = 110;
+    const paddingX = 28;
+    const paddingY = 64; // below topbar
+
+    const gridClientHeight = grid.clientHeight || (window.innerHeight - 118);
+    const maxRows = Math.max(1, Math.floor((gridClientHeight - paddingY) / gridHeight));
+
+    icons.forEach((iconItem, index) => {
+        const col = Math.floor(index / maxRows);
+        const row = index % maxRows;
+
+        const snappedX = col * gridWidth + paddingX;
+        const snappedY = row * gridHeight + paddingY;
+
+        // Apply smooth transition for clean up
+        iconItem.style.transition = 'left 0.3s var(--curve-smooth), top 0.3s var(--curve-smooth)';
+        iconItem.style.left = `${snappedX}px`;
+        iconItem.style.top = `${snappedY}px`;
+
+        // Remove transition after it's done so dragging stays responsive
+        setTimeout(() => {
+            iconItem.style.transition = '';
+        }, 300);
+    });
+
+    if (window.showNotification) {
+        window.showNotification('Desktop Cleared', 'All desktop icons have been re-aligned to the grid.', 'hgi-grid-view');
     }
 }
 

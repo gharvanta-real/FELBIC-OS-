@@ -11,8 +11,13 @@ export function initFiles() {
     let lastSelectedFile = null;
 
     const contentGrid = document.getElementById('finder-content-grid');
-    const sidebarItems = document.querySelectorAll('.finder-sidebar-item');
+    const sidebarItems = document.querySelectorAll('.finder-sidebar .app-sidebar-item');
     const backBtn = document.getElementById('files-back-btn');
+    const viewGridBtn = document.getElementById('files-view-grid');
+    const viewListBtn = document.getElementById('files-view-list');
+    const sortSelect = document.getElementById('files-sort');
+    let currentView = 'grid';
+    let currentSort = 'name';
     const breadcrumb = document.getElementById('files-breadcrumb');
     const searchInput = document.getElementById('files-search');
 
@@ -111,7 +116,8 @@ export function initFiles() {
         // Navigation or open trigger (Double Click)
         item.addEventListener('dblclick', () => {
             if (file.type === 'folder') {
-                const nextFolder = currentFolder === '/' ? `/${file.name}` : `${currentFolder}/${file.name}`;
+                const parent = file.parentPath || currentFolder;
+                const nextFolder = parent === '/' ? `/${file.name}` : `${parent}/${file.name}`;
                 currentFolder = nextFolder;
                 navigationHistory.push(currentFolder);
                 searchFilter = '';
@@ -138,20 +144,75 @@ export function initFiles() {
         });
     }
 
+    function getRecursiveNodes(folderPath) {
+        let results = [];
+        const contents = window.VFS.listDirectory(folderPath) || [];
+        for (const node of contents) {
+            results.push({
+                ...node,
+                parentPath: folderPath
+            });
+            if (node.type === 'folder') {
+                const subPath = folderPath === '/' ? `/${node.name}` : `${folderPath}/${node.name}`;
+                results = results.concat(getRecursiveNodes(subPath));
+            }
+        }
+        return results;
+    }
+
+    function getNumericSize(file) {
+        if (file.type === 'folder') return -1;
+        if (!file.size || file.size === '—') return 0;
+        const s = file.size.toString().trim();
+        const num = parseFloat(s);
+        if (isNaN(num)) return 0;
+        if (s.endsWith('GB')) return num * 1024 * 1024 * 1024;
+        if (s.endsWith('MB')) return num * 1024 * 1024;
+        if (s.endsWith('KB')) return num * 1024;
+        return num;
+    }
+
+    function getTimestamp(file) {
+        if (!file.lastModified) return 0;
+        return Date.parse(file.lastModified) || 0;
+    }
+
     function renderFolder() {
         if (!contentGrid) return;
         contentGrid.innerHTML = '';
 
+        // Apply visual classes for list view
+        const contentContainer = document.querySelector('.finder-content');
+        if (contentContainer) {
+            if (currentView === 'list') {
+                contentContainer.classList.add('list-view');
+                if (viewListBtn) viewListBtn.classList.add('active');
+                if (viewGridBtn) viewGridBtn.classList.remove('active');
+            } else {
+                contentContainer.classList.remove('list-view');
+                if (viewGridBtn) viewGridBtn.classList.add('active');
+                if (viewListBtn) viewListBtn.classList.remove('active');
+            }
+        }
+
         // Get VFS contents
-        let contents = window.VFS.listDirectory(currentFolder) || [];
+        let contents;
+        if (searchFilter) {
+            contents = getRecursiveNodes(currentFolder);
+        } else {
+            contents = window.VFS.listDirectory(currentFolder) || [];
+        }
+
         let files = contents.map(node => {
+            const rawSize = node.size || (node.type === 'folder' ? '—' : (node.content ? `${new Blob([node.content]).size} B` : '0 B'));
             return {
                 name: node.name,
                 type: node.type === 'folder' ? 'folder' : getFileType(node.name),
                 content: node.content,
-                size: node.size || (node.type === 'folder' ? '—' : (node.content ? `${new Blob([node.content]).size} B` : '0 B')),
+                size: rawSize,
                 tags: node.tags || [],
-                lastModified: node.lastModified
+                lastModified: node.lastModified,
+                parentPath: node.parentPath || currentFolder
             };
         });
 
@@ -162,6 +223,21 @@ export function initFiles() {
         if (currentTagFilter) {
             files = files.filter(f => f.tags.includes(currentTagFilter));
         }
+
+        // Sort files and folders (folders always first, then by currentSort)
+        files.sort((a, b) => {
+            if (a.type === 'folder' && b.type !== 'folder') return -1;
+            if (a.type !== 'folder' && b.type === 'folder') return 1;
+            
+            if (currentSort === 'name') {
+                return a.name.localeCompare(b.name);
+            } else if (currentSort === 'date') {
+                return getTimestamp(b) - getTimestamp(a);
+            } else if (currentSort === 'size') {
+                return getNumericSize(b) - getNumericSize(a);
+            }
+            return 0;
+        });
 
         // Format breadcrumb path: Home > Documents
         const cleanBreadcrumb = currentFolder === '/workspace' ? 'Home > Documents' : 
@@ -313,9 +389,9 @@ export function initFiles() {
             else if (tag === 'Projects') dotColor = '#a855f7';
             else if (tag === 'Important') dotColor = '#ef4444';
             return `
-                <span style="font-size: 9px; padding: 3px 8px; background: var(--bg-primary); border: 1px solid var(--border-subtle); border-radius: 99px; color: var(--text-secondary); display: flex; align-items: center; gap: 5px;">
+                <span class="file-tag-badge" data-tag="${tag}" style="font-size: 9px; padding: 3px 8px; background: var(--bg-primary); border: 1px solid var(--border-subtle); border-radius: 99px; color: var(--text-secondary); display: flex; align-items: center; gap: 5px; cursor: pointer;" title="Click to remove tag">
                     <span style="width: 6px; height: 6px; border-radius: 50%; background-color: ${dotColor};"></span>
-                    ${tag}
+                    ${tag} <span style="opacity: 0.5; margin-left: 2px;">×</span>
                 </span>
             `;
         }).join('');
@@ -362,7 +438,7 @@ export function initFiles() {
                     <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 2px;">
                         ${tagsHtml || '<span style="font-size: 10px; color: var(--text-muted); font-style: italic;">No tags</span>'}
                     </div>
-                    <span style="font-size: 9px; color: var(--color-accent); cursor: pointer; font-weight: 600; margin-top: 4px; display: inline-block;">+ Add Tag</span>
+                    <span id="add-tag-trigger" style="font-size: 9px; color: var(--color-accent); cursor: pointer; font-weight: 600; margin-top: 4px; display: inline-block;">+ Add Tag</span>
                 </div>
             </div>
         `;
@@ -382,7 +458,8 @@ export function initFiles() {
 
     // Open file details in editor window
     function openFile(file) {
-        const fullPath = currentFolder === '/' ? `/${file.name}` : `${currentFolder}/${file.name}`;
+        const parent = file.parentPath || currentFolder;
+        const fullPath = parent === '/' ? `/${file.name}` : `${parent}/${file.name}`;
         const openEvent = new CustomEvent('open-file', {
             detail: {
                 name: file.name,
@@ -711,6 +788,29 @@ export function initFiles() {
     if (newFileBtn) newFileBtn.addEventListener('click', (e) => { e.stopPropagation(); createNewFilePrompt(); });
     if (newFolderBtn) newFolderBtn.addEventListener('click', (e) => { e.stopPropagation(); createNewFolderPrompt(); });
     
+    if (viewGridBtn) {
+        viewGridBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            currentView = 'grid';
+            renderFolder();
+        });
+    }
+
+    if (viewListBtn) {
+        viewListBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            currentView = 'list';
+            renderFolder();
+        });
+    }
+
+    if (sortSelect) {
+        sortSelect.addEventListener('change', (e) => {
+            currentSort = e.target.value;
+            renderFolder();
+        });
+    }
+    
     if (renameBtn) {
         renameBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -724,7 +824,8 @@ export function initFiles() {
                         name: node.name,
                         type: node.type === 'folder' ? 'folder' : getFileType(node.name),
                         content: node.content,
-                        lastModified: node.lastModified
+                        lastModified: node.lastModified,
+                        parentPath: node.parentPath || currentFolder
                     };
                     renameFile(file);
                 }
@@ -745,7 +846,8 @@ export function initFiles() {
                         name: node.name,
                         type: node.type === 'folder' ? 'folder' : getFileType(node.name),
                         content: node.content,
-                        lastModified: node.lastModified
+                        lastModified: node.lastModified,
+                        parentPath: node.parentPath || currentFolder
                     };
                     deleteFile(file);
                 }
@@ -863,6 +965,51 @@ export function initFiles() {
         renderFolder();
         updatePropertiesPane(null);
     });
+
+    // Tag addition and deletion delegation in Properties Pane
+    if (propertiesContent) {
+        propertiesContent.addEventListener('click', async (e) => {
+            if (!lastSelectedFile) return;
+            const parent = lastSelectedFile.parentPath || currentFolder;
+            const filePath = parent === '/' ? `/${lastSelectedFile.name}` : `${parent}/${lastSelectedFile.name}`;
+            const resolved = window.VFS.resolvePath(filePath);
+            if (!resolved || !resolved.node) return;
+
+            // Check if "+ Add Tag" is clicked
+            if (e.target.id === 'add-tag-trigger' || e.target.textContent === '+ Add Tag') {
+                e.stopPropagation();
+                if (window.showDialog && window.showDialog.prompt) {
+                    const newTag = await window.showDialog.prompt('Enter tag name (e.g. Work, Personal, Projects, Important):', '', 'Add Tag');
+                    if (!newTag) return;
+                    
+                    if (!resolved.node.tags) resolved.node.tags = [];
+                    if (!resolved.node.tags.includes(newTag)) {
+                        resolved.node.tags.push(newTag);
+                        resolved.node.lastModified = new Date().toLocaleString();
+                        document.dispatchEvent(new CustomEvent('vfs-updated', { detail: { path: filePath } }));
+                        if (window.showNotification) {
+                            window.showNotification('Tag Added', `Added tag "${newTag}" to "${lastSelectedFile.name}"`, 'hgi-tag-01');
+                        }
+                    }
+                }
+            }
+
+            // Check if tag badge is clicked (for deletion)
+            const badge = e.target.closest('.file-tag-badge');
+            if (badge) {
+                e.stopPropagation();
+                const tagToRemove = badge.getAttribute('data-tag');
+                if (tagToRemove && resolved.node.tags) {
+                    resolved.node.tags = resolved.node.tags.filter(t => t !== tagToRemove);
+                    resolved.node.lastModified = new Date().toLocaleString();
+                    document.dispatchEvent(new CustomEvent('vfs-updated', { detail: { path: filePath } }));
+                    if (window.showNotification) {
+                        window.showNotification('Tag Removed', `Removed tag "${tagToRemove}"`, 'hgi-tag-01');
+                    }
+                }
+            }
+        });
+    }
 
     // Initial render and properties setup
     renderFolder();
