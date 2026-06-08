@@ -889,7 +889,7 @@ input:checked + .toggle-slider:before {
 }
 
 body:not(.light-theme) .browser-viewport {
-    background-color: #1a1a1a;
+    background-color: var(--bg-secondary);
 }
 
 

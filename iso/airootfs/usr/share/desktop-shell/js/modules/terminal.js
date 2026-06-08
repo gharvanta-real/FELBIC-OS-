@@ -155,6 +155,9 @@ export function initTerminal() {
             case 'cat':
                 handleCat(args);
                 break;
+            case 'write':
+                handleWrite(args);
+                break;
             case 'theme':
                 setTheme(args[0]);
                 break;
@@ -192,6 +195,7 @@ Available commands:
   <b>cp &lt;src&gt; &lt;dest&gt;</b>              Copy file or folder
   <b>mv &lt;src&gt; &lt;dest&gt;</b>              Move/rename file or folder
   <b>cat &lt;name&gt;</b>                   Print file content
+  <b>write &lt;file&gt; &lt;text&gt;</b>          Write content to file (creates or overwrites)
   <b>theme &lt;light|dark&gt;</b>           Toggle theme appearance dynamically
   <b>pacman -S &lt;package&gt;</b>          Simulates package installation & links with App drawer
   <b>clear</b>                        Clears terminal output screen
@@ -231,11 +235,11 @@ Available commands:
         }
         const formatted = contents.map(node => {
             if (node.type === 'folder') {
-                return `<span style="color: #60a5fa; font-weight: bold;">${node.name}</span>`;
+                return `<span style="color: var(--color-accent); font-weight: bold;">${node.name}</span>`;
             }
             const ext = node.name.split('.').pop().toLowerCase();
             if (ext === 'sh') {
-                return `<span style="color: #10b981; font-weight: bold;">${node.name}</span>`;
+                return `<span style="color: var(--color-success); font-weight: bold;">${node.name}</span>`;
             }
             return `<span>${node.name}</span>`;
         }).join('    ');
@@ -484,6 +488,31 @@ Available commands:
         return currentPath + '/' + path;
     }
 
+    function handleWrite(args) {
+        if (args.length < 2) {
+            appendOutput('write: missing filename or text content');
+            return;
+        }
+        const fileName = args[0];
+        const textContent = args.slice(1).join(' ');
+        const targetPath = resolveRelativePath(fileName);
+        const { parent, name } = splitPath(targetPath);
+        
+        let success;
+        if (window.VFS.exists(targetPath)) {
+            success = window.VFS.writeFile(targetPath, textContent);
+        } else {
+            success = window.VFS.createFile(parent, name, textContent);
+        }
+        
+        if (success) {
+            appendOutput(`Successfully wrote to ${fileName}`);
+            dispatchVfsUpdated();
+        } else {
+            appendOutput(`write: failed to write to '${fileName}': Parent directory does not exist or permission denied`);
+        }
+    }
+
     function splitPath(path) {
         const parts = path.split('/').filter(p => p !== '');
         if (parts.length === 0) return { parent: '/', name: '' };
@@ -520,7 +549,7 @@ Available commands:
         
         if (parts.length === 1 && !hasTrailingSpace) {
             const prefix = parts[0];
-            const cmds = ['help', 'fastfetch', 'neofetch', 'ls', 'cd', 'pwd', 'mkdir', 'touch', 'rm', 'cp', 'mv', 'cat', 'theme', 'pacman', 'clear', 'systemctl', 'uname'];
+            const cmds = ['help', 'fastfetch', 'neofetch', 'ls', 'cd', 'pwd', 'mkdir', 'touch', 'rm', 'cp', 'mv', 'cat', 'write', 'theme', 'pacman', 'clear', 'systemctl', 'uname'];
             const matches = cmds.filter(c => c.startsWith(prefix.toLowerCase()));
             
             if (matches.length === 1) {
@@ -601,7 +630,7 @@ Available commands:
             const status = `
 ● aisd.service - AIOS System Daemon Core
      Loaded: loaded (/usr/lib/systemd/system/aisd.service; enabled; preset: disabled)
-     Active: <span style="color: #10b981; font-weight: bold;">active (running)</span> since Mon 2026-06-08 15:10:00 IST
+     Active: <span style="color: var(--color-success); font-weight: bold;">active (running)</span> since Mon 2026-06-08 15:10:00 IST
    Main PID: 452 (aisd)
      Memory: 84.6M (limit: 150.0M)
      CGroup: /system.slice/aisd.service

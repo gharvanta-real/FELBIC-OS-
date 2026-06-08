@@ -164,7 +164,9 @@ export function initEditor() {
         renderTabs();
 
         // 2. Open editor window and bring to front
-        if (editorWindow) {
+        if (typeof window.openWindow === 'function') {
+            window.openWindow('editor-window');
+        } else if (editorWindow) {
             editorWindow.style.display = 'flex';
             editorWindow.offsetHeight; // force reflow
             editorWindow.style.transition = 'transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease';
@@ -178,6 +180,13 @@ export function initEditor() {
             // Focus editor window
             const focusEvent = new CustomEvent('focus-window', { detail: { targetId: 'editor-window' } });
             document.dispatchEvent(focusEvent);
+        }
+        
+        // Focus the editor text area for typing
+        if (editorContent) {
+            setTimeout(() => {
+                editorContent.focus();
+            }, 100);
         }
     });
 
@@ -209,6 +218,11 @@ export function initEditor() {
             const updatedContent = editorContent.value;
             openTabs[activeTabIndex].content = updatedContent;
             
+            // Write changes to VFS
+            if (window.VFS && typeof window.VFS.writeFile === 'function') {
+                window.VFS.writeFile(activeFilePath, updatedContent);
+            }
+            
             // Dispatch a save-file notification or run mock saving
             if (window.showNotification) {
                 window.showNotification('File Saved', `Changes saved to ${activeFilePath.split('/').pop()} successfully!`, 'hgi-floppy-disk');
@@ -225,6 +239,13 @@ export function initEditor() {
                 }
             });
             document.dispatchEvent(saveEvent);
+            
+            // Dispatch vfs-updated event
+            document.dispatchEvent(new CustomEvent('vfs-updated', {
+                detail: {
+                    path: activeFilePath
+                }
+            }));
         });
     }
 

@@ -6,6 +6,7 @@ export function initBrowser() {
     const backBtn = document.getElementById('browser-back');
     const forwardBtn = document.getElementById('browser-forward');
     const reloadBtn = document.getElementById('browser-reload');
+    const homeBtn = document.getElementById('browser-home');
     const urlInput = document.getElementById('browser-url');
     const viewport = document.getElementById('browser-page-content');
 
@@ -19,7 +20,7 @@ export function initBrowser() {
                 <p style="color: var(--color-topbar-text-muted); font-size: 14px;">The AI-Native Operating System Shell</p>
             </div>
             
-            <div class="browser-mock-card">
+            <div class="browser-mock-card" style="background: var(--bg-tertiary); border: 1px solid var(--border-default); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 12px;">
                 <h3 style="margin-bottom: 8px; font-size: 14px; font-weight: 600;">Welcome to your Web Shell Dashboard</h3>
                 <p style="font-size: 12px; color: var(--color-topbar-text-muted); line-height: 1.6;">
                     FELBIC OS runs a customized Sway window manager that boots directly into this web-based environment. 
@@ -27,7 +28,7 @@ export function initBrowser() {
                 </p>
             </div>
 
-            <div class="browser-mock-card" style="margin-top: 16px;">
+            <div class="browser-mock-card" style="background: var(--bg-tertiary); border: 1px solid var(--border-default); border-radius: var(--radius-sm); padding: 12px; margin-top: 16px;">
                 <h3 style="margin-bottom: 8px; font-size: 14px; font-weight: 600;">Local IPC Bridge Status</h3>
                 <p style="font-size: 12px; color: var(--color-topbar-text-muted); line-height: 1.6;">
                     The system communicates with the host daemon using a local WebSocket server on <span style="font-family: monospace;">port 8080</span>. 
@@ -37,13 +38,13 @@ export function initBrowser() {
         `,
         'google.com': `
             <div style="text-align: center; margin: 40px 0 20px 0;">
-                <h1 style="font-size: 32px; font-weight: 800; letter-spacing: -1px; background: linear-gradient(135deg, #3b82f6, #ef4444, #f59e0b, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Search Engine</h1>
+                <h1 style="font-size: 32px; font-weight: 800; letter-spacing: -1px; background: var(--gradient-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Search Engine</h1>
             </div>
             <div style="display:flex; justify-content:center; margin-bottom: 30px;">
-                <input type="text" placeholder="Search the World Wide Web" style="width: 80%; height: 32px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); background-color: rgba(255,255,255,0.05); padding: 0 16px; color: white; outline: none;">
+                <input type="text" placeholder="Search the World Wide Web" style="width: 80%; height: 32px; border-radius: 16px; border: 1px solid var(--border-default); background-color: var(--surface-3); padding: 0 16px; color: var(--text-primary); outline: none;">
             </div>
-            <div class="browser-mock-card">
-                <h4 style="font-size:12px; font-weight:600; margin-bottom:4px;">Trending Searches</h4>
+            <div class="browser-mock-card" style="background: var(--bg-tertiary); border: 1px solid var(--border-default); border-radius: var(--radius-sm); padding: 12px;">
+                <h4 style="font-size:12px; font-weight:600; margin-bottom:4px; color: var(--text-primary);">Trending Searches</h4>
                 <ul style="font-size:11px; color:var(--color-topbar-text-muted); line-height:1.8; padding-left:14px;">
                     <li>How to install Arch Linux on VirtualBox</li>
                     <li>Sway window manager layout configuration cheatsheet</li>
@@ -52,12 +53,12 @@ export function initBrowser() {
             </div>
         `,
         'help.felbic.org': `
-            <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 12px;">Help Center & Keyboard Shortcuts</h2>
+            <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 12px; color: var(--text-primary);">Help Center & Keyboard Shortcuts</h2>
             
-            <div class="browser-mock-card">
-                <table style="width:100%; font-size:12px; line-height:2.0; border-collapse:collapse;">
+            <div class="browser-mock-card" style="background: var(--bg-tertiary); border: 1px solid var(--border-default); border-radius: var(--radius-sm); padding: 12px;">
+                <table style="width:100%; font-size:12px; line-height:2.0; border-collapse:collapse; color: var(--text-primary);">
                     <thead>
-                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); text-align:left; color: var(--color-topbar-text-muted);">
+                        <tr style="border-bottom: 1px solid var(--border-default); text-align:left; color: var(--color-topbar-text-muted);">
                             <th>Action</th>
                             <th>Shortcut Key</th>
                         </tr>
@@ -65,46 +66,106 @@ export function initBrowser() {
                     <tbody>
                         <tr>
                             <td>Open Quick Search (Spotlight)</td>
-                            <td><kbd style="background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px;">Alt + D</kbd></td>
+                            <td><kbd style="background: var(--surface-3); padding:2px 6px; border-radius:4px; color: var(--text-primary);">Alt + D</kbd></td>
                         </tr>
                         <tr>
                             <td>Launch terminal console</td>
-                            <td><kbd style="background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px;">Super + Enter</kbd></td>
+                            <td><kbd style="background: var(--surface-3); padding:2px 6px; border-radius:4px; color: var(--text-primary);">Super + Enter</kbd></td>
                         </tr>
                         <tr>
                             <td>Close focused window</td>
-                            <td><kbd style="background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px;">Super + Shift + Q</kbd></td>
+                            <td><kbd style="background: var(--surface-3); padding:2px 6px; border-radius:4px; color: var(--text-primary);">Super + Shift + Q</kbd></td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        `,
+        'docs.felbic.org': `
+            <div style="padding: 16px; font-family: var(--font-sans); color: var(--text-primary);">
+                <h2 style="font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-accent); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                    <i class="hgi-stroke hgi-book-open-01" style="font-size: var(--icon-md);"></i> Developer Documentation
+                </h2>
+                <p style="font-size: var(--font-size-sm); color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;">
+                    Welcome to the FELBIC OS API and Integration guide. Use the following references to develop applications for our AI-Native environment.
+                </p>
+                <div class="browser-mock-card" style="background: var(--bg-tertiary); border: 1px solid var(--border-default); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 12px;">
+                    <h4 style="font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); color: var(--text-primary); margin-bottom: 6px;">VFS API (Virtual File System)</h4>
+                    <p style="font-size: var(--font-size-xs); color: var(--text-muted); line-height: 1.5; margin-bottom: 8px;">
+                        FELBIC OS provides a persistent, hierarchical virtual file system under <code style="font-family: var(--font-mono); background: var(--surface-hover); padding: 2px 4px; border-radius: var(--radius-2xs);">window.VFS</code>.
+                    </p>
+                    <ul style="font-size: var(--font-size-xs); color: var(--text-secondary); padding-left: 16px; line-height: 1.6;">
+                        <li><code style="font-family: var(--font-mono);">listDirectory(path)</code>: Lists contents of a directory.</li>
+                        <li><code style="font-family: var(--font-mono);">readFile(path)</code>: Returns string contents of a file.</li>
+                        <li><code style="font-family: var(--font-mono);">writeFile(path, content)</code>: Writes string data to path.</li>
+                        <li><code style="font-family: var(--font-mono);">createFile(parent, name, content)</code>: Instantiates a file node.</li>
+                    </ul>
+                </div>
+                <div class="browser-mock-card" style="background: var(--bg-tertiary); border: 1px solid var(--border-default); border-radius: var(--radius-sm); padding: 12px;">
+                    <h4 style="font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); color: var(--text-primary); margin-bottom: 6px;">Global Event Bus</h4>
+                    <p style="font-size: var(--font-size-xs); color: var(--text-muted); line-height: 1.5; margin-bottom: 8px;">
+                        Interact with core modules by dispatching or listening to custom events on the global document object.
+                    </p>
+                    <ul style="font-size: var(--font-size-xs); color: var(--text-secondary); padding-left: 16px; line-height: 1.6;">
+                        <li><code style="font-family: var(--font-mono);">vfs-updated</code>: Dispatched when directory structure changes.</li>
+                        <li><code style="font-family: var(--font-mono);">file-saved</code>: Fired by editor to propagate file saves.</li>
+                        <li><code style="font-family: var(--font-mono);">focus-window</code>: Brings specific window ID to focus.</li>
+                    </ul>
+                </div>
+            </div>
+        `,
+        'dev.felbic.org': `
+            <div style="padding: 16px; font-family: var(--font-sans); color: var(--text-primary);">
+                <h2 style="font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-success); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                    <i class="hgi-stroke hgi-settings-02" style="font-size: var(--icon-md);"></i> Developer Sandbox Guide
+                </h2>
+                <p style="font-size: var(--font-size-sm); color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;">
+                    Learn how to run custom scripts, write code files, and build native shell components.
+                </p>
+                <div class="browser-mock-card" style="background: var(--bg-tertiary); border: 1px solid var(--border-default); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 12px;">
+                    <h4 style="font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); color: var(--text-primary); margin-bottom: 6px;">How to edit & build code</h4>
+                    <ol style="font-size: var(--font-size-xs); color: var(--text-secondary); padding-left: 16px; line-height: 1.6;">
+                        <li>Double-click any source file (e.g. <code style="font-family: var(--font-mono);">app.js</code>) in Files Explorer.</li>
+                        <li>The Text Editor will automatically focus, load the file, and highlight its syntax.</li>
+                        <li>Make modifications and click <b>Save Changes</b> (or run terminal write).</li>
+                        <li>Open the Terminal window and type <code style="font-family: var(--font-mono);">cat</code> to verify VFS updates.</li>
+                    </ol>
+                </div>
             </div>
         `
     };
 
     function loadURL(url, isBackForward = false) {
-        // Clean URL scheme
         let cleanUrl = url.toLowerCase().trim();
-        cleanUrl = cleanUrl.replace('https://', '').replace('http://', '').replace('www.', '');
-        if (cleanUrl.endsWith('/')) cleanUrl = cleanUrl.slice(0, -1);
-
-        let finalURL = `https://${cleanUrl}`;
-        let content = websites[cleanUrl] || websites[`https://${cleanUrl}`];
-
-        if (!content) {
-            content = `
-                <div style="text-align: center; padding: 40px 20px;">
-                    <div style="font-size: 40px; margin-bottom: 16px;">⚠️</div>
-                    <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">Network Connection Blocked</h2>
-                    <p style="color: var(--color-topbar-text-muted); font-size: 12px; line-height: 1.6;">
-                        Site <span style="font-family: monospace; color:#f87171;">${finalURL}</span> could not be reached. 
-                        Live external network calls are restricted in the current development sandbox. Try searching "google.com" or "help.felbic.org".
-                    </p>
-                </div>
-            `;
+        
+        // Check if scheme is present, if not guess/default
+        let hasScheme = cleanUrl.startsWith('http://') || cleanUrl.startsWith('https://');
+        if (!hasScheme) {
+            const baseDomain = cleanUrl.replace('www.', '');
+            if (websites[baseDomain]) {
+                cleanUrl = 'https://' + cleanUrl;
+            } else if (cleanUrl.includes('.')) {
+                cleanUrl = 'https://' + cleanUrl;
+            } else {
+                cleanUrl = 'https://google.com';
+            }
         }
 
-        viewport.innerHTML = content;
-        urlInput.value = finalURL;
+        let finalURL = cleanUrl;
+        let key = finalURL.replace('https://', '').replace('http://', '').replace('www.', '');
+        if (key.endsWith('/')) key = key.slice(0, -1);
+
+        let content = websites[key] || websites[`https://${key}`];
+
+        if (content) {
+            viewport.innerHTML = content;
+            urlInput.value = finalURL;
+        } else {
+            // Load in iframe for actual external sites or non-mock URLs
+            viewport.innerHTML = `
+                <iframe src="${finalURL}" style="width: 100%; height: 100%; border: none; background: var(--bg-tertiary);" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+            `;
+            urlInput.value = finalURL;
+        }
 
         if (!isBackForward) {
             // Trim history ahead of current index if we navigated manually
@@ -146,6 +207,12 @@ export function initBrowser() {
     if (reloadBtn) {
         reloadBtn.addEventListener('click', () => {
             loadURL(history[historyIndex], true);
+        });
+    }
+
+    if (homeBtn) {
+        homeBtn.addEventListener('click', () => {
+            loadURL('https://felbic.aios.org');
         });
     }
 
