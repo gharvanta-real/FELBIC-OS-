@@ -12,6 +12,7 @@
     right: 0;
     width: 100%;
     z-index: 10;
+    pointer-events: none; /* Let events pass to desktop icons */
     /* No padding — windows use absolute positioning */
     transform: scale(var(--workspace-scale, 1));
     transform-origin: center center;
@@ -34,6 +35,7 @@
     flex-direction: column;
     overflow: hidden;
     position: absolute;
+    pointer-events: auto; /* Enable interaction for windows */
     animation: windowFadeIn 0.4s var(--curve-swift);
     transition: transform var(--transition-slow) var(--curve-swift),
                 opacity var(--transition-slow) ease,
