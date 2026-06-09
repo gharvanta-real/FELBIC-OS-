@@ -13,6 +13,7 @@ Restart=on-failure
 RestartSec=5
 WatchdogSec=30
 
+# Security hardening
 User=root
 Group=root
 NoNewPrivileges=false
@@ -30,6 +31,7 @@ StateDirectoryMode=0750
 Environment=AISD_SOCKET=/run/aios/aisd.sock
 Environment=AISD_FS_ROOT=/home/felbic
 
+# Resource limits
 LimitNOFILE=65536
 LimitMEMLOCK=infinity
 MemoryMax=512M

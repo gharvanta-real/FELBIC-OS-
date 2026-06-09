@@ -46,7 +46,7 @@
     top: var(--topbar-height);
     left: 0;
     width: 100vw;
-    height: calc(100vh - var(--topbar-height) - 90px);
+    height: calc(100vh - var(--topbar-height) - 20px);
     pointer-events: none;
     z-index: 5;
     overflow: hidden;

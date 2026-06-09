@@ -2,8 +2,8 @@
 
 let maxZIndex = 100;
 let cascadeOffset = 0;          // small stagger for multiple windows
-const TOPBAR_HEIGHT = 28;
-const DOCK_HEIGHT   = 80;       // approximate dock height
+const TOPBAR_HEIGHT = 40;
+const DOCK_HEIGHT   = 10;       // minimized bottom margin
 const SNAP_THRESHOLD = 20;
 
 // Track window positions and sizes before they are maximized or snapped

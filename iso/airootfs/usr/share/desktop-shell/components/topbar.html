@@ -3,9 +3,18 @@
     <div class="topbar-left">
         <div class="topbar-logo" id="logo-trigger" title="Launch Menu">
             <span class="topbar-logo-icon"><i class="hgi-stroke hgi-ai-brain-01"></i></span>
-            <span class="topbar-logo-text">AIOS</span>
+            <span class="topbar-logo-text">Aurora OS</span>
         </div>
-        <nav class="topbar-menu">
+        <div class="topbar-apps-dock">
+            <div class="dock-item" data-app="launchpad" title="App Drawer"><i class="hgi-stroke hgi-grid-view"></i></div>
+            <div class="dock-item" data-app="files" title="Files Explorer"><i class="hgi-stroke hgi-folder-open"></i></div>
+            <div class="dock-item" data-app="browser" title="Web Browser"><i class="hgi-stroke hgi-compass"></i></div>
+            <div class="dock-item" data-app="terminal" title="Terminal Console"><i class="hgi-stroke hgi-command-line"></i></div>
+            <div class="dock-item" data-app="settings" title="System Settings"><i class="hgi-stroke hgi-settings-01"></i></div>
+            <div class="dock-item" data-app="ai" title="AI Control Panel"><i class="hgi-stroke hgi-ai-brain-01"></i></div>
+            <div class="dock-item" data-app="monitor" title="Task Manager"><i class="hgi-stroke hgi-activity-01"></i></div>
+        </div>
+        <nav class="topbar-menu" style="display: none;">
             <span class="topbar-menu-item">File</span>
             <span class="topbar-menu-item">Edit</span>
             <span class="topbar-menu-item">View</span>
@@ -16,7 +25,13 @@
     </div>
 
     <div class="topbar-center">
-        <div class="topbar-search-pill" id="topbar-search-trigger" title="Search System (⌘K)">
+        <span class="topbar-date" id="topbar-date">Mon, 20 May</span>
+        <span class="topbar-time" id="topbar-time">11:42 PM</span>
+        <div class="topbar-weather" id="topbar-weather" title="Weather Forecast">
+            <i class="hgi-stroke hgi-cloud-sun-01"></i>
+            <span>23°</span>
+        </div>
+        <div class="topbar-search-pill" id="topbar-search-trigger" title="Search System (⌘K)" style="display: none;">
             <i class="hgi-stroke hgi-search-01"></i>
             <span>Search anything...</span>
             <span class="search-shortcut">⌘K</span>
@@ -37,12 +52,13 @@
             <i class="hgi-stroke hgi-battery-charge"></i>
             <span>100%</span>
         </div>
-        <span class="topbar-clock" id="topbar-clock">Mon, Jun 8 • 08:25 PM</span>
+        <span class="topbar-clock" id="topbar-clock" style="display: none;"></span>
         <div class="topbar-theme-toggle" id="topbar-theme-toggle" title="Toggle Light/Dark Theme">
             <i class="hgi-stroke hgi-sun-01" id="theme-toggle-icon"></i>
         </div>
         <div class="topbar-avatar" id="avatar-trigger" title="Profile Details">
             <div class="avatar-circle"></div>
+            <span class="avatar-status-dot"></span>
         </div>
     </div>
 </header>

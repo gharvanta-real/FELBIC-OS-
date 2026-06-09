@@ -192,7 +192,13 @@
 | 2026-06 | aisd IPC/security foundation | Implemented length-prefixed MessagePack Unix socket IPC at `/run/aios/aisd.sock`, kept WebSocket compatibility mode, added peer UID detection, basic capability ACL decisions, and JSONL audit logging for daemon actions. |
 | 2026-06 | installer & security hardening | Developed custom Calamares modules (`felbicos-ai-setup`, `felbicos-disk`), custom systemd firstboot model downloader (`aios-firstboot.service` & `firstboot-download.sh`), target services config, staged files in Makefile & build-wsl.sh, and verified builds/syntax. |
 | 2026-06 | compositor implementation | Created wlroots 0.18-based custom compositor (`aios-comp`), implementing dual-session isolation (human vs virtual AI seat via uinput), custom protocol server (`aios-compositor-v1`), and integrated staging rules. |
-| 2026-06 | LLM inference implementation | Developed the tokio process-wrapped `llama-server` subprocess manager inside `aisd`, parsed hardware selected GGUFs, wired `"ai/query"` MessagePack IPC socket methods, and expanded the `felbicos-ai ask` CLI. |
+| 2026-06 | LLM inference implementation | Developed the tokio process-wrapped `llama-server` subprocess manager inside `aisd`, parsed hardware selected GGUFs, wired `"ai/query"` MessagePack IPC socket methods, and expanded the `felbicos-ai` CLI. |
+| 2026-06 | inotify watcher | Implemented `fs/watcher.rs` with inotify (Linux, blocking thread bridged to tokio via mpsc + 500ms debounce) and polling fallback (non-Linux, 5s interval). Initial index rebuild on daemon startup. |
+| 2026-06 | Tool-use loop + conversation context | Rewrote `inference/mod.rs` with XML-style tool-call parsing, tool execution (fs_search, fs_list, process_list, stats_get), per-session conversation history (bounded 20 messages), and `ai/chat` + `ai/clear-session` IPC endpoints. |
+| 2026-06 | Desktop shell → aisd IPC wiring | Created `aisd-client.js` singleton (auto-reconnect WebSocket, Promise-based call(), push-event broadcasting), `ai-assistant.js` glassmorphic AI panel (chat UI, quick actions, thinking animation, Ctrl+Shift+A hotkey), CSS module, wired `terminal.js` `aisd` command and `system-stats.js` to use the singleton. |
+| 2026-06 | AI Control Panel app | Transitioned the AI Assistant to a native windowed app (#ai-window) with Chat and unclustered daily configuration tabs, Dock launcher integration, and menu orb sync. |
+| 2026-06 | System Settings AI integration | Added a dedicated AI Settings tab in the System Settings app supporting end-to-end config (Model, Temp, Memory, Indexing, Prompt, Daemon restart, and permissions), with real-time UI state sync. |
+| 2026-06 | theme-styling | Updated design-tokens.css to replace the dark/light variables with Aurora OS styling tokens and mapped them to module variables. |
 
 ---
 

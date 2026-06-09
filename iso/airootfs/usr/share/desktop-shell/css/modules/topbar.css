@@ -9,14 +9,14 @@
     left: 0;
     width: 100%;
     height: var(--topbar-height);
-    background-color: var(--color-topbar-bg);
+    background-color: transparent !important;
     border-bottom: 1px solid var(--color-topbar-border);
-    backdrop-filter: var(--blur-intensity-light);
-    -webkit-backdrop-filter: var(--blur-intensity-light);
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 14px;
+    padding: 0 24px;
     z-index: 1000;
     transition: background-color var(--transition-normal) var(--curve-smooth),
                 border-color var(--transition-normal) var(--curve-smooth);
@@ -29,12 +29,83 @@
     gap: 14px;
 }
 
-.topbar-logo {
+/* ── Topbar Apps Tray ── */
+.topbar-apps-dock {
     display: flex;
     align-items: center;
     gap: 6px;
+    margin-left: 12px;
+    border-left: 1.5px solid var(--color-topbar-border);
+    padding-left: 12px;
+}
+
+.topbar-apps-dock .dock-item {
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-xs);
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
-    padding: 2px 4px;
+    color: var(--color-topbar-text-muted);
+    position: relative;
+    flex-shrink: 0;
+    transition: transform var(--transition-fast) var(--curve-smooth),
+                color var(--transition-fast) var(--curve-smooth),
+                background-color var(--transition-fast) var(--curve-smooth);
+}
+
+.topbar-apps-dock .dock-item:hover {
+    transform: scale(1.1);
+    background-color: var(--color-accent-dim) !important;
+    color: var(--color-topbar-text);
+}
+
+.topbar-apps-dock .dock-item:active {
+    transform: scale(0.95);
+    background-color: var(--surface-active) !important;
+}
+
+.topbar-apps-dock .dock-item svg,
+.topbar-apps-dock .dock-item i {
+    width: 14px;
+    height: 14px;
+    font-size: 14px;
+    line-height: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    fill: currentColor;
+    color: currentColor;
+    pointer-events: none;
+    -webkit-text-stroke: 0.3px currentColor;
+}
+
+/* ── Running indicator dot ── */
+.topbar-apps-dock .dock-item.running::after {
+    content: "";
+    position: absolute;
+    bottom: 1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background-color: var(--accent-primary);
+    box-shadow: var(--shadow-xs);
+}
+
+.topbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 4px 8px;
     border-radius: var(--radius-xs);
     transition: background-color var(--transition-fast) var(--curve-smooth);
     user-select: none;
@@ -43,9 +114,9 @@
 .topbar-logo:hover { background-color: var(--color-accent-dim); }
 
 .topbar-logo-icon {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
     background: var(--gradient-logo);
     display: flex;
     justify-content: center;
@@ -54,11 +125,11 @@
     flex-shrink: 0;
 }
 
-.topbar-logo-icon i { font-size: var(--icon-2xs); }
+.topbar-logo-icon i { font-size: var(--icon-md); }
 
 .topbar-logo-text {
     font-weight: var(--font-weight-bold);
-    font-size: var(--text-xs);
+    font-size: var(--text-md);
     color: var(--color-topbar-text);
     letter-spacing: 0.5px;
 }
@@ -88,45 +159,40 @@
     user-select: none;
 }
 
-/* ── Center search pill ── */
+/* ── Center Date, Time & Weather ── */
 .topbar-center {
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 20px;
+    font-size: var(--text-sm);
+    color: var(--color-topbar-text);
 }
 
-.topbar-search-pill {
+.topbar-date {
+    opacity: 0.85;
+    font-weight: var(--font-weight-medium);
+}
+
+.topbar-time {
+    font-weight: var(--font-weight-bold);
+}
+
+.topbar-weather {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 210px;
-    height: 20px;
-    border-radius: var(--radius-full);
-    background-color: var(--surface-1);
-    border: 1px solid var(--border-subtle);
-    padding: 0 10px;
-    font-size: var(--text-xs);
-    color: var(--text-muted);
+    gap: 6px;
+    opacity: 0.85;
     cursor: pointer;
-    transition: background-color var(--transition-fast) var(--curve-smooth),
-                border-color var(--transition-fast) var(--curve-smooth),
-                color var(--transition-fast) var(--curve-smooth);
-    user-select: none;
+    transition: opacity var(--transition-fast) var(--curve-smooth);
 }
 
-.topbar-search-pill:hover {
-    background-color: var(--surface-2);
-    border-color: var(--border-default);
-    color: var(--text-primary);
+.topbar-weather:hover {
+    opacity: 1;
 }
 
-.search-shortcut {
-    font-size: var(--text-2xs);
-    opacity: 0.7;
-    background: var(--surface-1);
-    padding: 1px 4px;
-    border-radius: var(--radius-2xs);
-    border: 1px solid var(--border-subtle);
+.topbar-weather i {
+    font-size: var(--icon-sm);
 }
 
 /* ── Right cluster ── */
@@ -146,7 +212,7 @@
     height: 20px;
     border-radius: var(--radius-2xs);
     cursor: pointer;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     transition: color var(--transition-fast) var(--curve-smooth),
                 background-color var(--transition-fast) var(--curve-smooth);
 }
@@ -156,19 +222,23 @@
     background-color: var(--color-accent-dim);
 }
 
-.topbar-right-icon i { font-size: var(--icon-topbar); }
+.topbar-right-icon i { 
+    font-size: var(--icon-topbar); 
+    -webkit-text-stroke: 0.4px currentColor;
+}
 
 .topbar-battery {
     display: flex;
     align-items: center;
     gap: 4px;
     font-size: var(--text-xs);
-    color: var(--text-muted);
+    color: var(--text-secondary);
 }
 
 .topbar-battery i {
     font-size: var(--icon-topbar);
     color: var(--success);
+    -webkit-text-stroke: 0.4px currentColor;
 }
 
 .topbar-clock {
@@ -192,7 +262,7 @@
     height: 20px;
     border-radius: var(--radius-2xs);
     cursor: pointer;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     transition: color var(--transition-fast) var(--curve-smooth),
                 background-color var(--transition-fast) var(--curve-smooth);
 }
@@ -202,23 +272,39 @@
     background-color: var(--color-accent-dim);
 }
 
-.topbar-theme-toggle i { font-size: var(--icon-topbar); }
+.topbar-theme-toggle i { 
+    font-size: var(--icon-topbar); 
+    -webkit-text-stroke: 0.4px currentColor;
+}
 
 .topbar-avatar {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    height: 20px;
+    width: 26px;
+    height: 26px;
     cursor: pointer;
+    position: relative;
 }
 
 .avatar-circle {
-    width: 18px;
-    height: 18px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     background: var(--gradient-avatar);
-    border: 1px solid var(--border-default);
+    border: 1.5px solid var(--border-default);
+}
+
+.avatar-status-dot {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 8px;
+    height: 8px;
+    background-color: var(--success);
+    border-radius: 50%;
+    border: 1.5px solid var(--bg-primary);
+    box-shadow: var(--shadow-xs);
 }
 
 /* ── Topbar Dropdown Menus ── */

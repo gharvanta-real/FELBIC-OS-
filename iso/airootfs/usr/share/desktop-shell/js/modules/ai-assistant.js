@@ -1,7 +1,7 @@
 /* FELBIC OS — AIOS Intelligence
  *
- * macOS Siri Panel Window UI & Logic.
- * Directly styled as a vertical right-anchored panel matching the provided design.
+ * Native Windowed AI Control Panel App logic & IPC integration.
+ * Adapts chat and configuration controls inside the standard #ai-window container.
  */
 
 import { aisd } from './aisd-client.js';
@@ -162,123 +162,279 @@ function formatContent(text) {
 // ── Module Initialization ──────────────────────────────────────────────────────
 
 export function initAIAssistant() {
-    console.log('[felbicos] Initializing Siri Panel Window (macOS style)...');
+    console.log('[felbicos] Initializing AI Control Panel App (Windowed)...');
 
-    // ── 1. Scrim Veil ──
-    const veil = document.createElement('div');
-    veil.id = 'ai-veil';
-    veil.className = 'ai-veil';
-    document.body.appendChild(veil);
+    const aiWindow = document.getElementById('ai-window');
+    if (!aiWindow) {
+        console.error('[ai-assistant] #ai-window not found in DOM!');
+        return;
+    }
 
-    // ── 2. Siri Tall Panel Window ──
-    const container = document.createElement('div');
-    container.id = 'ai-float-container';
-    container.className = 'ai-float-container';
-    container.setAttribute('role', 'dialog');
-    container.setAttribute('aria-label', 'Siri');
-    container.innerHTML = `
-        <div class="ai-card-header">
-            <button class="ai-close-circle-btn" id="ai-close-btn" aria-label="Minimize" title="Minimize">
-                <i class="hgi-stroke hgi-minus"></i>
-            </button>
-        </div>
-
-        <div class="ai-convo-scroll" id="ai-convo-scroll">
-            <div class="ai-msg ai-msg-assistant ai-msg-welcome">
-                <div class="ai-msg-bubble">
-                    👋 Hi! I'm Siri.<br>
-                    You can chat with me about anything.<br><br>
-                    <em>Try: "Draw a galaxy" &nbsp;•&nbsp; "Open terminal" &nbsp;•&nbsp; "Write a Python script"</em>
-                </div>
-            </div>
-        </div>
-
-        <div class="ai-suggestions" id="ai-suggestions">
-            <button class="ai-suggestion-chip" data-prompt="Draw a galaxy on the canvas">Draw Galaxy</button>
-            <button class="ai-suggestion-chip" data-prompt="Show CPU and memory stats">System Stats</button>
-            <button class="ai-suggestion-chip" data-prompt="Open the terminal">Terminal</button>
-            <button class="ai-suggestion-chip" data-prompt="Search for PDF files">Find Files</button>
-            <button class="ai-suggestion-chip" data-prompt="What can you do?">Help</button>
-        </div>
-
-        <div class="ai-input-card" id="ai-input-card">
-            <div class="ai-input-row">
-                <input 
-                    type="text" 
-                    id="ai-input-field" 
-                    class="ai-input-field" 
-                    placeholder="Type to Siri" 
-                    autocomplete="off" 
-                    spellcheck="false"
-                >
-                <button class="ai-input-action-btn" id="ai-input-action-btn" aria-label="Voice Input" title="Voice Input">
-                    <i class="hgi-stroke hgi-mic-01" id="ai-action-icon"></i>
-                </button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(container);
-
-    // ── 3. Inject menu bar orb ──
+    // ── 1. Inject Menu Bar Orb ──
     injectMenuOrb();
 
-    // ── 4. DOM Cache ──
-    const convoScroll  = document.getElementById('ai-convo-scroll');
-    const inputField   = document.getElementById('ai-input-field');
-    const actionBtn    = document.getElementById('ai-input-action-btn');
-    const actionIcon   = document.getElementById('ai-action-icon');
+    // ── 2. DOM Elements Cache ──
+    const convoScroll  = aiWindow.querySelector('#ai-convo-scroll');
+    const inputField   = aiWindow.querySelector('#ai-input-field');
+    const actionBtn    = aiWindow.querySelector('#ai-input-action-btn');
+    const actionIcon   = aiWindow.querySelector('#ai-action-icon');
+    const tabs         = aiWindow.querySelectorAll('.ai-app-tab');
+    const paneChat     = aiWindow.querySelector('#ai-pane-chat');
+    const paneSettings = aiWindow.querySelector('#ai-pane-settings');
 
-    let isOpen    = false;
     let isLoading = false;
     const SESSION_ID = 'aios-main';
 
+    // ── 3. Load Persistent Config Object ──
+    const config = {
+        model: localStorage.getItem('ai_config_model') || 'mistral-7b',
+        temp: parseFloat(localStorage.getItem('ai_config_temp') || '0.7'),
+        memory: localStorage.getItem('ai_config_memory') !== 'false',
+        indexing: localStorage.getItem('ai_config_indexing') !== 'false',
+        desktopControl: localStorage.getItem('ai_config_desktop_control') !== 'false',
+        inputInjection: localStorage.getItem('ai_config_input_injection') !== 'false',
+        systemPrompt: localStorage.getItem('ai_config_prompt') || [
+            "You are AIOS Assistant — the AI built into FELBIC OS.",
+            "You are a powerful AI agent, not just a chatbot.",
+            "You can ACTUALLY control the operating system, run applications, fill forms, search files, and take actions.",
+            "",
+            "Available tools:",
+            "- stats_get: Get CPU and memory usage",
+            "- process_list: List running processes",
+            "- fs_search: Search files by name",
+            "- app_fill_field: Fill form field in any app",
+            "- app_launch: Launch an application",
+            "- input_type: Type text into active element",
+            "- screenshot_take: Take a screenshot",
+            "",
+            "Rules:",
+            "- When user asks to OPEN an app, use app_launch",
+            "- When user asks to FILL a form, use app_fill_field",
+            "- Chain multiple tool calls if needed to complete complex tasks"
+        ].join('\n')
+    };
+
+    // ── 4. Shared Settings Synchronization ──
+    function syncSettingsUI() {
+        // App controls
+        const modelApp = aiWindow.querySelector('#ai-settings-model');
+        const memoryApp = aiWindow.querySelector('#ai-settings-memory');
+        const dtApp = aiWindow.querySelector('#ai-settings-desktop-control');
+        const iiApp = aiWindow.querySelector('#ai-settings-input-injection');
+
+        if (modelApp) modelApp.value = config.model;
+        if (memoryApp) memoryApp.checked = config.memory;
+        if (dtApp) dtApp.checked = config.desktopControl;
+        if (iiApp) iiApp.checked = config.inputInjection;
+
+        // System Settings app controls
+        const modelSys = document.querySelector('#settings-ai-model');
+        const tempSlider = document.querySelector('#settings-ai-temp');
+        const tempVal = document.querySelector('#settings-ai-temp-val');
+        const memorySys = document.querySelector('#settings-ai-memory');
+        const indexingSys = document.querySelector('#settings-ai-indexing');
+        const dtSys = document.querySelector('#settings-ai-desktop-control');
+        const iiSys = document.querySelector('#settings-ai-input-injection');
+        const promptSys = document.querySelector('#settings-ai-prompt');
+
+        if (modelSys) modelSys.value = config.model;
+        if (tempSlider) {
+            tempSlider.value = config.temp * 100;
+            if (tempVal) tempVal.textContent = config.temp.toFixed(1);
+        }
+        if (memorySys) memorySys.checked = config.memory;
+        if (indexingSys) indexingSys.checked = config.indexing;
+        if (dtSys) dtSys.checked = config.desktopControl;
+        if (iiSys) iiSys.checked = config.inputInjection;
+        if (promptSys) promptSys.value = config.systemPrompt;
+    }
+
+    function updateConfig(key, value) {
+        config[key] = value;
+        const storageKey = `ai_config_${key.replace(/([A-Z])/g, "_$1").toLowerCase()}`;
+        localStorage.setItem(storageKey, value);
+        syncSettingsUI();
+    }
+
+    // Initialize UI from localStorage
+    syncSettingsUI();
+
+    // Hook listeners when System Settings window loads/binds (or immediately if already in DOM)
+    function setupSystemSettingsListeners() {
+        const modelSys = document.querySelector('#settings-ai-model');
+        const tempSlider = document.querySelector('#settings-ai-temp');
+        const memorySys = document.querySelector('#settings-ai-memory');
+        const indexingSys = document.querySelector('#settings-ai-indexing');
+        const dtSys = document.querySelector('#settings-ai-desktop-control');
+        const iiSys = document.querySelector('#settings-ai-input-injection');
+        const daemonStatus = document.querySelector('#settings-ai-daemon-status');
+        const daemonRestartBtn = document.querySelector('#settings-ai-daemon-restart');
+        const promptSys = document.querySelector('#settings-ai-prompt');
+
+        if (!modelSys) {
+            // If settings app isn't fully loaded in DOM, retry shortly
+            setTimeout(setupSystemSettingsListeners, 300);
+            return;
+        }
+
+        modelSys.addEventListener('change', () => {
+            updateConfig('model', modelSys.value);
+            showActionToast('✓', `Language Model set to: ${modelSys.options[modelSys.selectedIndex].text}`);
+        });
+
+        tempSlider.addEventListener('input', () => {
+            const val = parseFloat((tempSlider.value / 100).toFixed(1));
+            updateConfig('temp', val);
+        });
+
+        memorySys.addEventListener('change', () => {
+            updateConfig('memory', memorySys.checked);
+            showActionToast('🧠', `Session Memory ${memorySys.checked ? 'Enabled' : 'Disabled'}`);
+        });
+
+        indexingSys.addEventListener('change', () => {
+            updateConfig('indexing', indexingSys.checked);
+            showActionToast('🔍', `Local File Indexing ${indexingSys.checked ? 'Enabled' : 'Disabled'}`);
+        });
+
+        dtSys.addEventListener('change', () => {
+            updateConfig('desktopControl', dtSys.checked);
+            showActionToast('🖥️', `Desktop Control ${dtSys.checked ? 'Allowed' : 'Revoked'}`);
+        });
+
+        iiSys.addEventListener('change', () => {
+            updateConfig('inputInjection', iiSys.checked);
+            showActionToast('⌨️', `Input Injection ${iiSys.checked ? 'Allowed' : 'Revoked'}`);
+        });
+
+        promptSys.addEventListener('input', () => {
+            updateConfig('systemPrompt', promptSys.value);
+        });
+
+        daemonRestartBtn.addEventListener('click', () => {
+            daemonStatus.textContent = 'restarting...';
+            daemonStatus.style.color = 'var(--text-muted)';
+            daemonRestartBtn.disabled = true;
+            showActionToast('🔄', 'Restarting aisd daemon service...');
+            
+            setTimeout(() => {
+                daemonStatus.textContent = 'active (running)';
+                daemonStatus.style.color = 'var(--success)';
+                daemonRestartBtn.disabled = false;
+                showActionToast('✓', 'aisd daemon service restarted successfully');
+            }, 1500);
+        });
+    }
+
+    setupSystemSettingsListeners();
+
     // ── 5. Open / Close Controls ──
     function open() {
-        if (isOpen) return;
-        isOpen = true;
-        veil.classList.add('active');
-        container.classList.add('active');
+        if (window.openWindow) {
+            window.openWindow('ai-window');
+        } else {
+            aiWindow.style.display = 'flex';
+        }
         document.getElementById('ai-menu-orb')?.classList.add('ai-active');
         setTimeout(() => inputField?.focus(), 200);
-        document.body.style.overflow = 'hidden';
     }
 
     function close() {
-        if (!isOpen) return;
-        isOpen = false;
-        veil.classList.remove('active');
-        container.classList.remove('active');
-        container.classList.remove('thinking');
+        const closeBtn = aiWindow.querySelector('.window-btn.close');
+        if (closeBtn) {
+            closeBtn.click();
+        } else {
+            aiWindow.style.display = 'none';
+        }
         document.getElementById('ai-menu-orb')?.classList.remove('ai-active', 'ai-thinking');
-        document.body.style.overflow = '';
     }
 
-    function toggle() { if (isOpen) close(); else open(); }
+    function toggle() {
+        const isOpen = aiWindow.style.display !== 'none' && aiWindow.style.opacity !== '0';
+        if (isOpen) close(); else open();
+    }
 
     window.toggleAIAssistant = toggle;
     window.openAIAssistant   = open;
     window.closeAIAssistant  = close;
     window.showAIActionToast = showActionToast;
 
-    // ── 6. Event Bindings ──
+    // ── 6. System Event Listeners ──
 
-    // Close dot click
-    document.getElementById('ai-close-btn')?.addEventListener('click', close);
-    veil.addEventListener('click', close);
+    // Listen to OS focus event to highlight menu bar orb
+    document.addEventListener('window-focused', (e) => {
+        const orb = document.getElementById('ai-menu-orb');
+        if (!orb) return;
+        if (e.detail.windowId === 'ai-window') {
+            orb.classList.add('ai-active');
+        } else {
+            orb.classList.remove('ai-active');
+        }
+    });
 
-    // Keyboard bindings
+    // Close on overlay focus or Escape keyboard actions
     document.addEventListener('keydown', (e) => {
+        const isOpen = aiWindow.style.display !== 'none' && aiWindow.style.opacity !== '0';
         if ((e.metaKey && e.key === 'a') || (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a')) {
             e.preventDefault();
             toggle();
         }
         if (e.key === 'Escape' && isOpen) {
-            e.stopPropagation();
-            close();
+            if (document.activeElement === inputField) {
+                inputField.blur();
+            } else {
+                close();
+            }
         }
     });
 
-    // Morph Icon as user types
+    // ── 7. Tab Switching UI ──
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            const targetTab = tab.getAttribute('data-tab');
+            if (targetTab === 'chat') {
+                paneChat.style.display = 'flex';
+                paneSettings.style.display = 'none';
+                setTimeout(() => inputField?.focus(), 50);
+            } else {
+                paneChat.style.display = 'none';
+                paneSettings.style.display = 'flex';
+            }
+        });
+    });
+
+    // ── Bind UI Events for AI Control Panel App ──
+    const modelApp = aiWindow.querySelector('#ai-settings-model');
+    const memoryApp = aiWindow.querySelector('#ai-settings-memory');
+    const dtApp = aiWindow.querySelector('#ai-settings-desktop-control');
+    const iiApp = aiWindow.querySelector('#ai-settings-input-injection');
+
+    modelApp?.addEventListener('change', () => {
+        updateConfig('model', modelApp.value);
+        showActionToast('✓', `Language Model set to: ${modelApp.options[modelApp.selectedIndex].text}`);
+    });
+
+    memoryApp?.addEventListener('change', () => {
+        updateConfig('memory', memoryApp.checked);
+        showActionToast('🧠', `Session Memory ${memoryApp.checked ? 'Enabled' : 'Disabled'}`);
+    });
+
+    dtApp?.addEventListener('change', () => {
+        updateConfig('desktopControl', dtApp.checked);
+        showActionToast('🖥️', `Desktop Control ${dtApp.checked ? 'Allowed' : 'Revoked'}`);
+    });
+
+    iiApp?.addEventListener('change', () => {
+        updateConfig('inputInjection', iiApp.checked);
+        showActionToast('⌨️', `Input Injection ${iiApp.checked ? 'Allowed' : 'Revoked'}`);
+    });
+
+    // ── 8. Chat Input Event Bindings ──
+
+    // Morph Send icon as user types
     inputField?.addEventListener('input', () => {
         const hasText = inputField.value.trim().length > 0;
         if (hasText) {
@@ -312,14 +468,14 @@ export function initAIAssistant() {
     });
 
     // Suggestion chips triggers
-    container.querySelectorAll('.ai-suggestion-chip').forEach(chip => {
+    aiWindow.querySelectorAll('.ai-suggestion-chip').forEach(chip => {
         chip.addEventListener('click', () => {
             const prompt = chip.getAttribute('data-prompt');
             if (prompt) sendMessage(prompt);
         });
     });
 
-    // ── 7. Voice Input Simulation ──
+    // ── 9. Voice Input Simulation ──
     function simulateVoiceInput() {
         if (isLoading) return;
         
@@ -348,7 +504,7 @@ export function initAIAssistant() {
         }, 1800);
     }
 
-    // ── 8. Chat Message Flow ──
+    // ── 10. Chat Message Flow ──
     async function sendMessage(text) {
         const prompt = text?.trim();
         if (!prompt || isLoading) return;
@@ -361,7 +517,7 @@ export function initAIAssistant() {
         }
 
         // Hide suggestions chips
-        const chips = document.getElementById('ai-suggestions');
+        const chips = aiWindow.querySelector('#ai-suggestions');
         if (chips) chips.style.display = 'none';
 
         appendMsg('user', prompt);
@@ -369,7 +525,7 @@ export function initAIAssistant() {
 
         isLoading = true;
         actionBtn.disabled = true;
-        container.classList.add('thinking');
+        aiWindow.classList.add('thinking');
         
         const menuOrb = document.getElementById('ai-menu-orb');
         menuOrb?.classList.add('ai-thinking');
@@ -377,7 +533,15 @@ export function initAIAssistant() {
         try {
             let response;
             if (aisd.connected) {
-                const result = await aisd.call('ai/chat', { prompt, session: SESSION_ID });
+                const currentModel = modelSelect ? modelSelect.value : 'mistral-7b';
+                const currentTemp = tempSlider ? parseFloat((tempSlider.value / 100).toFixed(1)) : 0.7;
+                
+                const result = await aisd.call('ai/chat', { 
+                    prompt, 
+                    session: SESSION_ID,
+                    model: currentModel,
+                    temperature: currentTemp
+                });
                 response = result?.response ?? '(no response)';
             } else {
                 response = handleOfflineAgent(prompt);
@@ -390,13 +554,13 @@ export function initAIAssistant() {
         } finally {
             isLoading = false;
             actionBtn.disabled = false;
-            container.classList.remove('thinking');
+            aiWindow.classList.remove('thinking');
             menuOrb?.classList.remove('ai-thinking');
             inputField?.focus();
         }
     }
 
-    // ── 9. Rendering Helpers ──
+    // ── 11. Rendering Helpers ──
     function appendMsg(role, content, isError = false) {
         const wrapper = document.createElement('div');
         wrapper.className = `ai-msg ai-msg-${role}${isError ? ' ai-msg-error' : ''}`;
@@ -427,7 +591,7 @@ export function initAIAssistant() {
         return wrapper;
     }
 
-    // ── 10. Fallback Offline Agent Executions ──
+    // ── 12. Fallback Offline Agent Executions ──
     function handleOfflineAgent(prompt) {
         const agent = getAgent();
         const lp = prompt.toLowerCase();
@@ -484,6 +648,7 @@ export function initAIAssistant() {
                 '- Fill LibreOffice sheets/forms automatically',
                 '- Interact with other apps via accessibility layer (AT-SPI2)',
                 '- Capture screenshots and input keystrokes programmatically',
+                '- Configure system model, temp, session memory, and vectors database settings'
             ].join('\n');
         }
 

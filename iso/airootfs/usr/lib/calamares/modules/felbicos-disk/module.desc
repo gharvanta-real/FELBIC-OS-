@@ -1,0 +1,6 @@
+# module.desc — Module descriptor for disk setup
+---
+type:       "job"
+name:       "felbicos-disk"
+interface:  "python"
+script:     "main.py"

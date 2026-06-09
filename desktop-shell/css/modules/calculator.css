@@ -19,11 +19,11 @@
 .calculator-content {
     display: flex;
     flex-direction: column;
-    height: calc(100% - 34px);
-    background-color: var(--bg-secondary);
+    height: calc(100% - var(--ui-titlebar-height));
+    background-color: var(--app-content-bg);
     position: relative;
     overflow: hidden;
-    padding: 12px;
+    padding: var(--ui-space-sm);
     box-sizing: border-box;
 }
 
@@ -32,13 +32,13 @@
     background-color: var(--surface-1);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
-    padding: 14px 18px;
+    padding: 14px var(--ui-space-md);
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     justify-content: center;
     height: 80px;
-    margin-bottom: 12px;
+    margin-bottom: var(--ui-space-sm);
     box-sizing: border-box;
 }
 
@@ -70,7 +70,7 @@
 .calculator-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+    gap: var(--ui-space-xs);
     flex: 1;
 }
 
@@ -136,15 +136,15 @@
 .calc-btn.double-width {
     grid-column: span 2;
     justify-content: flex-start;
-    padding-left: 22px;
+    padding-left: var(--ui-space-lg);
 }
 
 /* Scientific Panel Layout */
 .calculator-scientific-panel {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
-    margin-top: 8px;
+    gap: var(--ui-space-xs);
+    margin-top: var(--ui-space-xs);
 }
 
 .calc-btn.scientific {

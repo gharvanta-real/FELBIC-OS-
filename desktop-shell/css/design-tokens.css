@@ -49,21 +49,41 @@
     --icon-topbar: 13px; /* topbar icon size */
     --icon-sidebar: 16px;/* sidebar nav icons */
 
-    /* ── Dark Theme (Default — AIOS Identity) ── */
-    --bg-primary:   #0B1020;
-    --bg-secondary: #111827;
-    --bg-tertiary:  #161D2B;
-    --bg-elevated:  #161D2B;
+    /* ── Aurora OS Styling Tokens (Dark Space) ── */
+    --brand:          #6C63FF;
+    --brand-hover:    #7E77FF;
+    --brand-soft:     rgba(108, 99, 255, 0.14);
+    --bg:             #0b0a1a;
+    --surface:        rgba(30, 30, 34, 0.94);
+    --glass-bg:       rgba(15, 12, 35, 0.92);
+    --glass-border:   rgba(255, 255, 255, 0.15);
+    --glass-blur:     blur(40px);
+    --input-bg:       rgba(255, 255, 255, 0.10);
 
-    --surface-1: rgba(18, 24, 36, 0.78);
-    --surface-2: rgba(22, 29, 43, 0.92);
-    --surface-3: rgba(255, 255, 255, 0.04);
+    /* ── App Aurora Tokens (The "Aurora" Aesthetic) ── */
+    --app-glass-bg:      var(--glass-bg);
+    --app-glass-blur:    var(--glass-blur);
+    --app-sidebar-bg:    rgba(0, 0, 0, 0.40);
+    --app-header-bg:     rgba(255, 255, 255, 0.05);
+    --app-content-bg:    rgba(255, 255, 255, 0.02);
+    --app-border:        var(--glass-border);
+
+    /* ── Dark Theme (Default — AIOS Identity) ── */
+    --bg-primary:     var(--bg);
+    --bg-secondary:   #121026;
+    --bg-tertiary:    #181533;
+    --bg-elevated:    #181533;
+
+    --surface-1:      var(--surface);
+    --surface-2:      var(--glass-bg);
+    --surface-3:      rgba(255, 255, 255, 0.04);
+    --surface-strong: rgba(255, 255, 255, 0.05);
 
     --surface-hover:  rgba(255, 255, 255, 0.07);
     --surface-active: rgba(255, 255, 255, 0.11);
 
     --border-subtle:  rgba(255, 255, 255, 0.04);
-    --border-default: rgba(255, 255, 255, 0.08);
+    --border-default: var(--glass-border);
     --border-strong:  rgba(255, 255, 255, 0.14);
 
     --text-primary:   #f0f4ff;
@@ -71,9 +91,9 @@
     --text-muted:     #7a8499;
 
     /* Identity Accent */
-    --accent-primary: #5a7fff;
-    --accent-hover:   #7296ff;
-    --accent-soft:    rgba(90, 127, 255, 0.14);
+    --accent-primary: var(--brand);
+    --accent-hover:   var(--brand-hover);
+    --accent-soft:    var(--brand-soft);
 
     /* Semantic Status */
     --success: #10b981;
@@ -163,6 +183,27 @@
     --radius-xl:  24px;
     --radius-full: 9999px;
 
+    /* ── Global UI Layout & Spacing System ── */
+    --ui-space-unit:   4px;
+    --ui-space-2xs:    calc(var(--ui-space-unit) * 1); /* 4px */
+    --ui-space-xs:     calc(var(--ui-space-unit) * 2); /* 8px */
+    --ui-space-sm:     calc(var(--ui-space-unit) * 3); /* 12px */
+    --ui-space-md:     calc(var(--ui-space-unit) * 4); /* 16px */
+    --ui-space-lg:     calc(var(--ui-space-unit) * 6); /* 24px */
+    --ui-space-xl:     calc(var(--ui-space-unit) * 8); /* 32px */
+
+    --ui-sidebar-width:     200px;
+    --ui-sidebar-narrow:    180px;
+    --ui-sidebar-wide:      240px;
+    --ui-header-height:     46px;
+    --ui-titlebar-height:   34px;
+
+    --ui-app-padding:       var(--ui-space-lg);
+    --ui-card-padding:      var(--ui-space-sm);
+    --ui-sidebar-padding:   var(--ui-space-sm);
+    --ui-item-gap:          var(--ui-space-2xs);
+    --ui-section-gap:       var(--ui-space-lg);
+
     /* ── Shadow System ── */
     --shadow-xs:     0 1px 2px rgba(0, 0, 0, 0.12);
     --shadow-sm:     0 2px 4px rgba(0, 0, 0, 0.16);
@@ -178,17 +219,17 @@
     --scrollbar-thumb-hover: rgba(255, 255, 255, 0.28);
 
     /* ── Layout & Sizing ── */
-    --topbar-height:   28px;
+    --topbar-height:   40px;
 
-    --dock-height:     70px;
+    --dock-height:     74px;
     --dock-width:      auto;
     --dock-radius:     22px;
     --dock-item-size:  46px;
     --dock-item-radius: 12px;
 
     --blur-sm:    blur(4px);
-    --blur-md:    blur(8px);
-    --blur-lg:    blur(16px);
+    --blur-md:    var(--glass-blur);
+    --blur-lg:    blur(48px);
 
     /* Legacy aliases */
     --blur-intensity-light:  var(--blur-md);
@@ -211,27 +252,46 @@
    ============================================================ */
 body.light-theme {
 
-    --bg-primary:   #F4F6FB;
-    --bg-secondary: #EAEEF5;
-    --bg-tertiary:  #FFFFFF;
-    --bg-elevated:  #FFFFFF;
+    /* ── Aurora OS Styling Tokens (Light Quartz) ── */
+    --brand:          #6C63FF;
+    --brand-hover:    #5B52EE;
+    --brand-soft:     rgba(108, 99, 255, 0.10);
+    --bg:             #F4F6FB;
+    --surface:        rgba(246, 246, 246, 0.95);
+    --glass-bg:       rgba(255, 255, 255, 0.90);
+    --glass-border:   rgba(0, 0, 0, 0.12);
+    --glass-blur:     blur(40px);
+    --input-bg:       rgba(255, 255, 255, 0.72);
 
-    --surface-1: rgba(255, 255, 255, 0.80);
-    --surface-2: rgba(255, 255, 255, 0.94);
-    --surface-3: rgba(0, 0, 0, 0.025);
+    /* ── App Aurora Tokens (Light) ── */
+    --app-glass-bg:      var(--glass-bg);
+    --app-glass-blur:    var(--glass-blur);
+    --app-sidebar-bg:    rgba(0, 0, 0, 0.04);
+    --app-header-bg:     rgba(0, 0, 0, 0.02);
+    --app-content-bg:    rgba(0, 0, 0, 0.01);
+    --app-border:        var(--glass-border);
+
+    --bg-primary:     var(--bg);
+    --bg-secondary:   #EAEEF5;
+    --bg-tertiary:    #FFFFFF;
+    --bg-elevated:    #FFFFFF;
+
+    --surface-1:      var(--surface);
+    --surface-2:      var(--glass-bg);
+    --surface-3:      rgba(0, 0, 0, 0.025);
 
     --surface-hover:  rgba(0, 0, 0, 0.05);
     --surface-active: rgba(0, 0, 0, 0.09);
 
     --border-subtle:  rgba(0, 0, 0, 0.04);
-    --border-default: rgba(0, 0, 0, 0.09);
+    --border-default: var(--glass-border);
     --border-strong:  rgba(0, 0, 0, 0.16);
 
     --text-primary:   #111827;
     --text-secondary: #4b5563;
     --text-muted:     #6b7280;
 
-    --accent-soft: rgba(90, 127, 255, 0.10);
+    --accent-soft:    var(--brand-soft);
 
     --desktop-icon-shadow:     0 1px 2px rgba(0, 0, 0, 0.12);
     --desktop-icon-text-color: var(--text-primary);
@@ -284,5 +344,10 @@ body.light-theme {
 
     --color-success: var(--success);
     --color-warning: var(--warning);
+    --color-danger:  var(--danger);
+}
+ger);
+}
+);
     --color-danger:  var(--danger);
 }

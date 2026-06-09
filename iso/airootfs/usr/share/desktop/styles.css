@@ -1,0 +1,153 @@
+/* AIOS Desktop Environment — Liquid Glass Tahoe Stylesheet */
+
+* {
+    font-family: "Inter", "Cantarell", "Segoe UI", "sans-serif";
+    font-size: 14px;
+}
+
+/* Glassmorphism Panels */
+.glass-panel {
+    background-color: rgba(20, 20, 28, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+}
+
+.top-bar-window {
+    background-color: rgba(15, 15, 22, 0.85);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.top-bar-title {
+    font-weight: 700;
+    color: #ffffff;
+    font-size: 15px;
+}
+
+.clock-widget {
+    font-weight: 500;
+    color: #e2e8f0;
+}
+
+/* AI Status Widget colors */
+.ai-status-idle {
+    background: radial-gradient(circle, #8b5cf6 0%, #6d28d9 100%);
+    border-radius: 50%;
+    min-width: 10px;
+    min-height: 10px;
+    box-shadow: 0 0 10px rgba(139, 92, 246, 0.6);
+}
+
+.ai-status-thinking {
+    background: radial-gradient(circle, #3b82f6 0%, #1d4ed8 100%);
+    border-radius: 50%;
+    min-width: 10px;
+    min-height: 10px;
+    box-shadow: 0 0 14px rgba(59, 130, 246, 0.8);
+}
+
+.ai-status-error {
+    background: radial-gradient(circle, #f59e0b 0%, #b45309 100%);
+    border-radius: 50%;
+    min-width: 10px;
+    min-height: 10px;
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+}
+
+/* Liquid Glass Bottom Dock */
+.dock-window {
+    background-color: rgba(22, 22, 33, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+    padding: 6px 12px;
+}
+
+.dock-icon-btn {
+    background: transparent;
+    border: none;
+    padding: 6px;
+    border-radius: 12px;
+    transition: all 200ms ease;
+}
+
+.dock-icon-btn:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    transform: scale(1.15);
+}
+
+/* Spotlight Launcher overlay */
+.launcher-card {
+    background-color: rgba(24, 24, 37, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.6);
+    padding: 18px;
+}
+
+.launcher-search-entry {
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: #ffffff;
+    font-size: 16px;
+    padding: 10px 14px;
+}
+
+.launcher-search-entry:focus {
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
+}
+
+.launcher-suggestion-row {
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: #cbd5e1;
+    transition: all 150ms ease;
+}
+
+.launcher-suggestion-row:hover {
+    background-color: rgba(139, 92, 246, 0.15);
+    color: #ffffff;
+}
+
+/* Semantic File Manager Sidebar */
+.ai-sidebar {
+    background-color: rgba(18, 18, 26, 0.9);
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 12px;
+}
+
+.ai-sidebar-title {
+    font-weight: 700;
+    color: #c084fc;
+    font-size: 16px;
+}
+
+.ai-chat-area {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    color: #e2e8f0;
+    padding: 8px;
+}
+
+.ai-input-entry {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    color: #ffffff;
+    padding: 6px 10px;
+}
+
+/* Quick Settings Popover Menu */
+.quick-settings-menu {
+    background-color: rgba(22, 22, 30, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    padding: 12px;
+}
+
+.settings-slider {
+    color: #8b5cf6;
+}

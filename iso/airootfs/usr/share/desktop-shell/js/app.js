@@ -67,6 +67,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const calendarWin = document.getElementById('calendar-window');
     const notesWin = document.getElementById('notes-window');
     const clockWin = document.getElementById('clock-app-window');
+    const aiWin = document.getElementById('ai-window');
     if (paintWin) registerWindow(paintWin);
     if (mediaWin) registerWindow(mediaWin);
     if (chatWin) registerWindow(chatWin);
@@ -74,6 +75,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (calendarWin) registerWindow(calendarWin);
     if (notesWin) registerWindow(notesWin);
     if (clockWin) registerWindow(clockWin);
+    if (aiWin) registerWindow(aiWin);
 
     // Initialize paint, media, chat, calculator, calendar, notes, clock app logics
     initPaintApp();
@@ -109,6 +111,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 else if (targetId === 'calendar-window') appName = 'calendar';
                 else if (targetId === 'notes-window') appName = 'notes';
                 else if (targetId === 'clock-app-window') appName = 'clock';
+                else if (targetId === 'ai-window') appName = 'ai';
 
                 const dockItem = appName ? document.querySelector(`.dock-item[data-app="${appName}"]`) : null;
                 
@@ -167,6 +170,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             else if (windowId === 'calendar-window') appName = 'calendar';
             else if (windowId === 'notes-window') appName = 'notes';
             else if (windowId === 'clock-app-window') appName = 'clock';
+            else if (windowId === 'ai-window') appName = 'ai';
 
             const dockItem = appName ? document.querySelector(`.dock-item[data-app="${appName}"]`) : null;
 
@@ -468,6 +472,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 openWindow('notes-window');
             } else if (appName === 'clock') {
                 openWindow('clock-app-window');
+            } else if (appName === 'ai') {
+                openWindow('ai-window');
             } else if (appName === 'trash') {
                 showDialog.alert('Trash is empty.', 'Trash Bin');
             }

@@ -263,7 +263,21 @@ async fn dispatch_result(req: RawRequest, uid: u32) -> std::result::Result<serde
             "process/list",
             "process/kill",
             "system/control",
-            "ai/query"
+            "ai/query",
+            "ai/chat",
+            "ai/clear-session",
+            "app/list-windows",
+            "app/find-elements",
+            "app/click",
+            "app/type",
+            "app/fill-field",
+            "app/launch",
+            "app/shortcut",
+            "app/save",
+            "input/type",
+            "input/click",
+            "input/key",
+            "screenshot/take"
         ])),
         "stats/get" => {
             require(uid, method, Capability::StatsRead)?;
@@ -363,6 +377,173 @@ async fn dispatch_result(req: RawRequest, uid: u32) -> std::result::Result<serde
                 .map(|resp| serde_json::json!({ "response": resp }))
                 .map_err(|e| e.to_string())
         }
+        "ai/chat" => {
+            require(uid, method, Capability::StatsRead)?;
+            let prompt = params
+                .get("prompt")
+                .and_then(|v| v.as_str())
+                .ok_or_else(|| "Missing prompt parameter".to_string())?;
+            let session = params
+                .get("session")
+                .and_then(|v| v.as_str())
+                .unwrap_or("default");
+            crate::inference::chat(prompt, session)
+                .await
+                .map(|resp| serde_json::json!({ "response": resp, "session": session }))
+                .map_err(|e| e.to_string())
+        }
+        "ai/clear-session" => {
+            require(uid, method, Capability::StatsRead)?;
+            let session = params
+                .get("session")
+                .and_then(|v| v.as_str())
+                .unwrap_or("default");
+            crate::inference::clear_session(session).await;
+            Ok(serde_json::json!({ "cleared": true, "session": session }))
+        }
+
+        // ── Agent: App Control via AT-SPI2 ─────────────────────────────────
+
+        "app/list-windows" => {
+            require(uid, method, Capability::StatsRead)?;
+            tokio::task::spawn_blocking(|| crate::atspi::list_accessible_apps())
+                .await
+                .map_err(|e| e.to_string())?
+                .map(|apps| serde_json::json!({ "windows": apps }))
+                .map_err(|e| e.to_string())
+        }
+        "app/find-elements" => {
+            require(uid, method, Capability::StatsRead)?;
+            let app_name = params.get("app").and_then(|v| v.as_str()).unwrap_or("");
+            let role = params.get("role").and_then(|v| v.as_str());
+            let name = params.get("name").and_then(|v| v.as_str());
+            let app_owned = app_name.to_string();
+            let role_owned = role.map(|s| s.to_string());
+            let name_owned = name.map(|s| s.to_string());
+            tokio::task::spawn_blocking(move || {
+                crate::atspi::find_elements(
+                    &app_owned,
+                    role_owned.as_deref(),
+                    name_owned.as_deref(),
+                )
+            })
+            .await
+            .map_err(|e| e.to_string())?
+            .map(|els| serde_json::json!({ "elements": els }))
+            .map_err(|e| e.to_string())
+        }
+        "app/click" => {
+            require(uid, method, Capability::FsWrite)?;
+            let app_name = params.get("app").and_then(|v| v.as_str()).unwrap_or("").to_string();
+            let path: Vec<i32> = params.get("path")
+                .and_then(|v| v.as_array())
+                .map(|arr| arr.iter().filter_map(|v| v.as_i64().map(|n| n as i32)).collect())
+                .unwrap_or_default();
+            tokio::task::spawn_blocking(move || crate::atspi::click_element(&app_name, &path))
+                .await
+                .map_err(|e| e.to_string())?
+                .map(|_| serde_json::json!({ "clicked": true }))
+                .map_err(|e| e.to_string())
+        }
+        "app/type" => {
+            require(uid, method, Capability::FsWrite)?;
+            let app_name = params.get("app").and_then(|v| v.as_str()).unwrap_or("").to_string();
+            let path: Vec<i32> = params.get("path")
+                .and_then(|v| v.as_array())
+                .map(|arr| arr.iter().filter_map(|v| v.as_i64().map(|n| n as i32)).collect())
+                .unwrap_or_default();
+            let text = params.get("text").and_then(|v| v.as_str()).unwrap_or("").to_string();
+            tokio::task::spawn_blocking(move || crate::atspi::type_text(&app_name, &path, &text))
+                .await
+                .map_err(|e| e.to_string())?
+                .map(|_| serde_json::json!({ "typed": true }))
+                .map_err(|e| e.to_string())
+        }
+        "app/fill-field" => {
+            require(uid, method, Capability::FsWrite)?;
+            let app_name = params.get("app").and_then(|v| v.as_str()).unwrap_or("").to_string();
+            let label = params.get("label").and_then(|v| v.as_str()).unwrap_or("").to_string();
+            let value = params.get("value").and_then(|v| v.as_str()).unwrap_or("").to_string();
+            let label_clone = label.clone();
+            let value_clone = value.clone();
+            tokio::task::spawn_blocking(move || crate::atspi::fill_form_field(&app_name, &label, &value))
+                .await
+                .map_err(|e| e.to_string())?
+                .map(|_| serde_json::json!({ "filled": true, "label": label_clone, "value": value_clone }))
+                .map_err(|e| e.to_string())
+        }
+        "app/launch" => {
+            require(uid, method, Capability::FsWrite)?;
+            let app_name = params.get("app").and_then(|v| v.as_str()).unwrap_or("").to_string();
+            crate::uinput::launch_app(&app_name)
+                .await
+                .map(|pid| serde_json::json!({ "launched": true, "pid": pid }))
+                .map_err(|e| e.to_string())
+        }
+        "app/shortcut" => {
+            require(uid, method, Capability::StatsRead)?;
+            let keys: Vec<String> = params.get("keys")
+                .and_then(|v| v.as_array())
+                .map(|arr| arr.iter().filter_map(|v| v.as_str().map(|s| s.to_string())).collect())
+                .unwrap_or_default();
+            let key_refs: Vec<&str> = keys.iter().map(|s| s.as_str()).collect();
+            crate::uinput::keyboard_shortcut(&key_refs)
+                .await
+                .map(|_| serde_json::json!({ "sent": true, "keys": keys }))
+                .map_err(|e| e.to_string())
+        }
+        "app/save" => {
+            require(uid, method, Capability::StatsRead)?;
+            crate::uinput::save_document()
+                .await
+                .map(|_| serde_json::json!({ "saved": true }))
+                .map_err(|e| e.to_string())
+        }
+
+        // ── Agent: Raw Input Injection ─────────────────────────────────────
+
+        "input/type" => {
+            require(uid, method, Capability::FsWrite)?;
+            let text = params.get("text").and_then(|v| v.as_str()).unwrap_or("").to_string();
+            crate::uinput::type_string(&text)
+                .await
+                .map(|_| serde_json::json!({ "typed": text.len() }))
+                .map_err(|e| e.to_string())
+        }
+        "input/click" => {
+            require(uid, method, Capability::FsWrite)?;
+            let x = params.get("x").and_then(|v| v.as_i64()).unwrap_or(0) as i32;
+            let y = params.get("y").and_then(|v| v.as_i64()).unwrap_or(0) as i32;
+            crate::uinput::mouse_click(x, y)
+                .await
+                .map(|_| serde_json::json!({ "clicked": true, "x": x, "y": y }))
+                .map_err(|e| e.to_string())
+        }
+        "input/key" => {
+            require(uid, method, Capability::StatsRead)?;
+            let key = params.get("key").and_then(|v| v.as_str()).unwrap_or("").to_string();
+            crate::uinput::keyboard_shortcut(&[key.as_str()])
+                .await
+                .map(|_| serde_json::json!({ "sent": true }))
+                .map_err(|e| e.to_string())
+        }
+
+        // ── Screenshot ─────────────────────────────────────────────────────
+
+        "screenshot/take" => {
+            require(uid, method, Capability::StatsRead)?;
+            let path = params
+                .get("path")
+                .and_then(|v| v.as_str())
+                .unwrap_or("/tmp/aios-screenshot.png")
+                .to_string();
+            tokio::task::spawn_blocking(move || crate::atspi::take_screenshot(&path))
+                .await
+                .map_err(|e| e.to_string())?
+                .map(|saved_path| serde_json::json!({ "path": saved_path }))
+                .map_err(|e| e.to_string())
+        }
+
         other => Err(format!("Method not found: {}", other)),
     }
 }

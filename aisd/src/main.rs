@@ -9,12 +9,14 @@ use std::time::Duration;
 use tracing::info;
 
 mod acl;
+mod atspi;
 mod browser;
 mod display;
 mod fs;
 mod inference;
 mod ipc;
 mod process;
+mod uinput;
 
 fn systemd_notify(state: &str) {
     if std::env::var_os("NOTIFY_SOCKET").is_none() {
@@ -50,12 +52,28 @@ async fn main() -> Result<()> {
 
     info!(version = env!("CARGO_PKG_VERSION"), "aisd starting");
 
+    // Build the initial file index on startup (non-blocking)
+    {
+        let root = fs::get_fs_root();
+        tokio::task::spawn_blocking(move || {
+            match fs::rebuild_index() {
+                Ok(n) => tracing::info!("Initial file index built: {} files", n),
+                Err(e) => tracing::warn!("Initial index build failed: {}", e),
+            }
+            drop(root);
+        });
+    }
+
+    // Start IPC server (WebSocket + Unix msgpack)
     ipc::start().await?;
+
+    // Start filesystem watcher (inotify on Linux, polling fallback elsewhere)
+    fs::watcher::spawn_watcher();
 
     systemd_notify("--ready");
     spawn_watchdog_notifier();
 
-    info!("aisd initialized - Phase 1 WebSocket daemon");
+    info!("aisd initialized — IPC + FS watcher + inference ready");
 
     wait_for_shutdown().await?;
     info!("aisd shutting down");

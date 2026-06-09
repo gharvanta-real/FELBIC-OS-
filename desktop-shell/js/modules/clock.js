@@ -2,7 +2,8 @@
 
 export function initClock(elementId) {
     const clockElement = document.getElementById(elementId);
-    if (!clockElement) return;
+    const dateEl = document.getElementById('topbar-date');
+    const timeEl = document.getElementById('topbar-time');
 
     function updateTime() {
         const now = new Date();
@@ -22,7 +23,15 @@ export function initClock(elementId) {
         hr = hr ? hr : 12;
         const hrStr = String(hr).padStart(2, '0');
         
-        clockElement.textContent = `${w}, ${m} ${d} • ${hrStr}:${min} ${ampm}`;
+        if (dateEl) {
+            dateEl.textContent = `${w}, ${d} ${m}`;
+        }
+        if (timeEl) {
+            timeEl.textContent = `${hrStr}:${min} ${ampm}`;
+        }
+        if (clockElement) {
+            clockElement.textContent = `${w}, ${m} ${d} • ${hrStr}:${min} ${ampm}`;
+        }
     }
 
     // Run immediately

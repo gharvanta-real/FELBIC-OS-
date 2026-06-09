@@ -64,7 +64,13 @@
             </div>
             
             <div class="settings-sidebar-list">
-                <div class="app-sidebar-item active" data-tab="wifi">
+                <div class="app-sidebar-item active" data-tab="general">
+                    <span class="app-sidebar-icon">
+                        <i class="hgi-stroke hgi-sliders-01"></i>
+                    </span>
+                    <span>General</span>
+                </div>
+                <div class="app-sidebar-item" data-tab="wifi">
                     <span class="app-sidebar-icon">
                         <i class="hgi-stroke hgi-wifi-01"></i>
                     </span>
@@ -106,6 +112,12 @@
                     </span>
                     <span>Storage</span>
                 </div>
+                <div class="app-sidebar-item" data-tab="ai">
+                    <span class="app-sidebar-icon">
+                        <i class="hgi-stroke hgi-ai-brain-01"></i>
+                    </span>
+                    <span>AI Settings</span>
+                </div>
                 <div class="app-sidebar-item" data-tab="about">
                     <span class="app-sidebar-icon">
                         <i class="hgi-stroke hgi-information-circle"></i>
@@ -118,8 +130,58 @@
         <!-- Detail Content -->
         <main class="settings-content app-content">
             
+            <!-- Tab: General -->
+            <section class="settings-tab-pane" id="pane-general">
+                <h2>General</h2>
+                <p class="settings-sub">Manage system preferences and configurations.</p>
+                
+                <div class="settings-row-group">
+                    <div class="settings-row" style="cursor: pointer;">
+                        <span class="row-label">Device Name</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="color: var(--text-muted); font-size: var(--font-size-xs);">Alex's Aurora</span>
+                            <i class="hgi-stroke hgi-arrow-right-01" style="font-size: var(--icon-sm); color: var(--text-muted);"></i>
+                        </div>
+                    </div>
+                    <div class="settings-row" style="cursor: pointer;">
+                        <span class="row-label">Language</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="color: var(--text-muted); font-size: var(--font-size-xs);">English (United States)</span>
+                            <i class="hgi-stroke hgi-arrow-right-01" style="font-size: var(--icon-sm); color: var(--text-muted);"></i>
+                        </div>
+                    </div>
+                    <div class="settings-row" style="cursor: pointer;">
+                        <span class="row-label">Time & Date</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <i class="hgi-stroke hgi-arrow-right-01" style="font-size: var(--icon-sm); color: var(--text-muted);"></i>
+                        </div>
+                    </div>
+                    <div class="settings-row">
+                        <span class="row-label">Software Update</span>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span style="color: var(--text-muted); font-size: var(--font-size-xs);">Aurora OS 1.0.0</span>
+                            <button class="monitor-kill-btn" style="padding: 4px 10px; font-size: 11px; border-radius: 6px; background-color: var(--brand); color: white; border: none; cursor: pointer; transition: background-color var(--transition-fast);">Check for updates</button>
+                        </div>
+                    </div>
+                    <div class="settings-row" style="cursor: pointer;">
+                        <span class="row-label">Backup</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="color: var(--text-muted); font-size: var(--font-size-xs);">Last backup: 2 days ago</span>
+                            <i class="hgi-stroke hgi-arrow-right-01" style="font-size: var(--icon-sm); color: var(--text-muted);"></i>
+                        </div>
+                    </div>
+                    <div class="settings-row" style="cursor: pointer;">
+                        <span class="row-label">Reset</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="color: var(--text-muted); font-size: var(--font-size-xs);">Reset all settings</span>
+                            <i class="hgi-stroke hgi-arrow-right-01" style="font-size: var(--icon-sm); color: var(--text-muted);"></i>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
             <!-- Tab: Wi-Fi -->
-            <section class="settings-tab-pane" id="pane-wifi">
+            <section class="settings-tab-pane" id="pane-wifi" style="display: none;">
                 <h2>Wi-Fi</h2>
                 <p class="settings-sub">Manage wireless network connections.</p>
                 
@@ -363,6 +425,90 @@
                 </div>
             </section>
 
+            <!-- Tab: AI Settings -->
+            <section class="settings-tab-pane" id="pane-ai" style="display: none;">
+                <h2>AI Settings</h2>
+                <p class="settings-sub">Configure end-to-end AIOS Intelligence engine and permissions.</p>
+
+                <div class="settings-section-title" style="margin-top: 10px;">Inference Engine</div>
+                <div class="settings-row-group">
+                    <div class="settings-row">
+                        <span class="row-label">Language Model</span>
+                        <select class="settings-select" id="settings-ai-model" style="width: 170px;">
+                            <option value="mistral-7b">Mistral 7B Instruct (Default)</option>
+                            <option value="qwen-coder">Qwen 2.5 Coder 7B</option>
+                            <option value="phi3-mini">Phi-3 Mini (Low VRAM)</option>
+                            <option value="cloud-gpt">Cloud LLM Hybrid Fallback</option>
+                        </select>
+                    </div>
+                    <div class="settings-row">
+                        <span class="row-label">System Temperature</span>
+                        <div style="display: flex; align-items: center; gap: 10px; flex: 1; justify-content: flex-end;">
+                            <input type="range" class="settings-slider" id="settings-ai-temp" min="10" max="100" value="70" style="width: 100px;">
+                            <span id="settings-ai-temp-val" style="font-size: 11px; width: 24px; text-align: right;">0.7</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section-title">Context & Search</div>
+                <div class="settings-row-group">
+                    <div class="settings-row">
+                        <span class="row-label">Stateful Session Memory</span>
+                        <label class="switch-container">
+                            <input type="checkbox" id="settings-ai-memory" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="settings-row">
+                        <span class="row-label">Local File Indexing (SQLite-Vec)</span>
+                        <label class="switch-container">
+                            <input type="checkbox" id="settings-ai-indexing" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-section-title">Operational Permissions</div>
+                <div class="settings-row-group">
+                    <div class="settings-row">
+                        <div style="display: flex; flex-direction: column; gap: 2px;">
+                            <span class="row-label" style="font-weight: 500;">Allow Desktop Control</span>
+                            <span style="font-size: 10px; color: var(--text-muted);">Enable accessibility AT-SPI2 bridge to let AI control GUI elements</span>
+                        </div>
+                        <label class="switch-container">
+                            <input type="checkbox" id="settings-ai-desktop-control" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="settings-row">
+                        <div style="display: flex; flex-direction: column; gap: 2px;">
+                            <span class="row-label" style="font-weight: 500;">Allow Input Injection</span>
+                            <span style="font-size: 10px; color: var(--text-muted);">Enable synthetic uinput keyboard and mouse events</span>
+                        </div>
+                        <label class="switch-container">
+                            <input type="checkbox" id="settings-ai-input-injection" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-section-title">System Daemon Control</div>
+                <div class="settings-row-group">
+                    <div class="settings-row" style="padding: 10px 14px;">
+                        <div style="display: flex; flex-direction: column; gap: 2px;">
+                            <span class="row-label" style="font-weight: 600;">aisd.service status</span>
+                            <span id="settings-ai-daemon-status" style="font-size: 10.5px; color: var(--success);">active (running)</span>
+                        </div>
+                        <button class="monitor-kill-btn" id="settings-ai-daemon-restart" style="padding: 4px 10px; font-size: 11px; border-radius: 6px; background-color: var(--surface-active); color: var(--text-primary); border: 1px solid var(--border-default); cursor: pointer;">Restart Daemon</button>
+                    </div>
+                </div>
+
+                <div class="settings-section-title">Privileged System Prompt</div>
+                <div class="settings-row-group" style="padding: 10px;">
+                    <textarea id="settings-ai-prompt" class="settings-textarea" style="width: 100%; height: 90px; resize: none;"></textarea>
+                </div>
+            </section>
+
             <!-- Tab: About -->
             <section class="settings-tab-pane" id="pane-about" style="display: none;">
                 <div class="about-branding">
@@ -591,7 +737,7 @@
                 </main>
                 
                 <!-- Slide-out View Options Pane -->
-                <div class="view-options-pane" id="view-options-pane" style="display: none; position: absolute; right: 0; top: 0; width: 200px; height: 100%; background: var(--bg-secondary); border-left: 1px solid var(--border-default); z-index: 100; padding: 14px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; box-shadow: -4px 0 12px rgba(0,0,0,0.15);">
+                <div class="view-options-pane" id="view-options-pane" style="display: none;">
                     <div class="view-options-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-default); padding-bottom: 8px;">
                         <span style="font-size: var(--font-size-sm); font-weight: 700; color: var(--text-primary);">View Options</span>
                         <button id="view-options-close" class="view-options-close-btn" style="background: none; border: none; color: var(--text-primary); cursor: pointer; font-size: 16px;">×</button>
@@ -1592,5 +1738,110 @@
         </div>
     </div>
 </div>
+
+<!-- App 12: AI Control Panel -->
+<div class="window" id="ai-window" style="display: none; width: 880px; height: 560px; min-width: 600px; min-height: 480px;">
+    <div class="window-titlebar">
+        <div class="window-controls">
+            <span class="window-btn close" data-target="ai-window"></span>
+            <span class="window-btn minimize"></span>
+            <span class="window-btn maximize"></span>
+        </div>
+        <div class="window-title">AI Control Panel</div>
+    </div>
+    
+    <div class="window-content" style="padding: 0; display: flex; flex-direction: column; height: 100%; overflow: hidden;">
+        <!-- AI Tabs Header -->
+        <div class="ai-app-tabs">
+            <button class="ai-app-tab active" data-tab="chat"><i class="hgi-stroke hgi-chat-01"></i> Chat</button>
+            <button class="ai-app-tab" data-tab="settings"><i class="hgi-stroke hgi-settings-02"></i> Configuration</button>
+        </div>
+
+        <!-- Tab Panel 1: Chat interface -->
+        <div class="ai-tab-pane" id="ai-pane-chat" style="display: flex; flex-direction: column; flex: 1; min-height: 0; padding: 12px; gap: 10px;">
+            <div class="ai-convo-scroll" id="ai-convo-scroll" style="flex: 1;">
+                <div class="ai-msg ai-msg-assistant ai-msg-welcome">
+                    <div class="ai-msg-bubble">
+                        👋 Hi! I'm Siri.<br>
+                        You can chat with me about anything.<br><br>
+                        <em>Try: "Draw a galaxy" &nbsp;•&nbsp; "Open terminal" &nbsp;•&nbsp; "Write a Python script"</em>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ai-suggestions" id="ai-suggestions">
+                <button class="ai-suggestion-chip" data-prompt="Draw a galaxy on the canvas">Draw Galaxy</button>
+                <button class="ai-suggestion-chip" data-prompt="Show CPU and memory stats">System Stats</button>
+                <button class="ai-suggestion-chip" data-prompt="Open the terminal">Terminal</button>
+                <button class="ai-suggestion-chip" data-prompt="Search for PDF files">Find Files</button>
+                <button class="ai-suggestion-chip" data-prompt="What can you do?">Help</button>
+            </div>
+
+            <div class="ai-input-card" id="ai-input-card">
+                <div class="ai-input-row">
+                    <input 
+                        type="text" 
+                        id="ai-input-field" 
+                        class="ai-input-field" 
+                        placeholder="Type to Siri" 
+                        autocomplete="off" 
+                        spellcheck="false"
+                    >
+                    <button class="ai-input-action-btn" id="ai-input-action-btn" aria-label="Voice Input">
+                        <i class="hgi-stroke hgi-mic-01" id="ai-action-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Panel 2: AI Daemon Settings -->
+        <div class="ai-tab-pane" id="ai-pane-settings" style="display: none; flex-direction: column; flex: 1; overflow-y: auto; padding: 16px; gap: 14px;">
+            <div class="settings-section-title" style="margin-top: 0;">Inference Settings</div>
+            <div class="settings-row-group">
+                <div class="settings-row">
+                    <span class="row-label">Language Model</span>
+                    <select class="settings-select" id="ai-settings-model" style="width: 170px;">
+                        <option value="mistral-7b">Mistral 7B Instruct (Default)</option>
+                        <option value="qwen-coder">Qwen 2.5 Coder 7B</option>
+                        <option value="phi3-mini">Phi-3 Mini (Low VRAM)</option>
+                        <option value="cloud-gpt">Cloud LLM Hybrid Fallback</option>
+                    </select>
+                </div>
+                <div class="settings-row">
+                    <span class="row-label">Stateful Session Memory</span>
+                    <label class="switch-container">
+                        <input type="checkbox" id="ai-settings-memory" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="settings-section-title">Operational Permissions</div>
+            <div class="settings-row-group">
+                <div class="settings-row">
+                    <div style="display: flex; flex-direction: column; gap: 2px;">
+                        <span class="row-label" style="font-weight: 500;">Allow Desktop Control</span>
+                        <span style="font-size: 10px; color: var(--text-muted);">AI can read and control GUI elements</span>
+                    </div>
+                    <label class="switch-container">
+                        <input type="checkbox" id="ai-settings-desktop-control" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="settings-row">
+                    <div style="display: flex; flex-direction: column; gap: 2px;">
+                        <span class="row-label" style="font-weight: 500;">Allow Input Injection</span>
+                        <span style="font-size: 10px; color: var(--text-muted);">AI can send keystrokes & clicks</span>
+                    </div>
+                    <label class="switch-container">
+                        <input type="checkbox" id="ai-settings-input-injection" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 

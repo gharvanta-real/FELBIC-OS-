@@ -181,10 +181,10 @@ function layoutOverview(windows) {
     const count = windows.length;
     if (count === 0) return;
 
-    const topBarHeight = 28;
+    const topBarHeight = 40;
     const padding = 60;
     const screenWidth = window.innerWidth;
-    const screenHeight = window.innerHeight - topBarHeight - 70; // sub dock area
+    const screenHeight = window.innerHeight - topBarHeight - 10; // sub bottom margin
 
     // Determine grid rows and columns
     let cols = 1;
@@ -442,7 +442,7 @@ function createDesktopIcon(name, iconClass, doubleClickAction, initialIndex = 0,
     const paddingX = 28;
     const paddingY = 64; // below topbar
 
-    const gridClientHeight = grid.clientHeight || (window.innerHeight - 118);
+    const gridClientHeight = grid.clientHeight || (window.innerHeight - 60);
     const maxRows = Math.max(1, Math.floor((gridClientHeight - paddingY) / gridHeight));
     const col = Math.floor(initialIndex / maxRows);
     const row = initialIndex % maxRows;
@@ -542,7 +542,7 @@ function cleanUpDesktop() {
     const paddingX = 28;
     const paddingY = 64; // below topbar
 
-    const gridClientHeight = grid.clientHeight || (window.innerHeight - 118);
+    const gridClientHeight = grid.clientHeight || (window.innerHeight - 60);
     const maxRows = Math.max(1, Math.floor((gridClientHeight - paddingY) / gridHeight));
 
     icons.forEach((iconItem, index) => {

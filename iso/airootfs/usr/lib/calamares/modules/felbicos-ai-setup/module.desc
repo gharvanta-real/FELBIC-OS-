@@ -1,0 +1,6 @@
+# module.desc — Module descriptor for AI setup
+---
+type:       "job"
+name:       "felbicos-ai-setup"
+interface:  "python"
+script:     "main.py"

@@ -99,6 +99,9 @@
     height: 480px;
     min-width: 600px;
     min-height: 380px;
+    background-color: var(--glass-bg) !important;
+    backdrop-filter: var(--glass-blur) !important;
+    -webkit-backdrop-filter: var(--glass-blur) !important;
 }
 
 .settings-container {
@@ -120,6 +123,8 @@
     flex-direction: column;
     flex-shrink: 0;
     box-sizing: border-box;
+    background-color: var(--surface-soft) !important;
+    border-right: 1px solid var(--border-default) !important;
 }
 
 .settings-sidebar-list {
@@ -138,8 +143,8 @@
 .settings-search-input {
     width: 100%;
     height: 28px;
-    background-color: var(--surface-1);
-    border: 1px solid var(--border-default);
+    background-color: var(--surface-soft) !important;
+    border: 1px solid var(--border-strong) !important;
     border-radius: var(--radius-xs);
     outline: none;
     color: var(--text-primary);
@@ -151,8 +156,8 @@
 }
 
 .settings-search-input:focus {
-    border-color: var(--accent-primary);
-    background-color: var(--surface-2);
+    border-color: var(--accent-primary) !important;
+    background-color: var(--surface) !important;
 }
 
 .settings-search-icon {
@@ -200,7 +205,10 @@
     color: var(--text-muted);
 }
 
-.settings-content { padding: 28px; }
+.settings-content {
+    padding: 28px;
+    background-color: transparent !important;
+}
 
 .settings-tab-pane h2 {
     font-size: var(--font-size-xl);
@@ -225,8 +233,8 @@
 }
 
 .settings-row-group {
-    background-color: var(--bg-secondary);
-    border: 1px solid var(--border-default);
+    background-color: var(--surface-strong) !important;
+    border: 1px solid var(--border-default) !important;
     border-radius: var(--radius-sm);
     overflow: hidden;
     margin-bottom: 14px;
@@ -289,8 +297,8 @@
 }
 
 .settings-select {
-    background-color: var(--surface-1);
-    border: 1px solid var(--border-strong);
+    background-color: var(--surface-soft) !important;
+    border: 1px solid var(--border-strong) !important;
     border-radius: var(--radius-xs);
     color: var(--text-primary);
     outline: none;
@@ -301,7 +309,7 @@
 }
 
 .settings-select option {
-    background-color: var(--bg-primary);
+    background-color: var(--surface-strong) !important;
     color: var(--text-primary);
 }
 
@@ -496,6 +504,9 @@ input:checked + .toggle-slider:before {
     height: 560px;
     min-width: 720px;
     min-height: 400px;
+    background-color: var(--glass-bg) !important;
+    backdrop-filter: var(--glass-blur) !important;
+    -webkit-backdrop-filter: var(--glass-blur) !important;
 }
 
 .finder-container {
@@ -505,7 +516,7 @@ input:checked + .toggle-slider:before {
     overflow: hidden;
     min-height: 0;   /* critical for flex child height containment */
     height: 100%;
-    background-color: var(--bg-primary);
+    background-color: transparent !important;
 }
 
 .finder-columns-container {
@@ -523,17 +534,21 @@ input:checked + .toggle-slider:before {
     overflow-y: auto;
     overflow-x: hidden;
     flex-shrink: 0;
+    background-color: var(--surface-soft) !important;
+    border-right: 1px solid var(--border-default) !important;
 }
 
 .files-toolbar {
     height: 46px;
-    border-bottom: 1px solid var(--border-default);
+    border-bottom: 1px solid var(--border-default) !important;
     display: flex;
     align-items: center;
     padding: 0 14px;
     gap: 8px;
-    background-color: var(--bg-secondary);
+    background-color: var(--surface-soft) !important;
     flex-shrink: 0;
+    backdrop-filter: var(--blur-md);
+    -webkit-backdrop-filter: var(--blur-md);
 }
 
 .files-nav-btn {
@@ -583,8 +598,8 @@ input:checked + .toggle-slider:before {
 .files-search-bar {
     width: 180px;
     height: 26px;
-    background-color: var(--surface-1);
-    border: 1px solid var(--border-default);
+    background-color: var(--surface-soft) !important;
+    border: 1px solid var(--border-strong) !important;
     border-radius: var(--radius-xs);
     color: var(--text-primary);
     padding: 0 10px;
@@ -592,18 +607,19 @@ input:checked + .toggle-slider:before {
     outline: none;
     font-family: var(--font-sans);
     flex-shrink: 0;
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
 }
 
 .files-search-bar:focus {
-    border-color: var(--accent-primary);
-    background-color: var(--surface-2);
+    border-color: var(--accent-primary) !important;
+    background-color: var(--surface) !important;
 }
 
 .files-sort-select {
     appearance: none;
     -webkit-appearance: none;
-    background-color: var(--surface-1);
-    border: 1px solid var(--border-default);
+    background-color: var(--surface-soft) !important;
+    border: 1px solid var(--border-strong) !important;
     color: var(--text-primary);
     padding: 0 28px 0 10px;
     height: 26px;
@@ -622,16 +638,16 @@ input:checked + .toggle-slider:before {
 }
 
 .files-sort-select:hover {
-    background-color: var(--surface-2);
-    border-color: var(--border-strong);
+    background-color: var(--surface-hover) !important;
+    border-color: var(--border-strong) !important;
 }
 
 .files-sort-select:focus {
-    border-color: var(--accent-primary);
+    border-color: var(--accent-primary) !important;
 }
 
 .files-sort-select option {
-    background-color: var(--bg-secondary);
+    background-color: var(--surface-strong) !important;
     color: var(--text-primary);
     padding: 6px 12px;
 }
@@ -640,7 +656,7 @@ input:checked + .toggle-slider:before {
     flex: 1;
     display: flex;
     flex-direction: column;
-    background-color: var(--bg-primary);
+    background-color: transparent !important;
     min-width: 0;
 }
 
@@ -650,7 +666,7 @@ input:checked + .toggle-slider:before {
     overflow-y: auto;
     overflow-x: hidden;
     min-height: 0;
-    background-color: var(--bg-primary);
+    background-color: transparent !important;
     display: block;
 }
 
@@ -677,8 +693,8 @@ input:checked + .toggle-slider:before {
 
 .finder-folder-card,
 .finder-file-card {
-    background-color: var(--surface-2);
-    border: none;
+    background-color: var(--surface-strong) !important;
+    border: 1px solid var(--border-subtle) !important;
     border-radius: var(--radius-sm);
     padding: 12px 8px;
     display: flex;
@@ -687,21 +703,23 @@ input:checked + .toggle-slider:before {
     gap: 7px;
     cursor: pointer;
     transition: background-color var(--transition-fast) var(--curve-smooth),
-                transform var(--transition-fast) var(--curve-smooth);
+                transform var(--transition-fast) var(--curve-smooth),
+                border-color var(--transition-fast) var(--curve-smooth);
     position: relative;
     box-sizing: border-box;
 }
 
 .finder-folder-card:hover,
 .finder-file-card:hover {
-    background-color: var(--surface-hover);
+    background-color: var(--surface-hover) !important;
+    border-color: var(--border-default) !important;
     transform: translateY(-2px);
 }
 
 .finder-folder-card.active-select,
 .finder-file-card.active-select {
     background-color: var(--accent-soft) !important;
-    border: none !important;
+    border-color: var(--accent-primary) !important;
 }
 
 .finder-file-meta {
@@ -743,8 +761,10 @@ input:checked + .toggle-slider:before {
 /* Properties sidebar */
 .finder-properties-sidebar {
     width: 240px;
-    background-color: var(--bg-secondary);
-    border-left: 1px solid var(--border-default);
+    background-color: var(--surface-soft) !important;
+    border-left: 1px solid var(--border-default) !important;
+    backdrop-filter: var(--blur-md);
+    -webkit-backdrop-filter: var(--blur-md);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -2927,4 +2947,93 @@ body.light-theme .paint-preset-color.color-black {
     border-radius: var(--radius-md);
     background-color: var(--bg-primary);
     border: 1px solid var(--border-strong);
+}
+
+/* ── Files Explorer: View Options Drawer ── */
+.view-options-pane {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 200px;
+    height: 100%;
+    background-color: var(--surface-soft) !important;
+    border-left: 1px solid var(--border-default) !important;
+    backdrop-filter: var(--blur-md);
+    -webkit-backdrop-filter: var(--blur-md);
+    z-index: 100;
+    padding: 16px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
+}
+
+.view-options-pane .option-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.view-options-pane .option-row label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-secondary) !important;
+}
+
+/* Custom styled range inputs for drawer sliders */
+.view-options-pane input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    border-radius: var(--radius-full);
+    background-color: var(--border-strong) !important;
+    outline: none;
+    width: 100%;
+}
+
+.view-options-pane input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--accent-primary) !important;
+    cursor: pointer;
+    box-shadow: var(--shadow-xs);
+    transition: transform var(--transition-fast) var(--curve-smooth);
+}
+
+.view-options-pane input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+/* Custom styled checkboxes for drawer filters */
+.view-options-pane input[type="checkbox"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: var(--radius-2xs);
+    border: 1px solid var(--border-strong);
+    background-color: var(--surface-soft);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color var(--transition-fast), border-color var(--transition-fast);
+    position: relative;
+    top: 2px;
+}
+
+.view-options-pane input[type="checkbox"]:checked {
+    background-color: var(--accent-primary);
+    border-color: var(--accent-primary);
+}
+
+.view-options-pane input[type="checkbox"]:checked::after {
+    content: "✓";
+    font-size: 10px;
+    color: var(--text-on-accent);
+    font-weight: bold;
 }

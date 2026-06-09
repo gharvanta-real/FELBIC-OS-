@@ -46,7 +46,7 @@ reqwest = { version = "0.12", features = ["json", "stream"] }
 rusqlite = { version = "0.31", features = ["bundled"] }
 
 [target.'cfg(target_os = "linux")'.dependencies]
-inotify = "0.10"
+inotify = { version = "0.10", features = ["stream"] }
 
 [target.'cfg(unix)'.dependencies]
 nix = { version = "0.27", features = ["fs", "process", "signal", "socket", "user"] }
