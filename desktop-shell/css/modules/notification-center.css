@@ -10,11 +10,11 @@
     bottom: 0;
     width: 340px;
     height: calc(100% - 28px);
-    background-color: rgba(18, 24, 36, 0.45); /* Translucent dark */
+    background-color: var(--color-panel-bg);
     backdrop-filter: blur(30px) saturate(140%);
     -webkit-backdrop-filter: blur(30px) saturate(140%);
     border-left: 1px solid var(--border-subtle);
-    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-panel);
     z-index: 999;
     display: flex;
     flex-direction: column;
@@ -22,11 +22,6 @@
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     box-sizing: border-box;
     overflow: hidden;
-}
-
-body.light-theme .notification-center {
-    background-color: rgba(255, 255, 255, 0.35);
-    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.1);
 }
 
 .notification-center.active {
@@ -94,7 +89,7 @@ body.light-theme .notification-center {
 }
 
 .nc-section-title {
-    font-size: 10px;
+    font-size: var(--font-size-2xs);
     font-weight: var(--font-weight-bold);
     text-transform: uppercase;
     color: var(--text-muted);
@@ -105,7 +100,7 @@ body.light-theme .notification-center {
     background: none;
     border: none;
     color: var(--accent-primary);
-    font-size: 10px;
+    font-size: var(--font-size-2xs);
     cursor: pointer;
     padding: 2px 4px;
     transition: opacity var(--transition-fast);
@@ -157,13 +152,13 @@ body.light-theme .notification-center {
 }
 
 .nc-notification-msg {
-    font-size: 10px;
+    font-size: var(--font-size-2xs);
     color: var(--text-secondary);
     line-height: 1.3;
 }
 
 .nc-notification-time {
-    font-size: 8px;
+    font-size: var(--font-size-3xs);
     color: var(--text-muted);
     position: absolute;
     top: 10px;
@@ -189,9 +184,9 @@ body.light-theme .notification-center {
 
 /* ──── WEATHER WIDGET (Premium macOS Gradient) ──── */
 .widget-weather {
-    background: linear-gradient(135deg, rgba(74, 144, 226, 0.85), rgba(44, 82, 130, 0.85));
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--color-weather-bg);
+    color: var(--color-weather-text) !important;
+    border: 1px solid var(--color-weather-border);
 }
 
 .weather-header {
@@ -203,7 +198,7 @@ body.light-theme .notification-center {
 .weather-city {
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-semibold);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    text-shadow: var(--shadow-text-subtle);
 }
 
 .weather-temp-large {
@@ -215,13 +210,13 @@ body.light-theme .notification-center {
 }
 
 .weather-condition {
-    font-size: 10px;
+    font-size: var(--font-size-2xs);
     opacity: 0.9;
     margin-top: 2px;
 }
 
 .weather-range {
-    font-size: 9px;
+    font-size: var(--font-size-tiny);
     opacity: 0.8;
 }
 
@@ -234,7 +229,7 @@ body.light-theme .notification-center {
     display: flex;
     justify-content: space-between;
     margin-top: 14px;
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    border-top: 1px solid var(--color-weather-border);
     padding-top: 10px;
     gap: 4px;
 }
@@ -248,7 +243,7 @@ body.light-theme .notification-center {
 }
 
 .weather-hour-time {
-    font-size: 8px;
+    font-size: var(--font-size-3xs);
     font-weight: var(--font-weight-medium);
     opacity: 0.8;
 }
@@ -258,7 +253,7 @@ body.light-theme .notification-center {
 }
 
 .weather-hour-temp {
-    font-size: 9px;
+    font-size: var(--font-size-tiny);
     font-weight: var(--font-weight-semibold);
 }
 
@@ -274,7 +269,7 @@ body.light-theme .notification-center {
 }
 
 .cal-widget-dayname {
-    font-size: 9px;
+    font-size: var(--font-size-tiny);
     font-weight: var(--font-weight-bold);
     color: var(--danger);
     text-transform: uppercase;
@@ -307,7 +302,7 @@ body.light-theme .notification-center {
 }
 
 .cal-widget-event-title {
-    font-size: 9px;
+    font-size: var(--font-size-tiny);
     font-weight: var(--font-weight-semibold);
     color: var(--text-primary);
     white-space: nowrap;
@@ -316,12 +311,12 @@ body.light-theme .notification-center {
 }
 
 .cal-widget-event-time {
-    font-size: 8px;
+    font-size: var(--font-size-3xs);
     color: var(--text-muted);
 }
 
 .cal-widget-no-events {
-    font-size: 9px;
+    font-size: var(--font-size-tiny);
     color: var(--text-muted);
     font-style: italic;
     margin-top: 4px;
@@ -347,7 +342,7 @@ body.light-theme .notification-center {
 .res-widget-label-group {
     display: flex;
     justify-content: space-between;
-    font-size: 9px;
+    font-size: var(--font-size-tiny);
     color: var(--text-secondary);
 }
 
@@ -402,7 +397,7 @@ body.light-theme .notification-center {
 }
 
 .qn-widget-status {
-    font-size: 8px;
+    font-size: var(--font-size-3xs);
     color: var(--text-muted);
     text-align: right;
 }
@@ -410,14 +405,13 @@ body.light-theme .notification-center {
 /* ──── DESKTOP WALLPAPER WIDGETS CONTAINER ──── */
 .desktop-widgets-container {
     position: absolute;
-    top: 50px; /* Leave space below top bar */
-    left: 24px;
-    width: 320px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    z-index: 5; /* Behind window manager z-indexes */
+    top: 28px; /* Topbar height */
+    left: 0;
+    width: 100vw;
+    height: calc(100vh - 28px - 70px); /* Subtract topbar and dock */
+    z-index: 5; /* Behind window manager */
     pointer-events: none; /* Let clicks pass through empty spaces to wallpaper */
+    overflow: hidden;
 }
 
 /* Adjust size for desktop weather widget */
@@ -432,15 +426,60 @@ body.light-theme .notification-center {
     height: 156px;
 }
 
-/* Layout desktop widgets side-by-side or stacked nicely */
-.desktop-widgets-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+/* Desktop widgets are positioned absolutely and are interactive */
+.desktop-widgets-container .widget-card {
+    position: absolute;
+    pointer-events: auto;
+    cursor: grab;
+    margin: 0;
+    transition: transform var(--transition-normal) var(--curve-smooth), box-shadow var(--transition-normal) var(--curve-smooth);
+}
+
+.desktop-widgets-container .widget-card:active {
+    cursor: grabbing;
 }
 
 /* Desktop widgets get a slight hover zoom effect */
 .desktop-widgets-container .widget-card:hover {
     transform: scale(1.02);
     box-shadow: var(--shadow-lg);
+}
+
+/* Premium Close Button for Desktop Widgets */
+.widget-close-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 18px;
+    height: 18px;
+    border-radius: var(--radius-full);
+    background-color: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: var(--text-primary);
+    font-size: var(--font-size-3xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity var(--transition-fast) ease, background-color var(--transition-fast) ease;
+    z-index: 10;
+}
+
+.widget-card:hover .widget-close-btn {
+    opacity: 1;
+}
+
+.widget-close-btn:hover {
+    background-color: var(--danger);
+    color: var(--text-on-danger);
+}
+
+body.light-theme .widget-close-btn {
+    background-color: rgba(0, 0, 0, 0.08);
+}
+
+body.light-theme .widget-close-btn:hover {
+    background-color: var(--danger);
+    color: var(--text-on-danger);
 }

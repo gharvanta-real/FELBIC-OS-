@@ -248,6 +248,10 @@ export function initNotificationCenter() {
                 ${hourlyHtml}
             </div>
         `;
+
+        if (container === desktopContainer) {
+            setupDesktopWidget(card, 'weather');
+        }
     }
 
     // B. Calendar Widget renderer
@@ -299,6 +303,10 @@ export function initNotificationCenter() {
                 ${eventsHtml}
             </div>
         `;
+
+        if (container === desktopContainer) {
+            setupDesktopWidget(card, 'calendar');
+        }
     }
 
     // C. Resource Monitor Widget renderer
@@ -379,7 +387,143 @@ export function initNotificationCenter() {
         }
     }
 
-    // ── 4. Coordinate rendering drawers & desktop panels ──
+    // ── 4. Desktop Widget Setup and Dragging Helpers ──
+    function getDefaultPosition(type) {
+        if (type === 'weather') return { x: 40, y: 80 };
+        if (type === 'calendar') return { x: 300, y: 80 };
+        return { x: 40, y: 80 };
+    }
+
+    function setupDesktopWidget(card, type) {
+        // Apply position
+        const positions = JSON.parse(localStorage.getItem('aios_desktop_widget_positions') || '{}');
+        const pos = positions[type] || getDefaultPosition(type);
+        card.style.left = `${pos.x}px`;
+        card.style.top = `${pos.y}px`;
+
+        // Apply visibility
+        const visibility = JSON.parse(localStorage.getItem('aios_desktop_widget_visibility') || '{}');
+        const isVisible = (visibility[type] !== undefined) ? visibility[type] : true;
+        card.style.display = isVisible ? 'flex' : 'none';
+
+        // Add close button
+        let closeBtn = card.querySelector('.widget-close-btn');
+        if (!closeBtn) {
+            closeBtn = document.createElement('button');
+            closeBtn.className = 'widget-close-btn';
+            closeBtn.title = 'Close Widget';
+            closeBtn.innerHTML = '×';
+            card.appendChild(closeBtn);
+        }
+
+        // Bind/rebind close action
+        closeBtn.replaceWith(closeBtn.cloneNode(true));
+        closeBtn = card.querySelector('.widget-close-btn');
+        closeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            card.style.display = 'none';
+
+            const currentVisibility = JSON.parse(localStorage.getItem('aios_desktop_widget_visibility') || '{}');
+            currentVisibility[type] = false;
+            localStorage.setItem('aios_desktop_widget_visibility', JSON.stringify(currentVisibility));
+
+            if (window.showNotification) {
+                const cleanName = type.charAt(0).toUpperCase() + type.slice(1);
+                window.showNotification(
+                    `${cleanName} Widget Hidden`,
+                    'Right-click desktop empty space to restore it.',
+                    type === 'weather' ? 'hgi-stroke hgi-sun-01' : 'hgi-stroke hgi-calendar-01'
+                );
+            }
+        });
+
+        // Setup dragging (bind once)
+        if (card.dataset.dragSetupDone) return;
+        card.dataset.dragSetupDone = 'true';
+
+        let isDragging = false;
+        let startX = 0, startY = 0;
+        let initialX = 0, initialY = 0;
+
+        card.addEventListener('mousedown', (e) => {
+            // Don't drag if clicking close button, buttons, or input areas
+            if (e.target.closest('.widget-close-btn') || e.target.closest('input') || e.target.closest('textarea') || e.target.closest('button')) {
+                return;
+            }
+            if (e.button !== 0) return; // Left click only
+
+            isDragging = true;
+            card.style.zIndex = 100;
+
+            startX = e.clientX;
+            startY = e.clientY;
+            initialX = card.offsetLeft;
+            initialY = card.offsetTop;
+
+            const onMouseMove = (moveEvent) => {
+                if (!isDragging) return;
+                const dx = moveEvent.clientX - startX;
+                const dy = moveEvent.clientY - startY;
+
+                let newX = initialX + dx;
+                let newY = initialY + dy;
+
+                // Clamp inside screen bounds
+                const maxLeft = window.innerWidth - card.offsetWidth - 20;
+                const maxTop = window.innerHeight - card.offsetHeight - 90; // Topbar + Dock buffer
+
+                newX = Math.max(10, Math.min(newX, maxLeft));
+                newY = Math.max(40, Math.min(newY, maxTop));
+
+                card.style.left = `${newX}px`;
+                card.style.top = `${newY}px`;
+            };
+
+            const onMouseUp = () => {
+                if (!isDragging) return;
+                isDragging = false;
+                card.style.zIndex = '';
+
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+
+                const currentPositions = JSON.parse(localStorage.getItem('aios_desktop_widget_positions') || '{}');
+                currentPositions[type] = {
+                    x: card.offsetLeft,
+                    y: card.offsetTop
+                };
+                localStorage.setItem('aios_desktop_widget_positions', JSON.stringify(currentPositions));
+            };
+
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+    }
+
+    // Expose toggle widget globally so it can be called from desktop context menu
+    window.toggleDesktopWidget = function(type, show) {
+        const visibility = JSON.parse(localStorage.getItem('aios_desktop_widget_visibility') || '{}');
+        const currentShow = (visibility[type] !== undefined) ? visibility[type] : true;
+        const targetShow = (show !== undefined) ? show : !currentShow;
+
+        visibility[type] = targetShow;
+        localStorage.setItem('aios_desktop_widget_visibility', JSON.stringify(visibility));
+
+        if (desktopContainer) {
+            const card = desktopContainer.querySelector(`.widget-${type}`);
+            if (card) {
+                card.style.display = targetShow ? 'flex' : 'none';
+                if (targetShow) {
+                    const positions = JSON.parse(localStorage.getItem('aios_desktop_widget_positions') || '{}');
+                    const pos = positions[type] || getDefaultPosition(type);
+                    card.style.left = `${pos.x}px`;
+                    card.style.top = `${pos.y}px`;
+                }
+            }
+        }
+    };
+
+    // ── 5. Coordinate rendering drawers & desktop panels ──
     async function updateWidgets() {
         // Draw inside Notification Center drawer
         if (widgetsList) {

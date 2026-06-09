@@ -269,6 +269,12 @@ function setupContextMenu() {
             <div class="menu-item" id="menu-terminal">
                 <i class="hgi-stroke hgi-command-line"></i> Open Terminal
             </div>
+            <div class="menu-item" id="menu-toggle-weather">
+                <i class="hgi-stroke hgi-sun-01"></i> Toggle Weather
+            </div>
+            <div class="menu-item" id="menu-toggle-calendar">
+                <i class="hgi-stroke hgi-calendar-01"></i> Toggle Calendar
+            </div>
             <div class="menu-item" id="menu-overview">
                 <i class="hgi-stroke hgi-grid-view"></i> Show Overview
             </div>
@@ -276,7 +282,7 @@ function setupContextMenu() {
 
         // Position menu
         const menuWidth = 160;
-        const menuHeight = 130;
+        const menuHeight = 180;
         let left = e.clientX;
         let top = e.clientY;
 
@@ -316,6 +322,20 @@ function setupContextMenu() {
 
         document.getElementById('menu-terminal').addEventListener('click', () => {
             openAppWindow('terminal-window');
+            menu.classList.remove('active');
+        });
+
+        document.getElementById('menu-toggle-weather').addEventListener('click', () => {
+            if (window.toggleDesktopWidget) {
+                window.toggleDesktopWidget('weather');
+            }
+            menu.classList.remove('active');
+        });
+
+        document.getElementById('menu-toggle-calendar').addEventListener('click', () => {
+            if (window.toggleDesktopWidget) {
+                window.toggleDesktopWidget('calendar');
+            }
             menu.classList.remove('active');
         });
 
