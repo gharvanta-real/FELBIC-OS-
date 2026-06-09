@@ -28,6 +28,7 @@ import { initAIAssistant } from './modules/ai-assistant.js';
 // aisd-client is imported here to eagerly open the connection
 import { aisd } from './modules/aisd-client.js';
 import { initAgentAPI } from './modules/aios-agent.js';
+import { initNotificationCenter } from './modules/notification-center.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('[felbicos] Loading components...');
@@ -44,6 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initTopbarMenus();
     initAgentAPI();       // MUST be before initAIAssistant so window.AIOS_AGENT is ready
     initAIAssistant();
+    initNotificationCenter();
 
     initClock('topbar-clock');
     initStats('stat-cpu', 'stat-mem');

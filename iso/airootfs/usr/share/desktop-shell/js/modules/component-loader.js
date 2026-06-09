@@ -4,7 +4,8 @@ export async function loadComponents() {
         { id: 'control-center-container', file: 'components/control-center.html' },
         { id: 'spotlight-container', file: 'components/spotlight.html' },
         { id: 'dock-container', file: 'components/dock.html' },
-        { id: 'windows-container', file: 'components/windows.html' }
+        { id: 'windows-container', file: 'components/windows.html' },
+        { id: 'notification-center-container', file: 'components/notification-center.html' }
     ];
 
     for (const comp of components) {

@@ -1,9 +1,9 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   AIOS Intelligence — macOS Siri-style Centered Floating AI Interface
-   NOT a sidebar. NOT a panel. An integrated OS-level AI overlay.
+   AIOS Intelligence — macOS Siri Panel Window UI
+   Exactly matching the tall sidebar glass card layout with mic voice controls.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ── 1. Topbar Orb — Lives in menu bar like Siri ─────────────────────────── */
+/* ── 1. Topbar Orb — Pulsing indicator in menu bar ─────────────────────────── */
 
 .ai-menu-orb {
     position: relative;
@@ -13,20 +13,26 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 6px;
-    transition: background 0.2s;
+    border-radius: var(--radius-xs);
+    transition: background-color var(--transition-fast);
+    background: transparent;
+    border: none;
     margin: 0 2px;
 }
 
 .ai-menu-orb:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background-color: var(--surface-hover);
 }
 
-/* The swirling orb sphere */
+.ai-menu-orb.ai-active {
+    background-color: var(--color-accent-dim);
+}
+
+/* Swirling color sphere */
 .ai-orb-sphere {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    border-radius: var(--radius-full);
     background: conic-gradient(
         from 0deg,
         #6366f1,
@@ -36,8 +42,8 @@
         #6366f1
     );
     animation: ai-orb-idle 4s linear infinite;
-    box-shadow: 0 0 6px rgba(139, 92, 246, 0.5);
-    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 0 6px rgba(139, 92, 246, 0.4);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
     flex-shrink: 0;
 }
 
@@ -46,15 +52,13 @@
     transform: scale(1.1);
 }
 
-/* Active/listening state — larger, more vibrant */
 .ai-menu-orb.ai-active .ai-orb-sphere {
-    width: 18px;
-    height: 18px;
+    width: 15px;
+    height: 15px;
     animation: ai-orb-active 1.5s linear infinite;
-    box-shadow: 0 0 14px rgba(139, 92, 246, 0.9), 0 0 28px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 0 14px rgba(139, 92, 246, 0.8), 0 0 28px rgba(99, 102, 241, 0.3);
 }
 
-/* Thinking/working state */
 .ai-menu-orb.ai-thinking .ai-orb-sphere {
     animation: ai-orb-thinking 0.8s linear infinite;
     box-shadow: 0 0 12px rgba(59, 130, 246, 0.8), 0 0 24px rgba(99, 102, 241, 0.3);
@@ -78,18 +82,17 @@
     100% { filter: hue-rotate(360deg) brightness(1.2); transform: scale(1); }
 }
 
-/* Live dot indicator */
 .ai-orb-live-dot {
     position: absolute;
     top: 2px;
     right: 3px;
     width: 5px;
     height: 5px;
-    border-radius: 50%;
-    background: #34d399;
-    border: 1px solid rgba(0,0,0,0.4);
+    border-radius: var(--radius-full);
+    background-color: var(--success);
+    border: 1px solid rgba(0, 0, 0, 0.4);
     opacity: 0;
-    transition: opacity 0.3s;
+    transition: opacity var(--transition-normal);
 }
 
 .ai-menu-orb.aisd-live .ai-orb-live-dot {
@@ -97,256 +100,346 @@
 }
 
 
-/* ── 2. Background Veil — subtle, not blocking ───────────────────────────── */
+/* ── 2. Screen Scrim Veil ─────────────────────────────────────────────────── */
 
 .ai-veil {
     position: fixed;
     inset: 0;
     z-index: 9800;
-    background: rgba(0, 0, 0, 0);
+    background-color: rgba(0, 0, 0, 0);
     pointer-events: none;
-    transition: background 0.4s ease;
+    transition: background-color var(--transition-slow) ease;
 }
 
 .ai-veil.active {
-    background: rgba(0, 0, 0, 0.18);
+    background-color: var(--overlay-scrim);
     pointer-events: auto;
 }
 
 
-/* ── 3. Main Floating Container — Centered, bottom-anchored ──────────────── */
+/* ── 3. Main Siri Panel Card — Floats on Right Side ───────────────────────── */
 
 .ai-float-container {
     position: fixed;
-    bottom: calc(var(--dock-height, 70px) + 18px); /* above dock */
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    width: min(540px, calc(100vw - 40px));
+    top: calc(var(--topbar-height) + 16px);
+    right: 24px;
+    bottom: calc(var(--dock-height) + 20px);
+    width: 380px;
+    max-width: calc(100vw - 32px);
     z-index: 9850;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 10px;
+    background-color: rgba(22, 29, 43, 0.45); /* translucent base card */
+    border: 1px solid var(--border-default);
+    backdrop-filter: var(--blur-intensity-heavy);
+    -webkit-backdrop-filter: var(--blur-intensity-heavy);
+    border-radius: 24px;
+    box-shadow: var(--shadow-window);
+    padding: 18px;
+    gap: 14px;
     opacity: 0;
     pointer-events: none;
+    transform: translateX(120%);
     transition:
-        opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-        transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        opacity 0.4s var(--curve-swift),
+        transform 0.4s var(--curve-swift);
+}
+
+body.light-theme .ai-float-container {
+    background-color: rgba(240, 243, 248, 0.55);
+    border-color: rgba(255, 255, 255, 0.4);
 }
 
 .ai-float-container.active {
     opacity: 1;
     pointer-events: auto;
-    transform: translateX(-50%) translateY(0);
+    transform: translateX(0);
 }
 
 
-/* ── 4. Animated Siri Orb — Big centered sphere when active ─────────────── */
+/* ── 4. Card Header — Single Close/Minimize Button ────────────────────────── */
 
-.ai-siri-orb {
-    width: 68px;
-    height: 68px;
-    border-radius: 50%;
-    position: relative;
-    flex-shrink: 0;
-    animation: ai-siri-float 3s ease-in-out infinite;
-}
-
-.ai-siri-orb-inner {
+.ai-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
     width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background: conic-gradient(
-        from 0deg at 40% 40%,
-        #6366f1 0deg,
-        #8b5cf6 60deg,
-        #ec4899 120deg,
-        #3b82f6 180deg,
-        #06b6d4 240deg,
-        #8b5cf6 300deg,
-        #6366f1 360deg
-    );
-    animation: ai-siri-spin 3s linear infinite;
-    box-shadow:
-        0 0 40px rgba(139, 92, 246, 0.5),
-        0 0 80px rgba(99, 102, 241, 0.25),
-        inset 0 0 30px rgba(255, 255, 255, 0.15);
+    height: 22px;
 }
 
-/* Thinking state — faster spin, blue tint */
-.ai-float-container.thinking .ai-siri-orb-inner {
-    animation: ai-siri-spin 0.8s linear infinite;
-    background: conic-gradient(
-        from 0deg at 40% 40%,
-        #3b82f6 0deg,
-        #06b6d4 90deg,
-        #6366f1 180deg,
-        #8b5cf6 270deg,
-        #3b82f6 360deg
-    );
-    box-shadow:
-        0 0 50px rgba(59, 130, 246, 0.6),
-        0 0 100px rgba(6, 182, 212, 0.3);
+.ai-close-circle-btn {
+    width: 22px;
+    height: 22px;
+    border-radius: var(--radius-full);
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color var(--transition-fast);
 }
 
-/* Gloss overlay for depth */
-.ai-siri-orb-inner::after {
-    content: '';
-    position: absolute;
-    inset: 4px;
-    border-radius: 50%;
-    background: radial-gradient(
-        ellipse at 30% 25%,
-        rgba(255, 255, 255, 0.35) 0%,
-        transparent 60%
-    );
+body.light-theme .ai-close-circle-btn {
+    background-color: rgba(0, 0, 0, 0.06);
+    border-color: rgba(0, 0, 0, 0.04);
 }
 
-@keyframes ai-siri-spin {
-    from { filter: hue-rotate(0deg); }
-    to { filter: hue-rotate(360deg); }
+.ai-close-circle-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
-@keyframes ai-siri-float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
+body.light-theme .ai-close-circle-btn:hover {
+    background-color: rgba(0, 0, 0, 0.12);
 }
 
-/* Pulse ring around orb */
-.ai-siri-orb::before {
-    content: '';
-    position: absolute;
-    inset: -8px;
-    border-radius: 50%;
-    background: transparent;
-    border: 1.5px solid rgba(139, 92, 246, 0.25);
-    animation: ai-orb-ring 2.5s ease-in-out infinite;
-}
-
-@keyframes ai-orb-ring {
-    0%, 100% { transform: scale(1); opacity: 0.4; }
-    50% { transform: scale(1.08); opacity: 0.15; }
+.ai-close-circle-btn i {
+    font-size: 8px;
+    font-weight: bold;
 }
 
 
-/* ── 5. Conversation History — floats above input ───────────────────────── */
+/* ── 5. Conversation Scroll & Messages ────────────────────────────────────── */
 
 .ai-convo-scroll {
+    flex: 1;
     width: 100%;
-    max-height: 280px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 0 2px;
+    gap: 14px;
+    padding-right: 2px;
     scroll-behavior: smooth;
 }
 
-.ai-convo-scroll::-webkit-scrollbar { width: 0; }
+.ai-convo-scroll::-webkit-scrollbar {
+    width: 4px;
+}
+.ai-convo-scroll::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: var(--radius-full);
+}
 
-/* Message bubbles */
 .ai-msg {
     display: flex;
     flex-direction: column;
-    animation: ai-msg-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: ai-msg-in 0.28s var(--curve-swift);
 }
 
 @keyframes ai-msg-in {
-    from { opacity: 0; transform: translateY(8px) scale(0.97); }
+    from { opacity: 0; transform: translateY(12px) scale(0.98); }
     to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+/* User Messages — right-aligned, light grey translucent bubble */
 .ai-msg-user {
     align-self: flex-end;
     align-items: flex-end;
     max-width: 82%;
 }
 
+.ai-msg-user .ai-msg-bubble {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: var(--text-primary);
+    border-radius: 18px 18px 4px 18px; /* Siri chat tail style */
+    padding: 10px 14px;
+    font-size: var(--font-size-sm);
+    line-height: 1.45;
+    word-break: break-word;
+    font-family: var(--font-sans);
+    box-shadow: var(--shadow-xs);
+}
+
+body.light-theme .ai-msg-user .ai-msg-bubble {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Assistant Messages — left-aligned, white translucent card */
 .ai-msg-assistant {
     align-self: flex-start;
     align-items: flex-start;
-    max-width: 90%;
-}
-
-.ai-msg-bubble {
-    padding: 10px 15px;
-    border-radius: 18px;
-    font-size: 13px;
-    line-height: 1.5;
-    word-break: break-word;
-    font-family: -apple-system, 'Inter', 'SF Pro Text', sans-serif;
-    letter-spacing: -0.01em;
-}
-
-.ai-msg-user .ai-msg-bubble {
-    background: linear-gradient(145deg, #5d60e8, #7c3aed);
-    color: rgba(255, 255, 255, 0.95);
-    border-bottom-right-radius: 5px;
-    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+    max-width: 88%;
 }
 
 .ai-msg-assistant .ai-msg-bubble {
-    background: rgba(255, 255, 255, 0.09);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
-    border-bottom-left-radius: 5px;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+    background-color: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+    border-radius: 18px 18px 18px 4px; /* Siri chat tail style */
+    padding: 11px 15px;
+    font-size: var(--font-size-sm);
+    line-height: 1.45;
+    word-break: break-word;
+    font-family: var(--font-sans);
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: var(--blur-sm);
+    -webkit-backdrop-filter: var(--blur-sm);
 }
 
-.ai-msg-bubble code {
-    background: rgba(255, 255, 255, 0.12);
-    border-radius: 4px;
-    padding: 1px 6px;
-    font-family: 'SF Mono', 'JetBrains Mono', monospace;
-    font-size: 11.5px;
+body.light-theme .ai-msg-assistant .ai-msg-bubble {
+    background-color: rgba(255, 255, 255, 0.6);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+}
+
+/* Welcome Card Bubble */
+.ai-msg-welcome .ai-msg-bubble {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.06);
+    text-align: left;
+    width: 100%;
+}
+
+body.light-theme .ai-msg-welcome .ai-msg-bubble {
+    background-color: rgba(255, 255, 255, 0.7);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Error message bubbles */
+.ai-msg-error .ai-msg-bubble {
+    background-color: var(--danger-soft);
+    border-color: var(--danger);
+}
+
+
+/* ── 6. Advanced Markdown Formatting ──────────────────────────────────────── */
+
+.ai-list, .ai-list-ordered {
+    margin: 6px 0 6px 20px;
+    padding: 0;
+}
+
+.ai-list li, .ai-list-ordered li {
+    margin-bottom: 5px;
+    font-size: var(--font-size-sm);
+}
+
+.ai-list {
+    list-style-type: disc;
+}
+
+.ai-list-ordered {
+    list-style-type: decimal;
 }
 
 .ai-msg-bubble strong {
-    font-weight: 600;
-    color: rgba(255, 255, 255, 1);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
 }
 
-/* Welcome card */
-.ai-msg-welcome .ai-msg-bubble {
-    background: rgba(99, 102, 241, 0.12);
-    border-color: rgba(139, 92, 246, 0.2);
-    font-size: 13px;
+.ai-inline-code {
+    background-color: var(--surface-active);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-2xs);
+    padding: 1px 4px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--accent-hover);
+    word-break: break-all;
 }
 
-/* Error */
-.ai-msg-error .ai-msg-bubble {
-    background: rgba(239, 68, 68, 0.12);
-    border-color: rgba(239, 68, 68, 0.2);
-    color: #fca5a5;
+body.light-theme .ai-inline-code {
+    background-color: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.03);
+    color: var(--accent-primary);
 }
 
-/* Thinking — waveform instead of dots */
+/* Code block styles */
+.ai-code-block {
+    margin: 8px 0;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--border-default);
+    background-color: rgba(0, 0, 0, 0.2);
+    width: 100%;
+}
+
+body.light-theme .ai-code-block {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.ai-code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 12px;
+    background-color: rgba(0, 0, 0, 0.12);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    color: var(--text-muted);
+    font-size: var(--text-2xs);
+}
+
+.ai-code-lang {
+    font-family: var(--font-mono);
+    font-weight: var(--font-weight-medium);
+}
+
+.ai-copy-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-family: var(--font-sans);
+    padding: 2px 6px;
+    border-radius: var(--radius-2xs);
+    transition: color var(--transition-fast);
+}
+
+.ai-copy-btn:hover {
+    color: var(--text-primary);
+}
+
+.ai-code-block pre {
+    margin: 0;
+    padding: 10px 12px;
+    overflow-x: auto;
+}
+
+.ai-code-block code {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    color: var(--text-primary);
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    border: none;
+    white-space: pre;
+    word-break: normal;
+}
+
+/* Waveform animation */
 .ai-msg-thinking .ai-msg-bubble {
-    padding: 14px 18px;
+    padding: 12px 16px;
 }
 
 .ai-waveform {
     display: flex;
-    gap: 3px;
+    gap: 3.5px;
     align-items: center;
-    height: 20px;
+    height: 16px;
 }
 
 .ai-waveform span {
-    width: 3px;
-    border-radius: 2px;
-    background: linear-gradient(to top, #6366f1, #a78bfa);
+    width: 2.5px;
+    border-radius: var(--radius-full);
+    background: var(--text-muted);
     animation: ai-wave 1s ease-in-out infinite;
 }
 
-.ai-waveform span:nth-child(1) { height: 8px;  animation-delay: 0s; }
-.ai-waveform span:nth-child(2) { height: 16px; animation-delay: 0.1s; }
-.ai-waveform span:nth-child(3) { height: 20px; animation-delay: 0.2s; }
-.ai-waveform span:nth-child(4) { height: 14px; animation-delay: 0.3s; }
-.ai-waveform span:nth-child(5) { height: 10px; animation-delay: 0.4s; }
-.ai-waveform span:nth-child(6) { height: 18px; animation-delay: 0.15s; }
-.ai-waveform span:nth-child(7) { height: 8px;  animation-delay: 0.35s; }
+.ai-waveform span:nth-child(1) { height: 6px;  animation-delay: 0s; }
+.ai-waveform span:nth-child(2) { height: 13px; animation-delay: 0.1s; }
+.ai-waveform span:nth-child(3) { height: 16px; animation-delay: 0.2s; }
+.ai-waveform span:nth-child(4) { height: 11px; animation-delay: 0.3s; }
+.ai-waveform span:nth-child(5) { height: 8px;  animation-delay: 0.4s; }
+.ai-waveform span:nth-child(6) { height: 14px; animation-delay: 0.15s; }
+.ai-waveform span:nth-child(7) { height: 6px;  animation-delay: 0.35s; }
 
 @keyframes ai-wave {
     0%, 100% { transform: scaleY(0.4); opacity: 0.5; }
@@ -354,36 +447,81 @@
 }
 
 
-/* ── 6. Input Card — macOS Spotlight-style glass pill ───────────────────── */
+/* ── 7. Suggestion Chips (Rounded Quick Replies) ─────────────────────────── */
+
+.ai-suggestions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.ai-suggestion-chip {
+    background-color: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-sm);
+    padding: 6px 14px;
+    font-size: var(--text-xs);
+    font-family: var(--font-sans);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background-color var(--transition-fast), border-color var(--transition-fast), transform 0.1s;
+    white-space: nowrap;
+    user-select: none;
+}
+
+body.light-theme .ai-suggestion-chip {
+    background-color: rgba(255, 255, 255, 0.75);
+    border-color: rgba(0, 0, 0, 0.06);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.ai-suggestion-chip:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+body.light-theme .ai-suggestion-chip:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.ai-suggestion-chip:active {
+    transform: scale(0.97);
+}
+
+
+/* ── 8. Input Area — Rounded Unified Glass Pill ──────────────────────────── */
 
 .ai-input-card {
     width: 100%;
-    background: rgba(28, 28, 35, 0.75);
-    backdrop-filter: blur(60px) saturate(2);
-    -webkit-backdrop-filter: blur(60px) saturate(2);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 22px;
-    box-shadow:
-        0 8px 48px rgba(0, 0, 0, 0.55),
-        0 2px 8px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 20px; /* Fully rounded pill */
     overflow: hidden;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+}
+
+body.light-theme .ai-input-card {
+    background-color: rgba(255, 255, 255, 0.85);
+    border-color: rgba(0, 0, 0, 0.08);
 }
 
 .ai-input-card:focus-within {
-    border-color: rgba(139, 92, 246, 0.35);
-    box-shadow:
-        0 8px 48px rgba(0, 0, 0, 0.55),
-        0 0 0 4px rgba(99, 102, 241, 0.12),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+body.light-theme .ai-input-card:focus-within {
+    background-color: #ffffff;
+    border-color: rgba(0, 0, 0, 0.12);
 }
 
 .ai-input-row {
     display: flex;
-    align-items: flex-end;
-    padding: 14px 16px 14px 20px;
+    align-items: center;
+    padding: 8px 16px;
     gap: 10px;
+    height: 38px;
 }
 
 .ai-input-field {
@@ -391,146 +529,68 @@
     background: transparent;
     border: none;
     outline: none;
-    color: rgba(255, 255, 255, 0.92);
-    font-size: 15px;
-    font-family: -apple-system, 'Inter', 'SF Pro Text', sans-serif;
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    line-height: 1.4;
-    resize: none;
-    min-height: 22px;
-    max-height: 130px;
-    overflow-y: auto;
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+    font-family: var(--font-sans);
+    height: 100%;
 }
 
 .ai-input-field::placeholder {
-    color: rgba(255, 255, 255, 0.28);
-    font-weight: 300;
+    color: var(--text-muted);
+    font-weight: var(--font-weight-light);
 }
 
-.ai-input-field::-webkit-scrollbar { width: 0; }
-
-/* Send button — minimal circular arrow */
-.ai-send-btn {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    background: linear-gradient(145deg, #6366f1, #8b5cf6);
+/* Mic/Send Action Button */
+.ai-input-action-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-full);
+    background: transparent;
     border: none;
-    color: white;
+    color: var(--text-secondary);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 14px;
     flex-shrink: 0;
-    transition: transform 0.15s, opacity 0.15s, box-shadow 0.2s;
-    box-shadow: 0 2px 12px rgba(99, 102, 241, 0.4);
+    transition: transform var(--transition-fast), color var(--transition-fast);
 }
 
-.ai-send-btn:hover {
-    transform: scale(1.06);
-    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.6);
+.ai-input-action-btn:hover {
+    color: var(--text-primary);
+    transform: scale(1.08);
 }
 
-.ai-send-btn:active { transform: scale(0.94); }
-.ai-send-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; box-shadow: none; }
-
-/* Bottom info row */
-.ai-input-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px 12px;
+.ai-input-action-btn:active {
+    transform: scale(0.92);
 }
 
-.ai-input-hint {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.2);
-    font-family: -apple-system, 'Inter', sans-serif;
-    letter-spacing: 0;
-}
 
-.ai-status-chip {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 10.5px;
-    color: rgba(255, 255, 255, 0.3);
-    font-family: -apple-system, 'Inter', sans-serif;
-}
-
-.ai-status-dot {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.3);
-    transition: background 0.3s;
-}
-
-.ai-status-chip.connected .ai-status-dot { background: #34d399; }
-.ai-status-chip.connected { color: rgba(52, 211, 153, 0.7); }
-.ai-status-chip.offline .ai-status-dot { background: rgba(255, 255, 255, 0.2); }
-
-
-/* ── 7. Quick Suggestions — pill chips, not a grid ───────────────────────── */
-
-.ai-suggestions {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 0 4px;
-}
-
-.ai-suggestion-chip {
-    background: rgba(255, 255, 255, 0.07);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 100px;
-    padding: 6px 14px;
-    font-size: 12px;
-    font-family: -apple-system, 'Inter', sans-serif;
-    color: rgba(255, 255, 255, 0.6);
-    cursor: pointer;
-    transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
-    white-space: nowrap;
-    user-select: none;
-}
-
-.ai-suggestion-chip:hover {
-    background: rgba(99, 102, 241, 0.15);
-    border-color: rgba(139, 92, 246, 0.3);
-    color: rgba(255, 255, 255, 0.88);
-    transform: scale(1.02);
-}
-
-.ai-suggestion-chip:active { transform: scale(0.97); }
-
-
-/* ── 8. Action Toast — flies out when AI does something ──────────────────── */
+/* ── 9. Action Toast Overlay (Center top notification when AI acts) ──────── */
 
 .ai-action-toast {
     position: fixed;
     top: 38px;
     left: 50%;
     transform: translateX(-50%) translateY(-10px);
-    background: rgba(28, 28, 35, 0.9);
-    backdrop-filter: blur(30px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 100px;
-    padding: 7px 16px;
+    background-color: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    backdrop-filter: var(--blur-md);
+    -webkit-backdrop-filter: var(--blur-md);
+    border-radius: var(--radius-full);
+    padding: 6px 14px;
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 12px;
-    font-family: -apple-system, 'Inter', sans-serif;
-    color: rgba(255, 255, 255, 0.75);
+    gap: 6px;
+    font-size: var(--text-xs);
+    font-family: var(--font-sans);
+    color: var(--text-primary);
     z-index: 9999;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.25s, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    transition: opacity var(--transition-fast), transform var(--transition-normal) var(--curve-swift);
+    box-shadow: var(--shadow-md);
     white-space: nowrap;
 }
 
@@ -540,23 +600,20 @@
 }
 
 .ai-action-toast-icon {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 
-/* ── 9. Topbar clear button when AI is active ───────────────────────────── */
+/* ── 10. Responsive Adjustments ──────────────────────────────────────────── */
 
-.ai-menu-orb.ai-active {
-    background: rgba(99, 102, 241, 0.12);
-}
-
-
-/* ── Responsive ─────────────────────────────────────────────────────────── */
-
-@media (max-width: 600px) {
+@media (max-width: 500px) {
     .ai-float-container {
-        bottom: 72px;
-        width: calc(100vw - 20px);
+        right: 10px;
+        left: 10px;
+        top: calc(var(--topbar-height) + 10px);
+        bottom: 82px;
+        width: auto;
+        border-radius: 20px;
+        padding: 14px;
     }
-    .ai-input-field { font-size: 16px; } /* prevent zoom on iOS */
 }

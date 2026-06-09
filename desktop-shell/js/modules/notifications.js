@@ -11,6 +11,26 @@ export function initNotifications() {
 
     // Expose showNotification globally
     window.showNotification = function(title, message, icon = 'hgi-information-circle') {
+        // Log to persistent notification history
+        try {
+            const history = JSON.parse(localStorage.getItem('aios_notifications_history') || '[]');
+            history.push({
+                id: Date.now().toString(),
+                title,
+                message,
+                icon,
+                time: Date.now()
+            });
+            // Keep last 40 notifications
+            if (history.length > 40) history.shift();
+            localStorage.setItem('aios_notifications_history', JSON.stringify(history));
+            
+            // Dispatch event for Notification Center to refresh dynamically
+            document.dispatchEvent(new CustomEvent('notification-added'));
+        } catch (e) {
+            console.error('[notifications] Failed to log notification to history:', e);
+        }
+
         const toast = document.createElement('div');
         toast.className = 'notification-toast';
 
