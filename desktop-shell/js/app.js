@@ -18,6 +18,8 @@ import { initMediaApp } from './modules/apps/media-app.js';
 import { initChatApp } from './modules/apps/chat-app.js';
 import { initCalculatorApp } from './modules/apps/calculator-app.js';
 import { initCalendarApp } from './modules/apps/calendar-app.js';
+import { initNotesApp } from './modules/apps/notes-app.js';
+import { initClockApp } from './modules/apps/clock-app.js';
 import { initDialog } from './modules/dialog.js';
 import { initVFS } from './modules/vfs.js';
 import { loadComponents } from './modules/component-loader.js';
@@ -25,6 +27,7 @@ import { initTopbarMenus } from './modules/topbar-menus.js';
 import { initAIAssistant } from './modules/ai-assistant.js';
 // aisd-client is imported here to eagerly open the connection
 import { aisd } from './modules/aisd-client.js';
+import { initAgentAPI } from './modules/aios-agent.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('[felbicos] Loading components...');
@@ -39,6 +42,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initDesktop();
     initAesthetics();
     initTopbarMenus();
+    initAgentAPI();       // MUST be before initAIAssistant so window.AIOS_AGENT is ready
     initAIAssistant();
 
     initClock('topbar-clock');
@@ -53,24 +57,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     initInstaller();
     initTerminal();
 
-    // Register paint, media, chat, calculator, calendar windows under the Window Manager
+    // Register paint, media, chat, calculator, calendar, notes, clock windows under the Window Manager
     const paintWin = document.getElementById('paint-window');
     const mediaWin = document.getElementById('media-window');
     const chatWin = document.getElementById('chat-window');
     const calcWin = document.getElementById('calculator-window');
     const calendarWin = document.getElementById('calendar-window');
+    const notesWin = document.getElementById('notes-window');
+    const clockWin = document.getElementById('clock-app-window');
     if (paintWin) registerWindow(paintWin);
     if (mediaWin) registerWindow(mediaWin);
     if (chatWin) registerWindow(chatWin);
     if (calcWin) registerWindow(calcWin);
     if (calendarWin) registerWindow(calendarWin);
+    if (notesWin) registerWindow(notesWin);
+    if (clockWin) registerWindow(clockWin);
 
-    // Initialize paint, media, chat, calculator, calendar app logics
+    // Initialize paint, media, chat, calculator, calendar, notes, clock app logics
     initPaintApp();
     initMediaApp();
     initChatApp();
     initCalculatorApp();
     initCalendarApp();
+    initNotesApp();
+    initClockApp();
 
     // ── 2. Window Control & Focus Actions ──
     // Close button click handler
@@ -93,6 +103,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 else if (targetId === 'paint-window') appName = 'gimp';
                 else if (targetId === 'media-window') appName = 'vlc';
                 else if (targetId === 'chat-window') appName = 'discord';
+                else if (targetId === 'calculator-window') appName = 'calculator';
+                else if (targetId === 'calendar-window') appName = 'calendar';
+                else if (targetId === 'notes-window') appName = 'notes';
+                else if (targetId === 'clock-app-window') appName = 'clock';
 
                 const dockItem = appName ? document.querySelector(`.dock-item[data-app="${appName}"]`) : null;
                 
@@ -147,6 +161,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             else if (windowId === 'paint-window') appName = 'gimp';
             else if (windowId === 'media-window') appName = 'vlc';
             else if (windowId === 'chat-window') appName = 'discord';
+            else if (windowId === 'calculator-window') appName = 'calculator';
+            else if (windowId === 'calendar-window') appName = 'calendar';
+            else if (windowId === 'notes-window') appName = 'notes';
+            else if (windowId === 'clock-app-window') appName = 'clock';
 
             const dockItem = appName ? document.querySelector(`.dock-item[data-app="${appName}"]`) : null;
 
@@ -444,6 +462,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 openWindow('calculator-window');
             } else if (appName === 'calendar') {
                 openWindow('calendar-window');
+            } else if (appName === 'notes') {
+                openWindow('notes-window');
+            } else if (appName === 'clock') {
+                openWindow('clock-app-window');
             } else if (appName === 'trash') {
                 showDialog.alert('Trash is empty.', 'Trash Bin');
             }

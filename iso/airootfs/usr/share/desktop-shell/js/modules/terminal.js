@@ -1,4 +1,5 @@
 /* FELBIC OS — Interactive Terminal Command Interpreter Module */
+import { aisd } from './aisd-client.js';
 
 export function initTerminal() {
     console.log('[felbicos] Initializing Interactive Terminal Module...');
@@ -173,6 +174,9 @@ export function initTerminal() {
             case 'uname':
                 handleUname(args);
                 break;
+            case 'aisd':
+                handleAisd(args);
+                break;
             default:
                 appendOutput(`sh: command not found: ${command}. Type 'help' to see available commands.`);
         }
@@ -201,8 +205,60 @@ Available commands:
   <b>clear</b>                        Clears terminal output screen
   <b>systemctl status aisd</b>        Check status of system core services
   <b>uname -a</b>                     Print kernel architecture and configuration info
+  <b>aisd ask &lt;query&gt;</b>            Ask the AI assistant (uses live aisd daemon)
+  <b>aisd status</b>                  Show aisd connection status
         `;
         appendOutput(helpText);
+    }
+
+    function handleAisd(args) {
+        if (args.length === 0) {
+            appendOutput('aisd: missing operand. Try "aisd status" or "aisd ask &lt;query&gt;"');
+            return;
+        }
+        if (args[0] === 'status') {
+            const status = aisd.connected ? 
+                '<span style="color:var(--color-success)">● ONLINE</span> — connected to ws://127.0.0.1:8080' :
+                '<span style="color:var(--color-danger)">● OFFLINE</span> — start with: systemctl start aisd';
+            appendOutput(`aisd daemon: ${status}`);
+        } else if (args[0] === 'ask') {
+            const query = args.slice(1).join(' ');
+            if (!query) {
+                appendOutput('aisd ask: missing query. Usage: aisd ask &lt;natural language query&gt;');
+                return;
+            }
+            if (!aisd.connected) {
+                appendOutput('<span style="color:var(--color-danger)">aisd is offline.</span> Start it with: systemctl start aisd');
+                return;
+            }
+            const loadingEl = document.createElement('div');
+            loadingEl.className = 'terminal-output';
+            loadingEl.innerHTML = '<span style="color:var(--color-accent)">⠋ Thinking…</span>';
+            historyContainer.appendChild(loadingEl);
+            wrapper.scrollTop = wrapper.scrollHeight;
+
+            aisd.call('ai/chat', { prompt: query, session: 'terminal' })
+                .then(result => {
+                    loadingEl.remove();
+                    const response = result?.response ?? '(no response)';
+                    // Display with simple formatting
+                    const div = document.createElement('div');
+                    div.className = 'terminal-output';
+                    div.innerHTML = response
+                        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/`([^`]+)`/g, '<code style="background:rgba(255,255,255,0.1);padding:1px 4px;border-radius:3px;">$1</code>')
+                        .replace(/\n/g, '<br>');
+                    historyContainer.appendChild(div);
+                    wrapper.scrollTop = wrapper.scrollHeight;
+                })
+                .catch(err => {
+                    loadingEl.remove();
+                    appendOutput(`<span style="color:var(--color-danger)">aisd error: ${err.message}</span>`);
+                });
+        } else {
+            appendOutput(`aisd: unknown subcommand '${args[0]}'. Try: aisd ask, aisd status`);
+        }
     }
 
     function showFastfetch() {

@@ -1,10 +1,13 @@
-/* FELBIC OS - System Stats Module */
+/* FELBIC OS - System Stats Module
+ * Uses the shared aisd-client singleton instead of its own WebSocket.
+ */
+
+import { aisd } from './aisd-client.js';
 
 export function initStats(cpuId, memoryId) {
     const cpuElement = document.getElementById(cpuId);
     const memoryElement = document.getElementById(memoryId);
-    let connected = false;
-    let socket = null;
+
     let cpuBase = 4;
     let memoryBase = 27;
 
@@ -22,7 +25,7 @@ export function initStats(cpuId, memoryId) {
     }
 
     function updateFallbackStats() {
-        if (connected) return;
+        if (aisd.connected) return;
         const currentCpu = randomFluctuation(cpuBase, 6);
         const currentMemory = randomFluctuation(memoryBase, 1);
         if (cpuElement) cpuElement.textContent = `${currentCpu}%`;
@@ -30,58 +33,39 @@ export function initStats(cpuId, memoryId) {
         if (Math.random() > 0.8) cpuBase = Math.random() > 0.5 ? 8 : 3;
     }
 
-    function requestStats() {
-        if (!socket || socket.readyState !== WebSocket.OPEN) return;
-        socket.send(JSON.stringify({
-            id: Date.now(),
-            method: 'stats/get',
-            params: {}
-        }));
-    }
-
-    function connectDaemon() {
+    async function requestStats() {
+        if (!aisd.connected) return;
         try {
-            socket = new WebSocket('ws://127.0.0.1:8080');
-        } catch (error) {
-            connected = false;
-            return;
-        }
-
-        socket.addEventListener('open', () => {
-            connected = true;
-            document.body.classList.add('aisd-connected');
-            requestStats();
-        });
-
-        socket.addEventListener('message', (event) => {
-            try {
-                const message = JSON.parse(event.data);
-                const stats = message.event === 'stats' ? message.data : message.result;
-                if (!stats) return;
+            const stats = await aisd.call('stats/get', {});
+            if (stats) {
                 setStats(
                     stats.cpu_load_percent || 0,
                     stats.memory_used_bytes || 0,
                     stats.memory_total_bytes || 1
                 );
-            } catch (error) {
-                console.warn('[felbicos] Failed to parse aisd stats payload', error);
             }
-        });
-
-        socket.addEventListener('close', () => {
-            connected = false;
-            document.body.classList.remove('aisd-connected');
-            setTimeout(connectDaemon, 3000);
-        });
-
-        socket.addEventListener('error', () => {
-            connected = false;
-            document.body.classList.remove('aisd-connected');
-        });
+        } catch {
+            // silently ignore — fallback animation handles UI
+        }
     }
 
+    // Listen to push stats events from aisd (sent every 5s by IPC server)
+    aisd.on('stats', (data) => {
+        if (data) {
+            setStats(
+                data.cpu_load_percent || 0,
+                data.memory_used_bytes || 0,
+                data.memory_total_bytes || 1
+            );
+        }
+    });
+
+    // Start fallback animation immediately
     updateFallbackStats();
-    connectDaemon();
     setInterval(updateFallbackStats, 2500);
+
+    // Poll stats every 5s as well (belt + suspenders approach)
     setInterval(requestStats, 5000);
+    // First poll
+    requestStats();
 }

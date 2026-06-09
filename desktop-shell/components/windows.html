@@ -1409,7 +1409,187 @@
                 <button class="cal-btn-sec" id="cal-cancel-event">Cancel</button>
                 <button class="cal-btn-prim" id="cal-save-event">Save</button>
             </div>
+    </div>
+</div>
+
+<!-- App 14: Notes Window -->
+<div class="window notes-window" id="notes-window" style="display: none;">
+    <div class="window-titlebar">
+        <div class="window-controls">
+            <span class="window-btn close" data-target="notes-window"></span>
+            <span class="window-btn minimize"></span>
+            <span class="window-btn maximize"></span>
+        </div>
+        <div class="window-title">Notes</div>
+    </div>
+    <div class="window-content notes-content">
+        <aside class="notes-sidebar">
+            <div class="notes-sidebar-header">
+                <div class="notes-sidebar-actions">
+                    <span class="notes-sidebar-title">All Notes</span>
+                    <button class="notes-new-btn" id="notes-new-note" title="New Note">+</button>
+                </div>
+                <div class="notes-search-box">
+                    <input type="text" class="notes-search-input" id="notes-search" placeholder="Search notes">
+                </div>
+            </div>
+            <div class="notes-list" id="notes-list-container">
+                <!-- Notes will list dynamically -->
+            </div>
+        </aside>
+        <main class="notes-editor" id="notes-editor-panel" style="display: none;">
+            <div class="notes-editor-toolbar">
+                <div class="notes-tool-group">
+                    <select class="notes-select-tag" id="note-tag-select">
+                        <option value="work">Work</option>
+                        <option value="personal">Personal</option>
+                        <option value="ideas">Ideas</option>
+                    </select>
+                </div>
+                <button class="notes-delete-btn" id="notes-delete-btn" title="Delete Note">
+                    <i class="hgi-stroke hgi-delete-02"></i> Delete
+                </button>
+            </div>
+            <div class="notes-editor-body">
+                <input type="text" class="notes-title-input" id="note-title-input" placeholder="Title" autocomplete="off">
+                <textarea class="notes-textarea" id="note-body-textarea" placeholder="Start typing..."></textarea>
+            </div>
+        </main>
+        <div class="notes-empty-state" id="notes-empty-state" style="display: flex;">
+            <span class="notes-empty-icon"><i class="hgi-stroke hgi-file-01"></i></span>
+            <span>No Note Selected</span>
         </div>
     </div>
 </div>
+
+<!-- App 15: Clock Window -->
+<div class="window clock-app-window" id="clock-app-window" style="display: none;">
+    <div class="window-titlebar">
+        <div class="window-controls">
+            <span class="window-btn close" data-target="clock-app-window"></span>
+            <span class="window-btn minimize"></span>
+            <span class="window-btn maximize"></span>
+        </div>
+        <div class="window-title">Clock</div>
+    </div>
+    <div class="window-content clock-app-content">
+        <div class="clock-app-tabs-header">
+            <button class="clock-tab-btn active" data-tab="world-clock">
+                <i class="hgi-stroke hgi-compass"></i> World Clock
+            </button>
+            <button class="clock-tab-btn" data-tab="alarms">
+                <i class="hgi-stroke hgi-alarm-clock"></i> Alarm
+            </button>
+            <button class="clock-tab-btn" data-tab="stopwatch">
+                <i class="hgi-stroke hgi-stopwatch"></i> Stopwatch
+            </button>
+            <button class="clock-tab-btn" data-tab="timer">
+                <i class="hgi-stroke hgi-time-02"></i> Timer
+            </button>
+        </div>
+        <div class="clock-tab-content-container">
+            <!-- World Clock -->
+            <div class="clock-tab-pane active" id="pane-world-clock">
+                <div class="world-clock-grid">
+                    <div class="world-clock-card">
+                        <div class="world-clock-card-left">
+                            <span class="world-clock-city">Cupertino</span>
+                            <span class="world-clock-timezone">Pacific Time (USA)</span>
+                        </div>
+                        <span class="world-clock-time" id="world-time-cupertino">12:00 AM</span>
+                    </div>
+                    <div class="world-clock-card">
+                        <div class="world-clock-card-left">
+                            <span class="world-clock-city">London</span>
+                            <span class="world-clock-timezone">Greenwich Mean Time (UK)</span>
+                        </div>
+                        <span class="world-clock-time" id="world-time-london">12:00 AM</span>
+                    </div>
+                    <div class="world-clock-card">
+                        <div class="world-clock-card-left">
+                            <span class="world-clock-city">Delhi</span>
+                            <span class="world-clock-timezone">India Standard Time</span>
+                        </div>
+                        <span class="world-clock-time" id="world-time-delhi">12:00 AM</span>
+                    </div>
+                    <div class="world-clock-card">
+                        <div class="world-clock-card-left">
+                            <span class="world-clock-city">Tokyo</span>
+                            <span class="world-clock-timezone">Japan Standard Time</span>
+                        </div>
+                        <span class="world-clock-time" id="world-time-tokyo">12:00 AM</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Alarm -->
+            <div class="clock-tab-pane" id="pane-alarms">
+                <div class="alarm-view-container">
+                    <div class="alarm-creator-sidebar">
+                        <div class="alarm-time-inputs">
+                            <input type="text" id="alarm-hr" placeholder="12" class="alarm-time-input" maxlength="2">
+                            <span>:</span>
+                            <input type="text" id="alarm-min" placeholder="00" class="alarm-time-input" maxlength="2">
+                            <select id="alarm-ampm" class="notes-select-tag" style="height: 32px;">
+                                <option value="AM">AM</option>
+                                <option value="PM">PM</option>
+                            </select>
+                        </div>
+                        <button class="alarm-add-btn" id="alarm-add-btn">Add Alarm</button>
+                    </div>
+                    <div class="alarm-list-main" id="alarms-list-container">
+                        <!-- Alarm rows populated dynamically -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stopwatch -->
+            <div class="clock-tab-pane" id="pane-stopwatch">
+                <div class="stopwatch-container">
+                    <div class="stopwatch-display-panel" id="stopwatch-display">00:00.00</div>
+                    <div class="stopwatch-buttons-panel">
+                        <button class="stopwatch-btn lap" id="stopwatch-lap-btn" disabled>Lap</button>
+                        <button class="stopwatch-btn start" id="stopwatch-start-btn">Start</button>
+                    </div>
+                    <div class="stopwatch-laps-list" id="stopwatch-laps-container"></div>
+                </div>
+            </div>
+            
+            <!-- Timer -->
+            <div class="clock-tab-pane" id="pane-timer">
+                <div class="timer-container">
+                    <div class="timer-wheel-panel" id="timer-selectors">
+                        <div class="timer-select-group">
+                            <span>Hours</span>
+                            <select id="timer-hr" class="timer-select"></select>
+                        </div>
+                        <div class="timer-select-group">
+                            <span>Minutes</span>
+                            <select id="timer-min" class="timer-select"></select>
+                        </div>
+                        <div class="timer-select-group">
+                            <span>Seconds</span>
+                            <select id="timer-sec" class="timer-select"></select>
+                        </div>
+                    </div>
+                    
+                    <!-- Visual Circle Timer -->
+                    <div class="timer-visual-ring-container" id="timer-ring-container">
+                        <svg class="timer-svg-ring" width="160" height="160">
+                            <circle class="timer-circle-bg" cx="80" cy="80" r="70" fill="none" stroke-width="6"></circle>
+                            <circle class="timer-circle-progress" id="timer-progress-bar" cx="80" cy="80" r="70" fill="none" stroke-width="6" stroke-dasharray="440" stroke-dashoffset="0"></circle>
+                        </svg>
+                        <div class="timer-visual-digits" id="timer-display-digits">00:00:00</div>
+                    </div>
+                    
+                    <div class="timer-buttons-panel">
+                        <button class="timer-btn cancel" id="timer-cancel-btn" disabled>Cancel</button>
+                        <button class="timer-btn start" id="timer-start-btn">Start</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
