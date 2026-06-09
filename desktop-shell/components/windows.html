@@ -436,8 +436,16 @@
         </div>
         <!-- Top Command Bar (Full Width) -->
         <div class="files-toolbar">
-            <button class="files-nav-btn" id="files-back-btn" disabled>←</button>
-            <button class="files-nav-btn" id="files-forward-btn" disabled>→</button>
+            <button class="files-nav-btn" id="files-back-btn" disabled>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+            <button class="files-nav-btn" id="files-forward-btn" disabled>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
             <span class="files-path-breadcrumb" id="files-breadcrumb">Workspace</span>
             <div class="files-action-buttons files-action-buttons-group">
                 <button class="files-nav-btn" id="files-new-file" title="New File" ><i class="hgi-stroke hgi-file-add"></i></button>

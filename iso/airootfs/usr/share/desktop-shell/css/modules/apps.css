@@ -537,8 +537,8 @@ input:checked + .toggle-slider:before {
 }
 
 .files-nav-btn {
-    background-color: var(--surface-1);
-    border: 1px solid var(--border-default);
+    background-color: transparent;
+    border: none;
     color: var(--text-primary);
     width: 28px;
     height: 28px;
@@ -552,7 +552,7 @@ input:checked + .toggle-slider:before {
     flex-shrink: 0;
 }
 
-.files-nav-btn:hover:not(:disabled) { background-color: var(--surface-2); }
+.files-nav-btn:hover:not(:disabled) { background-color: var(--surface-1); }
 .files-nav-btn:disabled { opacity: 0.3; cursor: default; }
 
 .files-path-breadcrumb {
@@ -2428,7 +2428,7 @@ body.light-theme .paint-preset-color.color-black {
 
 .files-nav-btn.active {
     background-color: var(--accent-soft) !important;
-    border-color: var(--accent-primary) !important;
+    border: none !important;
     color: var(--accent-primary) !important;
 }
 
