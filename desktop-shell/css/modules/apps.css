@@ -678,7 +678,7 @@ input:checked + .toggle-slider:before {
 .finder-folder-card,
 .finder-file-card {
     background-color: var(--surface-2);
-    border: 1px solid var(--border-default);
+    border: none;
     border-radius: var(--radius-sm);
     padding: 12px 8px;
     display: flex;
@@ -687,7 +687,6 @@ input:checked + .toggle-slider:before {
     gap: 7px;
     cursor: pointer;
     transition: background-color var(--transition-fast) var(--curve-smooth),
-                border-color var(--transition-fast) var(--curve-smooth),
                 transform var(--transition-fast) var(--curve-smooth);
     position: relative;
     box-sizing: border-box;
@@ -696,14 +695,13 @@ input:checked + .toggle-slider:before {
 .finder-folder-card:hover,
 .finder-file-card:hover {
     background-color: var(--surface-hover);
-    border-color: var(--border-strong);
     transform: translateY(-2px);
 }
 
 .finder-folder-card.active-select,
 .finder-file-card.active-select {
     background-color: var(--accent-soft) !important;
-    border-color: var(--accent-primary) !important;
+    border: none !important;
 }
 
 .finder-file-meta {
@@ -2448,7 +2446,7 @@ body.light-theme .paint-preset-color.color-black {
     gap: 12px;
     width: 100%;
     transform: none !important;
-    border: 1px solid transparent;
+    border: none;
     border-radius: var(--radius-xs);
     background-color: transparent;
 }
@@ -2460,9 +2458,11 @@ body.light-theme .paint-preset-color.color-black {
 }
 
 .finder-content.list-view .finder-folder-card.active,
-.finder-content.list-view .finder-file-card.active {
-    background-color: var(--accent-soft);
-    border-color: var(--accent-primary);
+.finder-content.list-view .finder-file-card.active,
+.finder-content.list-view .finder-folder-card.active-select,
+.finder-content.list-view .finder-file-card.active-select {
+    background-color: var(--accent-soft) !important;
+    border: none !important;
 }
 
 .finder-content.list-view .finder-grid-icon {
