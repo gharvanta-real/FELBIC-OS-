@@ -599,6 +599,43 @@ input:checked + .toggle-slider:before {
     background-color: var(--surface-2);
 }
 
+.files-sort-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: var(--surface-1);
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
+    padding: 0 28px 0 10px;
+    height: 26px;
+    border-radius: var(--radius-xs);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a0a0a0' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 10px;
+    outline: none;
+    font-family: var(--font-sans);
+    transition: background-color var(--transition-fast), border-color var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.files-sort-select:hover {
+    background-color: var(--surface-2);
+    border-color: var(--border-strong);
+}
+
+.files-sort-select:focus {
+    border-color: var(--accent-primary);
+}
+
+.files-sort-select option {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    padding: 6px 12px;
+}
+
 .files-view-container {
     flex: 1;
     display: flex;
@@ -2598,49 +2635,52 @@ body.light-theme .paint-preset-color.color-black {
    ========================================================================== */
 
 /* Tabs Bar */
+.finder-window .window-titlebar {
+    border-bottom: none !important;
+}
+
 .finder-tab-bar {
     display: flex;
     align-items: center;
     background-color: var(--bg-secondary);
     border-bottom: 1px solid var(--border-default);
-    height: 32px;
-    padding: 0 8px;
-    gap: 4px;
+    height: 34px;
+    padding: 0 10px;
+    gap: 6px;
     user-select: none;
 }
 .finder-tabs-list {
     display: flex;
-    gap: 4px;
+    gap: 6px;
     height: 100%;
-    align-items: flex-end;
+    align-items: center;
 }
 .finder-tab {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 4px 12px;
-    background-color: var(--surface-1);
-    border: 1px solid var(--border-default);
-    border-bottom: none;
-    border-radius: var(--radius-xs) var(--radius-xs) 0 0;
+    padding: 0 12px;
+    height: 24px;
+    background-color: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
     font-size: var(--font-size-2xs);
     color: var(--text-secondary);
     cursor: pointer;
-    max-width: 120px;
+    max-width: 140px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 .finder-tab:hover {
-    background-color: var(--surface-2);
+    background-color: rgba(255, 255, 255, 0.06);
     color: var(--text-primary);
 }
 .finder-tab.active {
-    background-color: var(--bg-primary);
-    color: var(--accent-primary);
-    border-color: var(--border-default);
-    font-weight: var(--font-weight-semibold);
+    background-color: var(--surface-1);
+    color: var(--text-primary);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 .tab-close-btn {
     font-size: 10px;
@@ -2652,6 +2692,7 @@ body.light-theme .paint-preset-color.color-black {
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-left: 4px;
 }
 .tab-close-btn:hover {
     background-color: var(--border-default);
@@ -2666,13 +2707,14 @@ body.light-theme .paint-preset-color.color-black {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    border-radius: var(--radius-xs);
     margin-left: 4px;
+    transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 .finder-add-tab-btn:hover {
-    background-color: var(--surface-2);
+    background-color: rgba(255, 255, 255, 0.06);
     color: var(--text-primary);
 }
 
