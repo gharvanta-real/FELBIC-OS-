@@ -1263,3 +1263,153 @@
         </main>
     </div>
 </div>
+
+<!-- App 12: Calculator Window -->
+<div class="window calculator-window" id="calculator-window" style="display: none;">
+    <div class="window-titlebar">
+        <div class="window-controls">
+            <span class="window-btn close" data-target="calculator-window"></span>
+            <span class="window-btn minimize"></span>
+            <span class="window-btn maximize"></span>
+        </div>
+        <div class="window-title">Calculator</div>
+    </div>
+    <div class="window-content calculator-content">
+        <div class="calculator-display-container">
+            <div class="calculator-history-display" id="calc-history-expr"></div>
+            <div class="calculator-main-display" id="calc-display">0</div>
+        </div>
+        <div class="calculator-grid">
+            <button class="calc-btn utility" data-action="clear">AC</button>
+            <button class="calc-btn utility" data-action="negate">±</button>
+            <button class="calc-btn utility" data-action="percent">%</button>
+            <button class="calc-btn operator" data-action="operator" data-val="/">÷</button>
+            
+            <button class="calc-btn number" data-val="7">7</button>
+            <button class="calc-btn number" data-val="8">8</button>
+            <button class="calc-btn number" data-val="9">9</button>
+            <button class="calc-btn operator" data-action="operator" data-val="*">×</button>
+            
+            <button class="calc-btn number" data-val="4">4</button>
+            <button class="calc-btn number" data-val="5">5</button>
+            <button class="calc-btn number" data-val="6">6</button>
+            <button class="calc-btn operator" data-action="operator" data-val="-">-</button>
+            
+            <button class="calc-btn number" data-val="1">1</button>
+            <button class="calc-btn number" data-val="2">2</button>
+            <button class="calc-btn number" data-val="3">3</button>
+            <button class="calc-btn operator" data-action="operator" data-val="+">+</button>
+            
+            <button class="calc-btn number double-width" data-val="0">0</button>
+            <button class="calc-btn number" data-val=".">.</button>
+            <button class="calc-btn operator-equal" data-action="calculate">=</button>
+        </div>
+        
+        <!-- Scientific Panel -->
+        <div class="calculator-scientific-panel" id="calc-sci-panel" style="display: none;">
+            <button class="calc-btn scientific" data-action="sin">sin</button>
+            <button class="calc-btn scientific" data-action="cos">cos</button>
+            <button class="calc-btn scientific" data-action="tan">tan</button>
+            <button class="calc-btn scientific" data-action="sqrt">√</button>
+            <button class="calc-btn scientific" data-action="power">xʸ</button>
+            <button class="calc-btn scientific" data-action="log">log</button>
+            <button class="calc-btn scientific" data-action="ln">ln</button>
+            <button class="calc-btn scientific" data-action="pi">π</button>
+            <button class="calc-btn scientific" data-action="e">e</button>
+            <button class="calc-btn scientific" data-action="square">x²</button>
+        </div>
+        
+        <div class="calc-footer">
+            <button class="calc-mode-btn" id="calc-mode-toggle">Scientific</button>
+            <button class="calc-mode-btn" id="calc-history-toggle">History</button>
+        </div>
+        
+        <div class="calculator-history-sidebar" id="calc-history-sidebar" style="display: none;">
+            <div class="calc-sidebar-header">
+                <span>History</span>
+                <button class="calc-clear-history-btn" id="calc-clear-history">Clear</button>
+            </div>
+            <div class="calc-history-list" id="calc-history-list"></div>
+        </div>
+    </div>
+</div>
+
+<!-- App 13: Calendar Window -->
+<div class="window calendar-window" id="calendar-window" style="display: none;">
+    <div class="window-titlebar">
+        <div class="window-controls">
+            <span class="window-btn close" data-target="calendar-window"></span>
+            <span class="window-btn minimize"></span>
+            <span class="window-btn maximize"></span>
+        </div>
+        <div class="window-title">Calendar</div>
+    </div>
+    <div class="window-content calendar-content">
+        <div class="calendar-sidebar">
+            <div class="calendar-today-box">
+                <div class="calendar-today-dayname" id="cal-today-dayname">Tuesday</div>
+                <div class="calendar-today-daynumber" id="cal-today-daynumber">9</div>
+            </div>
+            <button class="cal-today-btn" id="cal-jump-today">Today</button>
+            <div class="calendar-event-search-box">
+                <input type="text" class="cal-search-input" id="cal-search" placeholder="Search Events">
+            </div>
+            <div class="calendar-events-section">
+                <div class="cal-sidebar-section-title">Upcoming Events</div>
+                <div class="calendar-events-list" id="cal-upcoming-events-list"></div>
+            </div>
+        </div>
+        <div class="calendar-main-view">
+            <div class="calendar-header">
+                <h2 class="calendar-current-month" id="cal-current-month">June 2026</h2>
+                <div class="calendar-nav-buttons">
+                    <button class="cal-nav-btn" id="cal-prev-month">←</button>
+                    <button class="cal-nav-btn" id="cal-next-month">→</button>
+                </div>
+            </div>
+            <div class="calendar-weekdays">
+                <div>Sun</div>
+                <div>Mon</div>
+                <div>Tue</div>
+                <div>Wed</div>
+                <div>Thu</div>
+                <div>Fri</div>
+                <div>Sat</div>
+            </div>
+            <div class="calendar-grid-days" id="cal-grid-days"></div>
+        </div>
+    </div>
+    
+    <!-- Add Event Modal Dialog -->
+    <div class="calendar-modal" id="cal-event-modal" style="display: none;">
+        <div class="cal-modal-content">
+            <div class="cal-modal-header">
+                <h3 id="cal-modal-title">New Event</h3>
+                <span class="cal-modal-close" id="cal-close-modal">×</span>
+            </div>
+            <div class="cal-modal-body">
+                <div class="cal-form-group">
+                    <label for="cal-event-title">Event Title</label>
+                    <input type="text" id="cal-event-title" placeholder="Add Title" class="cal-input">
+                </div>
+                <div class="cal-form-group">
+                    <label for="cal-event-desc">Description</label>
+                    <textarea id="cal-event-desc" placeholder="Add Description" class="cal-textarea"></textarea>
+                </div>
+                <div class="cal-form-group">
+                    <label for="cal-event-tag">Category Tag</label>
+                    <select id="cal-event-tag" class="cal-select">
+                        <option value="work">Work</option>
+                        <option value="personal">Personal</option>
+                        <option value="important">Important</option>
+                    </select>
+                </div>
+            </div>
+            <div class="cal-modal-footer">
+                <button class="cal-btn-sec" id="cal-cancel-event">Cancel</button>
+                <button class="cal-btn-prim" id="cal-save-event">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+

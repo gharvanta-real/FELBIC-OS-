@@ -16,10 +16,15 @@ import { initAesthetics } from './modules/aesthetics.js';
 import { initPaintApp } from './modules/apps/paint-app.js';
 import { initMediaApp } from './modules/apps/media-app.js';
 import { initChatApp } from './modules/apps/chat-app.js';
+import { initCalculatorApp } from './modules/apps/calculator-app.js';
+import { initCalendarApp } from './modules/apps/calendar-app.js';
 import { initDialog } from './modules/dialog.js';
 import { initVFS } from './modules/vfs.js';
 import { loadComponents } from './modules/component-loader.js';
 import { initTopbarMenus } from './modules/topbar-menus.js';
+import { initAIAssistant } from './modules/ai-assistant.js';
+// aisd-client is imported here to eagerly open the connection
+import { aisd } from './modules/aisd-client.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('[felbicos] Loading components...');
@@ -34,6 +39,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initDesktop();
     initAesthetics();
     initTopbarMenus();
+    initAIAssistant();
 
     initClock('topbar-clock');
     initStats('stat-cpu', 'stat-mem');
@@ -47,18 +53,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     initInstaller();
     initTerminal();
 
-    // Register paint, media, chat windows under the Window Manager
+    // Register paint, media, chat, calculator, calendar windows under the Window Manager
     const paintWin = document.getElementById('paint-window');
     const mediaWin = document.getElementById('media-window');
     const chatWin = document.getElementById('chat-window');
+    const calcWin = document.getElementById('calculator-window');
+    const calendarWin = document.getElementById('calendar-window');
     if (paintWin) registerWindow(paintWin);
     if (mediaWin) registerWindow(mediaWin);
     if (chatWin) registerWindow(chatWin);
+    if (calcWin) registerWindow(calcWin);
+    if (calendarWin) registerWindow(calendarWin);
 
-    // Initialize paint, media, chat app logics
+    // Initialize paint, media, chat, calculator, calendar app logics
     initPaintApp();
     initMediaApp();
     initChatApp();
+    initCalculatorApp();
+    initCalendarApp();
 
     // ── 2. Window Control & Focus Actions ──
     // Close button click handler
@@ -428,6 +440,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 openWindow('editor-window');
             } else if (appName === 'installer') {
                 openWindow('installer-window');
+            } else if (appName === 'calculator') {
+                openWindow('calculator-window');
+            } else if (appName === 'calendar') {
+                openWindow('calendar-window');
             } else if (appName === 'trash') {
                 showDialog.alert('Trash is empty.', 'Trash Bin');
             }

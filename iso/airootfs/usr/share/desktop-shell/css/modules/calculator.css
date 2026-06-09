@@ -1,0 +1,270 @@
+/* ==========================================================================
+   FELBIC OS — CALCULATOR APP STYLES
+   ========================================================================== */
+
+.calculator-window {
+    width: 280px;
+    height: 420px;
+    min-width: 280px;
+    min-height: 420px;
+    max-width: 580px;
+    max-height: 520px;
+    transition: width var(--transition-normal) var(--curve-smooth);
+}
+
+.calculator-window.scientific-mode {
+    width: 540px;
+}
+
+.calculator-content {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 34px);
+    background-color: var(--bg-secondary);
+    position: relative;
+    overflow: hidden;
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+/* Display */
+.calculator-display-container {
+    background-color: var(--surface-1);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    height: 80px;
+    margin-bottom: 12px;
+    box-sizing: border-box;
+}
+
+.calculator-history-display {
+    font-size: var(--font-size-2xs);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    min-height: 14px;
+    word-break: break-all;
+    text-align: right;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.calculator-main-display {
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-light);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    word-break: break-all;
+    text-align: right;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Button Layouts */
+.calculator-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    flex: 1;
+}
+
+.calc-btn {
+    border: none;
+    outline: none;
+    font-family: var(--font-sans);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-normal);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color var(--transition-fast), transform var(--transition-fast) var(--curve-smooth);
+    user-select: none;
+}
+
+.calc-btn:active {
+    transform: scale(0.95);
+}
+
+/* Buttons Theme */
+.calc-btn.number {
+    background-color: var(--surface-1);
+    color: var(--text-primary);
+}
+.calc-btn.number:hover {
+    background-color: var(--surface-hover);
+}
+
+.calc-btn.utility {
+    background-color: var(--surface-3);
+    color: var(--text-secondary);
+}
+.calc-btn.utility:hover {
+    background-color: var(--surface-hover);
+}
+
+.calc-btn.operator {
+    background-color: var(--warning);
+    color: var(--text-on-warning);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+}
+.calc-btn.operator:hover {
+    background-color: var(--accent-hover);
+}
+.calc-btn.operator.active-op {
+    background-color: var(--text-primary);
+    color: var(--warning);
+}
+
+.calc-btn.operator-equal {
+    background-color: var(--warning);
+    color: var(--text-on-warning);
+    font-size: var(--font-size-lg);
+}
+.calc-btn.operator-equal:hover {
+    background-color: var(--accent-hover);
+}
+
+.calc-btn.double-width {
+    grid-column: span 2;
+    justify-content: flex-start;
+    padding-left: 22px;
+}
+
+/* Scientific Panel Layout */
+.calculator-scientific-panel {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.calc-btn.scientific {
+    background-color: var(--surface-2);
+    color: var(--text-secondary);
+    font-size: var(--font-size-xs);
+    font-family: var(--font-mono);
+    height: 36px;
+}
+.calc-btn.scientific:hover {
+    background-color: var(--surface-hover);
+    color: var(--text-primary);
+}
+
+/* Footer Control Row */
+.calc-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 8px;
+}
+
+.calc-mode-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: var(--font-size-2xs);
+    cursor: pointer;
+    font-weight: var(--font-weight-medium);
+    padding: 4px 8px;
+    border-radius: var(--radius-xs);
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.calc-mode-btn:hover {
+    background-color: var(--surface-3);
+    color: var(--text-primary);
+}
+
+/* Slide-out History Sidebar */
+.calculator-history-sidebar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 180px;
+    height: 100%;
+    background-color: var(--bg-tertiary);
+    border-left: 1px solid var(--border-default);
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+    box-sizing: border-box;
+    padding: 10px;
+    transform: translateX(100%);
+    transition: transform var(--transition-normal) var(--curve-smooth);
+}
+
+.calculator-history-sidebar.active {
+    transform: translateX(0);
+}
+
+.calc-sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+}
+
+.calc-clear-history-btn {
+    background: none;
+    border: none;
+    color: var(--danger);
+    font-size: var(--font-size-2xs);
+    cursor: pointer;
+}
+
+.calc-clear-history-btn:hover {
+    text-decoration: underline;
+}
+
+.calc-history-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-right: 4px;
+}
+
+.calc-history-item {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-2xs);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: var(--radius-xs);
+    transition: background-color var(--transition-fast);
+}
+
+.calc-history-item:hover {
+    background-color: var(--surface-3);
+}
+
+.calc-history-item-expr {
+    color: var(--text-muted);
+    word-break: break-all;
+    text-align: right;
+}
+
+.calc-history-item-res {
+    color: var(--accent-primary);
+    font-weight: var(--font-weight-semibold);
+    margin-top: 2px;
+}
