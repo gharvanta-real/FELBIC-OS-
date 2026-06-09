@@ -19,7 +19,9 @@
 
 /* Notes Sidebar */
 .notes-sidebar {
-    width: var(--ui-sidebar-narrow);
+    width: 180px;
+    min-width: 180px;
+    max-width: 180px;
     background-color: var(--app-sidebar-bg);
     border-right: 1px solid var(--app-border);
     display: flex;
@@ -80,7 +82,6 @@
     color: var(--text-primary);
     padding: 0 8px;
     font-size: var(--font-size-2xs);
-    outline: none;
     box-sizing: border-box;
 }
 
@@ -190,7 +191,6 @@
     font-size: var(--font-size-2xs);
     padding: 3px 6px;
     border-radius: var(--radius-xs);
-    outline: none;
     cursor: pointer;
 }
 
@@ -233,7 +233,6 @@
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-semibold);
     color: var(--text-primary);
-    outline: none;
     width: 100%;
     box-sizing: border-box;
 }
@@ -245,7 +244,6 @@
     font-family: var(--font-sans);
     font-size: var(--font-size-sm);
     color: var(--text-secondary);
-    outline: none;
     width: 100%;
     resize: none;
     line-height: 1.5;
@@ -265,4 +263,81 @@
 
 .notes-empty-icon {
     font-size: 32px;
+}
+
+/* ==========================================================================
+   LIGHT THEME OVERRIDES
+   ========================================================================== */
+body.light-theme .notes-content,
+body.theme-light .notes-content {
+    background-color: var(--bg-elevated) !important;
+}
+
+body.light-theme .notes-sidebar,
+body.theme-light .notes-sidebar {
+    background-color: var(--panel) !important;
+    border-right: 1px solid var(--border-default) !important;
+}
+
+body.light-theme .notes-sidebar-header,
+body.theme-light .notes-sidebar-header {
+    border-bottom: 1px solid var(--border-subtle) !important;
+}
+
+body.light-theme .notes-new-btn,
+body.theme-light .notes-new-btn,
+body.light-theme .notes-search-input,
+body.theme-light .notes-search-input,
+body.light-theme .notes-select-tag,
+body.theme-light .notes-select-tag {
+    background-color: var(--bg-elevated) !important;
+    border: 1px solid var(--border-default) !important;
+    color: var(--text-primary) !important;
+}
+
+body.light-theme .notes-new-btn:hover,
+body.theme-light .notes-new-btn:hover,
+body.light-theme .notes-search-input:focus,
+body.theme-light .notes-search-input:focus,
+body.light-theme .notes-select-tag:focus,
+body.theme-light .notes-select-tag:focus {
+    border-color: var(--accent-primary) !important;
+    background-color: var(--bg-elevated) !important;
+}
+
+body.light-theme .notes-item-card,
+body.theme-light .notes-item-card {
+    border-bottom: 1px solid var(--border-subtle);
+    background-color: transparent;
+}
+
+body.light-theme .notes-item-card:hover,
+body.theme-light .notes-item-card:hover {
+    background-color: var(--surface-hover) !important;
+}
+
+body.light-theme .notes-item-card.active,
+body.theme-light .notes-item-card.active {
+    background-color: var(--accent-soft) !important;
+}
+
+body.light-theme .notes-editor,
+body.theme-light .notes-editor {
+    background-color: var(--bg-elevated) !important;
+}
+
+body.light-theme .notes-editor-toolbar,
+body.theme-light .notes-editor-toolbar {
+    background-color: var(--panel) !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+}
+
+body.light-theme .notes-title-input,
+body.theme-light .notes-title-input {
+    color: var(--text-primary) !important;
+}
+
+body.light-theme .notes-textarea,
+body.theme-light .notes-textarea {
+    color: var(--text-secondary) !important;
 }

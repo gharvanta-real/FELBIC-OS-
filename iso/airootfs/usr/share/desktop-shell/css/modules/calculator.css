@@ -19,11 +19,11 @@
 .calculator-content {
     display: flex;
     flex-direction: column;
-    height: calc(100% - 34px);
-    background-color: var(--bg-secondary);
+    height: calc(100% - var(--ui-titlebar-height));
+    background-color: var(--app-content-bg);
     position: relative;
     overflow: hidden;
-    padding: 12px;
+    padding: var(--ui-space-sm);
     box-sizing: border-box;
 }
 
@@ -32,13 +32,13 @@
     background-color: var(--surface-1);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
-    padding: 14px 18px;
+    padding: 14px var(--ui-space-md);
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     justify-content: center;
     height: 80px;
-    margin-bottom: 12px;
+    margin-bottom: var(--ui-space-sm);
     box-sizing: border-box;
 }
 
@@ -70,13 +70,12 @@
 .calculator-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+    gap: var(--ui-space-xs);
     flex: 1;
 }
 
 .calc-btn {
     border: none;
-    outline: none;
     font-family: var(--font-sans);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-normal);
@@ -136,15 +135,15 @@
 .calc-btn.double-width {
     grid-column: span 2;
     justify-content: flex-start;
-    padding-left: 22px;
+    padding-left: var(--ui-space-lg);
 }
 
 /* Scientific Panel Layout */
 .calculator-scientific-panel {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
-    margin-top: 8px;
+    gap: var(--ui-space-xs);
+    margin-top: var(--ui-space-xs);
 }
 
 .calc-btn.scientific {
@@ -267,4 +266,79 @@
     color: var(--accent-primary);
     font-weight: var(--font-weight-semibold);
     margin-top: 2px;
+}
+
+/* ==========================================================================
+   LIGHT THEME OVERRIDES
+   ========================================================================== */
+body.light-theme .calculator-content,
+body.theme-light .calculator-content {
+    background-color: var(--panel) !important;
+}
+
+body.light-theme .calculator-display-container,
+body.theme-light .calculator-display-container {
+    background-color: var(--bg-elevated) !important;
+    border: 1px solid var(--border-default) !important;
+    box-shadow: var(--shadow-sm);
+}
+
+body.light-theme .calculator-main-display,
+body.theme-light .calculator-main-display {
+    color: var(--text-primary) !important;
+}
+
+body.light-theme .calc-btn.number,
+body.theme-light .calc-btn.number {
+    background-color: var(--bg-elevated) !important;
+    border: 1px solid var(--border-default) !important;
+    color: var(--text-primary) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+body.light-theme .calc-btn.number:hover,
+body.theme-light .calc-btn.number:hover {
+    background-color: var(--surface-hover) !important;
+}
+
+body.light-theme .calc-btn.utility,
+body.theme-light .calc-btn.utility {
+    background-color: var(--surface-hover) !important;
+    border: 1px solid var(--border-default) !important;
+    color: var(--text-secondary) !important;
+}
+
+body.light-theme .calc-btn.utility:hover,
+body.theme-light .calc-btn.utility:hover {
+    background-color: var(--surface-active) !important;
+    color: var(--text-primary) !important;
+}
+
+body.light-theme .calc-btn.scientific,
+body.theme-light .calc-btn.scientific {
+    background-color: var(--surface-hover) !important;
+    border: 1px solid var(--border-default) !important;
+    color: var(--text-secondary) !important;
+}
+
+body.light-theme .calc-btn.scientific:hover,
+body.theme-light .calc-btn.scientific:hover {
+    background-color: var(--surface-active) !important;
+    color: var(--text-primary) !important;
+}
+
+body.light-theme .calc-footer,
+body.theme-light .calc-footer {
+    border-top: 1px solid var(--border-subtle) !important;
+}
+
+body.light-theme .calculator-history-sidebar,
+body.theme-light .calculator-history-sidebar {
+    background-color: var(--panel) !important;
+    border-left: 1px solid var(--border-default) !important;
+}
+
+body.light-theme .calc-history-item:hover,
+body.theme-light .calc-history-item:hover {
+    background-color: var(--surface-hover) !important;
 }

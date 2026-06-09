@@ -7,6 +7,7 @@
 @import url("./modules/spotlight.css");
 @import url("./modules/desktop.css");
 @import url("./modules/windows.css");
+@import url("./modules/settings.css");
 @import url("./modules/apps.css");
 @import url("./modules/launchpad.css");
 @import url("./modules/dialog.css");
@@ -16,3 +17,7 @@
 @import url("./modules/notes.css");
 @import url("./modules/clock-app.css");
 @import url("./modules/notification-center.css");
+@import url("./modules/audit-log.css");
+@import url("./modules/mail-app.css");
+@import url("./modules/tasks-app.css");
+@import url("./modules/media-app.css");

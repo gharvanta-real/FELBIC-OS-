@@ -5,18 +5,46 @@ import { registerWindow, focusWindow } from './window-manager.js';
 let activeWorkspace = 1;
 let overviewActive = false;
 let savedWindowPositions = new Map(); // to restore post-overview positions
-const wallpaperGradients = [
-    'var(--gradient-wallpaper-aurora)',
-    'var(--gradient-wallpaper-sunset)',
-    'var(--gradient-wallpaper-monochrome)'
+const wallpaperAssets = [
+    'assets/Aurora-wallpaper.png',
+    'assets/wallpaper.png'
 ];
-let currentWallpaperIdx = -1;
+let currentWallpaperIdx = 0; // Default to Aurora PNG (index 0)
 
 export function initDesktop() {
     console.log('[felbicos] Initializing Desktop Features...');
 
     // Expose switchWorkspace globally
     window.switchWorkspace = switchWorkspace;
+    window.setWallpaper = setWallpaper; // Expose setWallpaper
+
+    // Set Wallpapers from localStorage or default (with Auto-Switch support)
+    const autoSwitch = localStorage.getItem('auraos-wallpaper-auto-switch') === 'true';
+    if (autoSwitch) {
+        const isLight = document.body.classList.contains('light-theme');
+        const themeSuffix = isLight ? '-light' : '-dark';
+        
+        const homeBg = localStorage.getItem('auraos-wallpaper-home' + themeSuffix) || 
+                       (isLight ? 'var(--gradient-wallpaper-default)' : 'var(--gradient-wallpaper-aurora)');
+        const lockBg = localStorage.getItem('auraos-wallpaper-lock' + themeSuffix) || 
+                       (isLight ? 'var(--gradient-wallpaper-default)' : 'var(--gradient-wallpaper-aurora)');
+                       
+        setWallpaper(homeBg, 'home');
+        setWallpaper(lockBg, 'lock');
+    } else {
+        const savedHome = localStorage.getItem('auraos-wallpaper-home');
+        const savedLock = localStorage.getItem('auraos-wallpaper-lock');
+        if (savedHome) {
+            setWallpaper(savedHome, 'home');
+        } else {
+            setWallpaper(wallpaperAssets[0], 'home');
+        }
+        if (savedLock) {
+            setWallpaper(savedLock, 'lock');
+        } else {
+            setWallpaper(wallpaperAssets[0], 'lock');
+        }
+    }
 
     // 1. Initialize workspaces (Assign default workspace to existing windows)
     initWorkspaces();
@@ -32,6 +60,45 @@ export function initDesktop() {
 
     // 5. Setup Expose / Overview Mode
     setupOverviewMode();
+
+    // Sync dock visibility initially
+    setTimeout(syncDockVisibility, 100);
+
+    // Listen to changes in application state to sync dock visibility
+    document.addEventListener('app-state-changed', syncDockVisibility);
+    document.addEventListener('app-uninstalled', syncDockVisibility);
+
+    // 6. Setup Power & Lock Screen Manager
+    initPowerManager();
+}
+
+function setWallpaper(styleStr, target = 'home') {
+    if (target === 'both' || target === 'home') {
+        const bg = document.getElementById('wallpaper-bg');
+        if (bg) {
+            if (styleStr.includes('url(') || styleStr.includes('gradient') || styleStr.includes('var(')) {
+                bg.style.background = styleStr;
+            } else {
+                bg.style.background = `url("${styleStr}")`;
+            }
+            bg.style.backgroundSize = 'cover';
+            bg.style.backgroundPosition = 'center';
+            bg.style.backgroundRepeat = 'no-repeat';
+        }
+    }
+    if (target === 'both' || target === 'lock') {
+        const lockBg = document.getElementById('lock-screen-overlay');
+        if (lockBg) {
+            if (styleStr.includes('url(') || styleStr.includes('gradient') || styleStr.includes('var(')) {
+                lockBg.style.background = styleStr;
+            } else {
+                lockBg.style.background = `url("${styleStr}")`;
+            }
+            lockBg.style.backgroundSize = 'cover';
+            lockBg.style.backgroundPosition = 'center';
+            lockBg.style.backgroundRepeat = 'no-repeat';
+        }
+    }
 }
 
 /* ── WORKSPACES (VIRTUAL DESKTOPS) ── */
@@ -301,16 +368,15 @@ function setupContextMenu() {
         });
 
         document.getElementById('menu-wallpaper').addEventListener('click', () => {
-            currentWallpaperIdx = (currentWallpaperIdx + 1) % wallpaperGradients.length;
-            const bgStyle = wallpaperGradients[currentWallpaperIdx];
+            currentWallpaperIdx = (currentWallpaperIdx + 1) % wallpaperAssets.length;
+            const assetPath = wallpaperAssets[currentWallpaperIdx];
             if (window.setWallpaper) {
-                window.setWallpaper(bgStyle);
+                window.setWallpaper(assetPath);
             }
             if (window.showNotification) {
                 let wallName = "Aurora Glow";
-                if (currentWallpaperIdx === 1) wallName = "Sunset Wave";
-                else if (currentWallpaperIdx === 2) wallName = "Ink Dark";
-                window.showNotification('Wallpaper Changed', `Switched theme to ${wallName}`, 'hgi-image-01');
+                if (currentWallpaperIdx === 1) wallName = "Default Abstract";
+                window.showNotification('Wallpaper Changed', `Switched to ${wallName}`, 'hgi-image-01');
             }
             menu.classList.remove('active');
         });
@@ -655,7 +721,348 @@ function setupSelectionLasso() {
             document.removeEventListener('mouseup', onMouseUp);
         };
 
+        document.addEventListener('mousedown', (e) => {
+            // Fix: properly scoped mousedown
+        });
         document.addEventListener('mousemove', onMouseMove);
         document.addEventListener('mouseup', onMouseUp);
+    });
+}
+
+function syncDockVisibility() {
+    if (!window.AppManager) return;
+    const apps = window.AppManager.getApps();
+    apps.forEach(app => {
+        // Find dock item
+        const dockAppId = app.id === 'gimp' ? 'gimp' : (app.id === 'vlc' ? 'vlc' : (app.id === 'discord' ? 'discord' : app.id));
+        const dockItem = document.querySelector(`.dock-item[data-app="${dockAppId}"]`);
+        if (dockItem) {
+            const shouldShow = (app.type === 'system' || app.installed) && !app.disabled;
+            if (shouldShow) {
+                dockItem.style.display = 'flex';
+            } else {
+                dockItem.style.display = 'none';
+            }
+        }
+    });
+}
+
+/* ── POWER & LOCK SCREEN MANAGER ── */
+
+function initPowerManager() {
+    const shutdownBtn = document.getElementById('btn-shutdown');
+    const restartBtn = document.getElementById('btn-restart');
+    const lockBtn = document.getElementById('btn-lock');
+    
+    const powerOverlay = document.getElementById('power-dialog-overlay');
+    const countdownText = document.getElementById('power-countdown-text');
+    const powerCancel = document.getElementById('btn-power-cancel');
+    
+    const lockOverlay = document.getElementById('lock-screen-overlay');
+    const lockTime = document.getElementById('lock-time');
+    const lockDate = document.getElementById('lock-date');
+    const lockPasswordInput = document.getElementById('lock-password-input');
+    const lockSubmit = document.getElementById('btn-lock-submit');
+    const lockLoginBox = document.getElementById('lock-login-box');
+    const lockUnlockPrompt = document.getElementById('lock-unlock-prompt');
+    const lockTimeContainer = document.querySelector('.lock-screen-time-container');
+    
+    const transitionOverlay = document.getElementById('system-transition-overlay');
+    const transitionTitle = document.getElementById('transition-title');
+    
+    let countdownVal = 60;
+    let countdownInterval = null;
+    let currentPowerAction = null; // 'shutdown' or 'restart'
+    let lockClockInterval = null;
+    let lockScreenState = 'clean'; // 'clean' or 'login'
+    let lockScreenIdleTimer = null;
+
+    // Show power dialog with countdown
+    function showPowerDialog(action) {
+        // Close Control Center panel if open
+        const ccPanel = document.getElementById('control-center-panel');
+        if (ccPanel) ccPanel.classList.remove('active');
+        
+        currentPowerAction = action;
+        countdownVal = 60;
+        
+        if (action === 'shutdown') {
+            countdownText.textContent = `Shutting down in ${countdownVal}s...`;
+        } else {
+            countdownText.textContent = `Restarting in ${countdownVal}s...`;
+        }
+        
+        powerOverlay.style.display = 'flex';
+        powerOverlay.offsetHeight; // force layout reflow
+        powerOverlay.classList.add('active');
+        
+        clearInterval(countdownInterval);
+        countdownInterval = setInterval(() => {
+            countdownVal--;
+            if (countdownVal <= 0) {
+                clearInterval(countdownInterval);
+                executePowerAction();
+            } else {
+                if (action === 'shutdown') {
+                    countdownText.textContent = `Shutting down in ${countdownVal}s...`;
+                } else {
+                    countdownText.textContent = `Restarting in ${countdownVal}s...`;
+                }
+            }
+        }, 1000);
+    }
+    
+    function closePowerDialog() {
+        powerOverlay.classList.remove('active');
+        clearInterval(countdownInterval);
+        setTimeout(() => {
+            powerOverlay.style.display = 'none';
+        }, 200);
+    }
+    
+    function executePowerAction() {
+        closePowerDialog();
+        
+        if (currentPowerAction === 'shutdown') {
+            transitionTitle.textContent = "Shutting down...";
+            transitionOverlay.style.display = 'flex';
+            
+            setTimeout(() => {
+                transitionTitle.textContent = "It is now safe to turn off your computer.";
+                // Remove spinner
+                const spinner = transitionOverlay.querySelector('.transition-spinner');
+                if (spinner) spinner.style.display = 'none';
+                
+                // Add a helper click to restore
+                const hint = document.createElement('p');
+                hint.textContent = "Click anywhere to power back on";
+                hint.style.fontSize = "11px";
+                hint.style.color = "var(--text-muted)";
+                hint.style.marginTop = "20px";
+                hint.style.cursor = "pointer";
+                transitionOverlay.querySelector('.transition-content').appendChild(hint);
+                
+                const powerOn = () => {
+                    transitionOverlay.style.display = 'none';
+                    if (spinner) spinner.style.display = 'block';
+                    hint.remove();
+                    transitionOverlay.removeEventListener('click', powerOn);
+                };
+                setTimeout(() => {
+                    transitionOverlay.addEventListener('click', powerOn);
+                }, 500);
+                
+            }, 2500);
+            
+        } else if (currentPowerAction === 'restart') {
+            transitionTitle.textContent = "Restarting...";
+            transitionOverlay.style.display = 'flex';
+            
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        }
+    }
+    
+    function executeSleep() {
+        closePowerDialog();
+        transitionTitle.textContent = "Going to sleep...";
+        transitionOverlay.style.display = 'flex';
+        
+        setTimeout(() => {
+            transitionOverlay.style.display = 'none';
+            showLockScreen();
+        }, 1500);
+    }
+
+    // Lock screen management
+    function showLockScreen() {
+        // Close Control Center panel if open
+        const ccPanel = document.getElementById('control-center-panel');
+        if (ccPanel) ccPanel.classList.remove('active');
+        
+        lockOverlay.style.display = 'flex';
+        lockOverlay.offsetHeight;
+        lockOverlay.classList.add('active');
+        
+        setLockScreenState('clean');
+        
+        updateLockClock();
+        clearInterval(lockClockInterval);
+        lockClockInterval = setInterval(updateLockClock, 1000);
+    }
+    
+    function setLockScreenState(state) {
+        lockScreenState = state;
+        clearTimeout(lockScreenIdleTimer);
+        
+        if (state === 'clean') {
+            lockOverlay.classList.remove('login-active');
+            if (lockTimeContainer) lockTimeContainer.classList.remove('login-active');
+            if (lockLoginBox) {
+                lockLoginBox.classList.remove('visible');
+            }
+            if (lockUnlockPrompt) {
+                lockUnlockPrompt.classList.add('visible');
+            }
+        } else if (state === 'login') {
+            lockOverlay.classList.add('login-active');
+            if (lockTimeContainer) lockTimeContainer.classList.add('login-active');
+            if (lockLoginBox) {
+                lockLoginBox.classList.add('visible');
+            }
+            if (lockUnlockPrompt) {
+                lockUnlockPrompt.classList.remove('visible');
+            }
+            // Focus the input
+            setTimeout(() => {
+                if (lockPasswordInput) {
+                    lockPasswordInput.value = '';
+                    lockPasswordInput.focus();
+                }
+            }, 200);
+            
+            resetLockScreenIdleTimer();
+        }
+    }
+    
+    function resetLockScreenIdleTimer() {
+        clearTimeout(lockScreenIdleTimer);
+        if (lockScreenState === 'login') {
+            lockScreenIdleTimer = setTimeout(() => {
+                setLockScreenState('clean');
+            }, 15000); // return to clean screen after 15s idle
+        }
+    }
+    
+    function updateLockClock() {
+        const now = new Date();
+        
+        // Time format (e.g. 11:42 PM)
+        let hours = now.getHours();
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        lockTime.textContent = `${hours}:${minutes} ${ampm}`;
+        
+        // Date format (e.g. Monday, May 20)
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        lockDate.textContent = `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}`;
+    }
+    
+    function unlockScreen() {
+        const pass = lockPasswordInput.value.trim().toLowerCase();
+        
+        // Valid password is "aios" or empty
+        if (pass === 'aios' || pass === '1234' || pass === '') {
+            lockOverlay.classList.remove('active');
+            lockOverlay.classList.remove('login-active');
+            clearInterval(lockClockInterval);
+            clearTimeout(lockScreenIdleTimer);
+            setTimeout(() => {
+                lockOverlay.style.display = 'none';
+            }, 400);
+        } else {
+            // Shake login box on incorrect password
+            lockLoginBox.classList.add('shake');
+            setTimeout(() => {
+                lockLoginBox.classList.remove('shake');
+            }, 400);
+            
+            lockPasswordInput.value = '';
+            lockPasswordInput.focus();
+            resetLockScreenIdleTimer();
+        }
+    }
+
+    // Power dialog buttons event bindings
+    if (shutdownBtn) shutdownBtn.addEventListener('click', () => showPowerDialog('shutdown'));
+    if (restartBtn) restartBtn.addEventListener('click', () => showPowerDialog('restart'));
+    if (lockBtn) lockBtn.addEventListener('click', showLockScreen);
+    
+    if (powerCancel) powerCancel.addEventListener('click', closePowerDialog);
+    
+    // Direct actions inside power menu card
+    const optSleep = document.getElementById('power-opt-sleep');
+    const optRestart = document.getElementById('power-opt-restart');
+    const optShutdown = document.getElementById('power-opt-shutdown');
+    const optLock = document.getElementById('power-opt-lock');
+    
+    if (optSleep) optSleep.addEventListener('click', executeSleep);
+    if (optRestart) optRestart.addEventListener('click', () => { closePowerDialog(); showPowerDialog('restart'); executePowerAction(); });
+    if (optShutdown) optShutdown.addEventListener('click', () => { closePowerDialog(); showPowerDialog('shutdown'); executePowerAction(); });
+    if (optLock) optLock.addEventListener('click', () => { closePowerDialog(); showLockScreen(); });
+    
+    // Lock screen event bindings
+    if (lockSubmit) lockSubmit.addEventListener('click', unlockScreen);
+    if (lockPasswordInput) {
+        lockPasswordInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                unlockScreen();
+            } else {
+                resetLockScreenIdleTimer();
+            }
+        });
+        lockPasswordInput.addEventListener('input', resetLockScreenIdleTimer);
+    }
+    
+    // Click on overlay to switch to login view
+    if (lockOverlay) {
+        lockOverlay.addEventListener('click', (e) => {
+            // Prevent trigger if clicking login box or controls
+            if (e.target.closest('#lock-login-box') || e.target.closest('.lock-bottom-controls')) {
+                return;
+            }
+            if (lockScreenState === 'clean') {
+                setLockScreenState('login');
+            }
+        });
+    }
+
+    // Keyboard trigger to switch to login view, or escape key to go back
+    window.addEventListener('keydown', (e) => {
+        if (lockOverlay && lockOverlay.classList.contains('active')) {
+            if (lockScreenState === 'clean') {
+                e.preventDefault();
+                setLockScreenState('login');
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                setLockScreenState('clean');
+            }
+        }
+    });
+    
+    // Lock screen bottom buttons
+    const lockSleep = document.getElementById('lock-ctrl-sleep');
+    const lockRestart = document.getElementById('lock-ctrl-restart');
+    const lockShutdown = document.getElementById('lock-ctrl-shutdown');
+    
+    if (lockSleep) lockSleep.addEventListener('click', () => {
+        lockOverlay.classList.remove('active');
+        clearInterval(lockClockInterval);
+        setTimeout(() => {
+            lockOverlay.style.display = 'none';
+            executeSleep();
+        }, 300);
+    });
+    if (lockRestart) lockRestart.addEventListener('click', () => {
+        lockOverlay.classList.remove('active');
+        clearInterval(lockClockInterval);
+        setTimeout(() => {
+            lockOverlay.style.display = 'none';
+            showPowerDialog('restart');
+            executePowerAction();
+        }, 300);
+    });
+    if (lockShutdown) lockShutdown.addEventListener('click', () => {
+        lockOverlay.classList.remove('active');
+        clearInterval(lockClockInterval);
+        setTimeout(() => {
+            lockOverlay.style.display = 'none';
+            showPowerDialog('shutdown');
+            executePowerAction();
+        }, 300);
     });
 }

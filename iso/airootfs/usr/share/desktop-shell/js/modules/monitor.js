@@ -1,16 +1,27 @@
-/* FELBIC OS — Task Manager / Activity Monitor Module */
+/* AURA OS — Task Manager / Activity Monitor Module */
 
 export function initMonitor() {
-    console.log('[felbicos] Initializing Activity Monitor Module...');
+    console.log('[monitor] Initializing Activity Monitor Module...');
 
-    // System processes database (simulated background jobs)
+    const showDialog = window.showDialog || {
+        confirm: async (msg) => confirm(msg),
+        alert: (msg) => alert(msg)
+    };
+
+    // System processes database (expanded simulation)
     const systemProcesses = [
         { pid: 1, name: 'systemd', cpu: 0.1, mem: '12.4 MB', type: 'system' },
-        { pid: 452, name: 'aisd', cpu: 1.2, mem: '84.6 MB', type: 'system' },
-        { pid: 102, name: 'xorg-server', cpu: 0.8, mem: '45.1 MB', type: 'system' },
-        { pid: 310, name: 'pulseaudio', cpu: 0.3, mem: '18.9 MB', type: 'system' },
-        { pid: 215, name: 'network-manager', cpu: 0.1, mem: '9.2 MB', type: 'system' },
-        { pid: 512, name: 'dock-daemon', cpu: 0.4, mem: '24.5 MB', type: 'system' }
+        { pid: 2, name: 'kthreadd', cpu: 0.0, mem: '0 KB', type: 'system' },
+        { pid: 12, name: 'ksoftirqd/0', cpu: 0.1, mem: '0 KB', type: 'system' },
+        { pid: 452, name: 'aisd (AI Daemon)', cpu: 1.8, mem: '112.4 MB', type: 'system' },
+        { pid: 102, name: 'xorg-server', cpu: 1.2, mem: '64.5 MB', type: 'system' },
+        { pid: 310, name: 'pulseaudio', cpu: 0.4, mem: '21.2 MB', type: 'system' },
+        { pid: 215, name: 'network-manager', cpu: 0.2, mem: '14.8 MB', type: 'system' },
+        { pid: 512, name: 'dock-daemon', cpu: 0.5, mem: '28.1 MB', type: 'system' },
+        { pid: 520, name: 'desktop-shell', cpu: 1.4, mem: '42.9 MB', type: 'system' },
+        { pid: 615, name: 'node-server', cpu: 0.9, mem: '58.3 MB', type: 'system' },
+        { pid: 820, name: 'dbus-daemon', cpu: 0.1, mem: '8.4 MB', type: 'system' },
+        { pid: 911, name: 'syslogd', cpu: 0.1, mem: '6.2 MB', type: 'system' }
     ];
 
     // Map desktop windows to processes lists
@@ -21,39 +32,52 @@ export function initMonitor() {
         { windowId: 'paint-window', name: 'GIMP Editor', defaultCpu: 4.0, mem: '210.8 MB', type: 'app' },
         { windowId: 'media-window', name: 'VLC Media Player', defaultCpu: 5.5, mem: '92.4 MB', type: 'app' },
         { windowId: 'chat-window', name: 'Discord Client', defaultCpu: 1.8, mem: '128.0 MB', type: 'app' },
-        { windowId: 'store-window', name: 'Software Center', defaultCpu: 0.9, mem: '64.3 MB', type: 'app' }
+        { windowId: 'store-window', name: 'Software Center', defaultCpu: 0.9, mem: '64.3 MB', type: 'app' },
+        { windowId: 'notes-window', name: 'Notes Manager', defaultCpu: 0.3, mem: '24.1 MB', type: 'app' },
+        { windowId: 'calculator-window', name: 'Calculator', defaultCpu: 0.1, mem: '12.0 MB', type: 'app' },
+        { windowId: 'calendar-window', name: 'Calendar', defaultCpu: 0.2, mem: '18.5 MB', type: 'app' }
     ];
 
-    // SVG Graph data states
+    // SVG Graph data states (40 points history)
     const cpuHistory = Array(40).fill(12);
     const memHistory = Array(40).fill(28);
+    const netHistory = Array(40).fill(5);
+    const diskHistory = Array(40).fill(2);
 
-    const cpuPath = document.getElementById('cpu-graph-path');
-    const memPath = document.getElementById('mem-graph-path');
+    const cpuPath = document.getElementById('cpu-chart-path');
+    const memPath = document.getElementById('mem-chart-path');
+    const netPath = document.getElementById('net-chart-path');
+    const diskPath = document.getElementById('disk-chart-path');
 
     function updateChart(historyArray, newValue, pathElement) {
         if (!pathElement) return;
         historyArray.push(newValue);
         historyArray.shift();
 
-        // Build SVG Polyline coordinates (40 points across 100% width)
-        const width = 300;
-        const height = 80;
+        // Build SVG filled path coordinates (viewBox 100x40)
+        const width = 100;
+        const height = 40;
         const step = width / (historyArray.length - 1);
         
-        let points = '';
+        let pathData = '';
         for (let i = 0; i < historyArray.length; i++) {
             const x = i * step;
-            // Invert scale since SVG 0 is at the top (scale max to 100%)
             const percent = historyArray[i];
             const y = height - (percent / 100) * height;
-            points += `${x},${y} `;
+            if (i === 0) {
+                pathData += `M ${x.toFixed(1)} ${y.toFixed(1)}`;
+            } else {
+                pathData += ` L ${x.toFixed(1)} ${y.toFixed(1)}`;
+            }
         }
-        pathElement.setAttribute('points', points.trim());
+        
+        // Append bottom boundary to fill the polygon
+        const fillPathData = `${pathData} L ${width} ${height} L 0 ${height} Z`;
+        pathElement.setAttribute('d', fillPathData);
     }
 
     // Interval to simulate performance changes and update graphs
-    setInterval(() => {
+    const graphUpdateInterval = setInterval(() => {
         // Read stats from header elements if available, otherwise mock
         const cpuText = document.getElementById('stat-cpu');
         const memText = document.getElementById('stat-mem');
@@ -61,26 +85,52 @@ export function initMonitor() {
         const cpuVal = cpuText ? parseInt(cpuText.textContent) || 12 : Math.floor(Math.random() * 20) + 5;
         const memVal = memText ? parseInt(memText.textContent) || 28 : Math.floor(Math.random() * 5) + 30;
 
+        // Simulated Network Traffic (0 to 800 KB/s)
+        const netVal = Math.floor(Math.random() * 150) + (Math.random() > 0.8 ? 500 : 8);
+        // Simulated Disk Activity (0 to 120 MB/s)
+        const diskVal = Math.floor(Math.random() * 8) + (Math.random() > 0.9 ? 85 : 0.5);
+
+        // Update charts
         updateChart(cpuHistory, cpuVal, cpuPath);
         updateChart(memHistory, memVal, memPath);
 
-        const cpuLabel = document.querySelector('#monitor-pane-graphs .monitor-graph-section:nth-child(1) .graph-label');
-        const memLabel = document.querySelector('#monitor-pane-graphs .monitor-graph-section:nth-child(2) .graph-label');
-        if (cpuLabel) cpuLabel.textContent = `CPU System Core Load: ${cpuVal}%`;
-        if (memLabel) memLabel.textContent = `Physical Memory Active Usage: ${memVal}%`;
+        const netPercent = Math.min(100, (netVal / 800) * 100);
+        updateChart(netHistory, netPercent, netPath);
+
+        const diskPercent = Math.min(100, (diskVal / 100) * 100);
+        updateChart(diskHistory, diskPercent, diskPath);
+
+        // Update graph labels
+        const cpuLabel = document.getElementById('cpu-graph-label');
+        const memLabel = document.getElementById('mem-graph-label');
+        const netLabel = document.getElementById('net-graph-label');
+        const diskLabel = document.getElementById('disk-graph-label');
+
+        if (cpuLabel) cpuLabel.textContent = `CPU Load: ${cpuVal}%`;
+        if (memLabel) memLabel.textContent = `Memory Usage: ${memVal}%`;
+        if (netLabel) netLabel.textContent = `Network Traffic: ${netVal} KB/s`;
+        if (diskLabel) diskLabel.textContent = `Disk Activity: ${diskVal.toFixed(1)} MB/s`;
     }, 800);
 
-    // Tab Pane Toggles
+    // Tab Pane Toggles (Performance Grid vs Processes list)
     const tabs = document.querySelectorAll('.monitor-tab');
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
             tabs.forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
 
-            const targetPane = tab.getAttribute('data-pane');
-            document.querySelectorAll('.monitor-pane').forEach(pane => {
-                pane.style.display = pane.id === targetPane ? 'flex' : 'none';
-            });
+            const tabId = tab.getAttribute('data-tab');
+            const graphPane = document.getElementById('monitor-pane-graphs');
+            const procPane = document.getElementById('monitor-pane-processes');
+
+            if (tabId === 'performance') {
+                if (graphPane) graphPane.style.display = 'grid';
+                if (procPane) procPane.style.display = 'none';
+            } else if (tabId === 'processes') {
+                if (graphPane) graphPane.style.display = 'none';
+                if (procPane) procPane.style.display = 'flex';
+                renderProcesses();
+            }
         });
     });
 
@@ -104,7 +154,6 @@ export function initMonitor() {
     }
 
     function getAppPid(windowId) {
-        // Static mapping for demo consistency
         switch (windowId) {
             case 'terminal-window': return 892;
             case 'browser-window': return 1024;
@@ -113,6 +162,9 @@ export function initMonitor() {
             case 'media-window': return 954;
             case 'chat-window': return 1308;
             case 'store-window': return 620;
+            case 'notes-window': return 812;
+            case 'calculator-window': return 504;
+            case 'calendar-window': return 412;
             default: return 999;
         }
     }
@@ -218,10 +270,10 @@ export function initMonitor() {
     }
 
     // Simulated task execution activity modifier
-    setInterval(() => {
+    const processUpdateInterval = setInterval(() => {
         // Fluctuate system cpu
         systemProcesses.forEach(proc => {
-            if (proc.name === 'systemd') return;
+            if (proc.name === 'systemd' || proc.name === 'kthreadd') return;
             const delta = (Math.random() - 0.5) * 1.5;
             proc.cpu = Math.max(0.1, proc.cpu + delta);
         });
@@ -233,7 +285,10 @@ export function initMonitor() {
             app.currentCpu = Math.max(0.1, app.currentCpu + delta);
         });
 
-        renderProcesses();
+        const procTab = document.querySelector('.monitor-tab[data-tab="processes"]');
+        if (procTab && procTab.classList.contains('active')) {
+            renderProcesses();
+        }
     }, 2000);
 
     // Force Quit Task handler
@@ -245,8 +300,7 @@ export function initMonitor() {
             const proc = currentProcesses.find(p => p.pid === selectedPid);
             
             if (proc) {
-                // Confirm action
-                const confirmed = await showDialog.confirm(`Are you sure you want to force quit ${proc.name} (PID ${selectedPid})?`, 'Force Quit Process', true);
+                const confirmed = await showDialog.confirm(`Are you sure you want to force quit ${proc.name} (PID ${selectedPid})?`, 'Force Quit Process');
                 if (confirmed) {
                     const killedPid = selectedPid;
                     const killedName = proc.name;
@@ -289,4 +343,12 @@ export function initMonitor() {
     }
 
     renderProcesses();
+
+    // Cleanup interval bindings when window close is detected (optional/safety)
+    const monitorWin = document.getElementById('monitor-window');
+    if (monitorWin) {
+        monitorWin.addEventListener('window-close', () => {
+            // Can clear intervals if needed, but since it's a persistent tab in background, we let it tick
+        });
+    }
 }

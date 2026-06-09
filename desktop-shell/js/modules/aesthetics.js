@@ -15,37 +15,48 @@ export function initAesthetics() {
     }
 
     // Set wallpaper function exposed globally for Settings integration
-    window.setWallpaper = function(bgStyle) {
-        const mainBg = document.getElementById('wallpaper-bg');
-        if (!mainBg) return;
+    window.setWallpaper = function(bgStyle, target = 'home') {
+        if (target === 'both' || target === 'home') {
+            const mainBg = document.getElementById('wallpaper-bg');
+            if (mainBg) {
+                let tempBg = document.getElementById('wallpaper-bg-temp');
+                if (!tempBg) {
+                    tempBg = document.createElement('div');
+                    tempBg.id = 'wallpaper-bg-temp';
+                    tempBg.className = 'wallpaper-bg-temp';
+                    document.body.appendChild(tempBg);
+                }
 
-        let tempBg = document.getElementById('wallpaper-bg-temp');
-        if (!tempBg) {
-            tempBg = document.createElement('div');
-            tempBg.id = 'wallpaper-bg-temp';
-            tempBg.className = 'wallpaper-bg-temp';
-            document.body.appendChild(tempBg);
+                // Set layout and styles
+                tempBg.style.transition = 'none';
+                tempBg.style.opacity = '0';
+                tempBg.style.background = bgStyle;
+                tempBg.style.backgroundSize = 'cover';
+                tempBg.style.backgroundPosition = 'center';
+
+                tempBg.offsetHeight; // force reflow
+
+                // Animate fade in
+                tempBg.style.transition = 'opacity var(--transition-slow) var(--curve-smooth)';
+                tempBg.style.opacity = '1';
+
+                setTimeout(() => {
+                    mainBg.style.background = bgStyle;
+                    mainBg.style.backgroundSize = 'cover';
+                    mainBg.style.backgroundPosition = 'center';
+                    tempBg.style.opacity = '0';
+                }, 350); // Match var(--transition-slow) = 0.35s
+            }
         }
-
-        // Set layout and styles
-        tempBg.style.transition = 'none';
-        tempBg.style.opacity = '0';
-        tempBg.style.background = bgStyle;
-        tempBg.style.backgroundSize = 'cover';
-        tempBg.style.backgroundPosition = 'center';
-
-        tempBg.offsetHeight; // force reflow
-
-        // Animate fade in
-        tempBg.style.transition = 'opacity var(--transition-slow) var(--curve-smooth)';
-        tempBg.style.opacity = '1';
-
-        setTimeout(() => {
-            mainBg.style.background = bgStyle;
-            mainBg.style.backgroundSize = 'cover';
-            mainBg.style.backgroundPosition = 'center';
-            tempBg.style.opacity = '0';
-        }, 350); // Match var(--transition-slow) = 0.35s
+        if (target === 'both' || target === 'lock') {
+            const lockBg = document.getElementById('lock-screen-overlay');
+            if (lockBg) {
+                lockBg.style.background = bgStyle;
+                lockBg.style.backgroundSize = 'cover';
+                lockBg.style.backgroundPosition = 'center';
+                lockBg.style.backgroundRepeat = 'no-repeat';
+            }
+        }
     };
 
     // ── 2. Custom Tooltips (Event Delegation) ──

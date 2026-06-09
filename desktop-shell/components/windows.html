@@ -66,7 +66,7 @@
             <div class="settings-sidebar-list">
                 <div class="app-sidebar-item active" data-tab="general">
                     <span class="app-sidebar-icon">
-                        <i class="hgi-stroke hgi-sliders-01"></i>
+                        <i class="hgi-stroke hgi-settings-02"></i>
                     </span>
                     <span>General</span>
                 </div>
@@ -106,11 +106,47 @@
                     </span>
                     <span>Appearance</span>
                 </div>
+                <div class="app-sidebar-item" data-tab="notifications">
+                    <span class="app-sidebar-icon">
+                        <i class="hgi-stroke hgi-notification-01"></i>
+                    </span>
+                    <span>Notifications</span>
+                </div>
+                <div class="app-sidebar-item" data-tab="users">
+                    <span class="app-sidebar-icon">
+                        <i class="hgi-stroke hgi-user-group"></i>
+                    </span>
+                    <span>Users & Groups</span>
+                </div>
+                <div class="app-sidebar-item" data-tab="security">
+                    <span class="app-sidebar-icon">
+                        <i class="hgi-stroke hgi-security-check"></i>
+                    </span>
+                    <span>Privacy & Security</span>
+                </div>
+                <div class="app-sidebar-item" data-tab="keyboard">
+                    <span class="app-sidebar-icon">
+                        <i class="hgi-stroke hgi-keyboard"></i>
+                    </span>
+                    <span>Keyboard & Mouse</span>
+                </div>
+                <div class="app-sidebar-item" data-tab="power">
+                    <span class="app-sidebar-icon">
+                        <i class="hgi-stroke hgi-battery-charging-01"></i>
+                    </span>
+                    <span>Power & Battery</span>
+                </div>
                 <div class="app-sidebar-item" data-tab="storage">
                     <span class="app-sidebar-icon">
                         <i class="hgi-stroke hgi-database"></i>
                     </span>
                     <span>Storage</span>
+                </div>
+                <div class="app-sidebar-item" data-tab="applications">
+                    <span class="app-sidebar-icon">
+                        <i class="hgi-stroke hgi-grid-view"></i>
+                    </span>
+                    <span>Applications</span>
                 </div>
                 <div class="app-sidebar-item" data-tab="ai">
                     <span class="app-sidebar-icon">
@@ -136,45 +172,45 @@
                 <p class="settings-sub">Manage system preferences and configurations.</p>
                 
                 <div class="settings-row-group">
-                    <div class="settings-row" style="cursor: pointer;">
+                    <div class="settings-row">
                         <span class="row-label">Device Name</span>
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <span style="color: var(--text-muted); font-size: var(--font-size-xs);">Alex's Aurora</span>
-                            <i class="hgi-stroke hgi-arrow-right-01" style="font-size: var(--icon-sm); color: var(--text-muted);"></i>
+                        <div class="row-action-group">
+                            <span class="text-muted-xs">Alex's Aurora</span>
+                            <i class="hgi-stroke hgi-arrow-right-01"></i>
                         </div>
                     </div>
-                    <div class="settings-row" style="cursor: pointer;">
+                    <div class="settings-row">
                         <span class="row-label">Language</span>
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <span style="color: var(--text-muted); font-size: var(--font-size-xs);">English (United States)</span>
-                            <i class="hgi-stroke hgi-arrow-right-01" style="font-size: var(--icon-sm); color: var(--text-muted);"></i>
+                        <div class="row-action-group">
+                            <span class="text-muted-xs">English (United States)</span>
+                            <i class="hgi-stroke hgi-arrow-right-01"></i>
                         </div>
                     </div>
-                    <div class="settings-row" style="cursor: pointer;">
+                    <div class="settings-row">
                         <span class="row-label">Time & Date</span>
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <i class="hgi-stroke hgi-arrow-right-01" style="font-size: var(--icon-sm); color: var(--text-muted);"></i>
+                        <div class="row-action-group">
+                            <i class="hgi-stroke hgi-arrow-right-01"></i>
                         </div>
                     </div>
                     <div class="settings-row">
                         <span class="row-label">Software Update</span>
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <span style="color: var(--text-muted); font-size: var(--font-size-xs);">Aurora OS 1.0.0</span>
-                            <button class="monitor-kill-btn" style="padding: 4px 10px; font-size: 11px; border-radius: 6px; background-color: var(--brand); color: white; border: none; cursor: pointer; transition: background-color var(--transition-fast);">Check for updates</button>
+                        <div class="row-action-group">
+                            <span class="text-muted-xs">Aurora OS 1.0.0</span>
+                            <button class="btn btn-secondary btn-sm" id="btn-check-updates">Check for updates</button>
                         </div>
                     </div>
-                    <div class="settings-row" style="cursor: pointer;">
+                    <div class="settings-row">
                         <span class="row-label">Backup</span>
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <span style="color: var(--text-muted); font-size: var(--font-size-xs);">Last backup: 2 days ago</span>
-                            <i class="hgi-stroke hgi-arrow-right-01" style="font-size: var(--icon-sm); color: var(--text-muted);"></i>
+                        <div class="row-action-group">
+                            <span class="text-muted-xs">Last backup: 2 days ago</span>
+                            <i class="hgi-stroke hgi-arrow-right-01"></i>
                         </div>
                     </div>
-                    <div class="settings-row" style="cursor: pointer;">
+                    <div class="settings-row">
                         <span class="row-label">Reset</span>
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <span style="color: var(--text-muted); font-size: var(--font-size-xs);">Reset all settings</span>
-                            <i class="hgi-stroke hgi-arrow-right-01" style="font-size: var(--icon-sm); color: var(--text-muted);"></i>
+                        <div class="row-action-group">
+                            <span class="text-muted-xs">Reset all settings</span>
+                            <i class="hgi-stroke hgi-arrow-right-01"></i>
                         </div>
                     </div>
                 </div>
@@ -349,8 +385,58 @@
             <!-- Tab: Wallpaper -->
             <section class="settings-tab-pane" id="pane-wallpaper" style="display: none;">
                 <h2>Wallpaper</h2>
-                <p class="settings-sub">Choose a desktop background style.</p>
+                <p class="settings-sub">Choose a desktop background style or upload a custom image.</p>
                 
+                <div class="settings-section-title" style="margin-top:0;">Wallpaper Target Screen</div>
+                <div class="settings-row-group">
+                    <div class="settings-row">
+                        <span class="row-label">Apply Selection To</span>
+                        <select class="settings-select" id="wallpaper-target-select">
+                            <option value="both">Both Screens (Default)</option>
+                            <option value="home">Home Screen Only</option>
+                            <option value="lock">Lock Screen Only</option>
+                        </select>
+                    </div>
+                    <div class="settings-row">
+                        <div class="row-info-col">
+                            <span class="row-label">Theme-Aware Auto-Switch</span>
+                            <span class="row-sub" style="font-size: 11px; color: var(--text-muted);">Use separate wallpapers for Light & Dark themes</span>
+                        </div>
+                        <label class="switch-container">
+                            <input type="checkbox" id="wallpaper-auto-switch">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Section: Theme Previews (Only visible when Auto-Switch is active) -->
+                <div id="theme-aware-previews-container" style="display: none; margin-bottom: 16px;">
+                    <div class="settings-section-title">Theme Wallpapers</div>
+                    <div class="settings-row-group" style="padding: 16px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div style="text-align: center;">
+                                <span style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 6px;"><i class="hgi-stroke hgi-sun-01"></i> Light Theme</span>
+                                <div id="wallpaper-light-preview" style="aspect-ratio: 16/9; border-radius: 6px; border: 1px solid var(--border-strong); background-size: cover; background-position: center; background-color: var(--surface-secondary); box-shadow: var(--shadow-sm);"></div>
+                            </div>
+                            <div style="text-align: center;">
+                                <span style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 6px;"><i class="hgi-stroke hgi-moon"></i> Dark Theme</span>
+                                <div id="wallpaper-dark-preview" style="aspect-ratio: 16/9; border-radius: 6px; border: 1px solid var(--border-strong); background-size: cover; background-position: center; background-color: var(--surface-secondary); box-shadow: var(--shadow-sm);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section-title">Upload Custom Wallpaper</div>
+                <div class="settings-row-group" style="padding: 16px;">
+                    <div class="wallpaper-upload-box" id="wallpaper-upload-btn" style="border: 2px dashed var(--border-strong); border-radius: 8px; padding: 24px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--surface-secondary); transition: border-color var(--transition-fast), background-color var(--transition-fast);">
+                        <i class="hgi-stroke hgi-upload-02" style="font-size: 24px; margin-bottom: 8px; color: var(--text-muted);"></i>
+                        <span class="upload-title" style="font-size: 13px; font-weight: 500; color: var(--text-normal); margin-bottom: 2px;">Choose image from device...</span>
+                        <span class="upload-subtitle" style="font-size: 11px; color: var(--text-muted);">JPG, PNG format (will be optimized)</span>
+                    </div>
+                    <input type="file" id="wallpaper-upload-input" accept="image/*" style="display: none;">
+                </div>
+
+                <div class="settings-section-title">Preset Backgrounds</div>
                 <div class="wallpaper-grid">
                     <div class="wallpaper-thumb wallpaper-preview-slate active" data-img="wallpaper.png">
                         <span class="wallpaper-label">Default Slate</span>
@@ -365,28 +451,50 @@
                         <span class="wallpaper-label">Ink Dark</span>
                     </div>
                 </div>
+
+                <div class="settings-row-group" style="margin-top: 16px;">
+                    <div class="settings-row" style="padding: 12px 16px; display: flex; justify-content: space-between;">
+                        <span class="row-label" style="font-size: 11px; color: var(--text-muted);">
+                            Active Home: <strong id="active-wallpaper-home-name" style="color: var(--text-normal);">Default Slate</strong>
+                        </span>
+                        <span class="row-label" style="font-size: 11px; color: var(--text-muted); text-align: right;">
+                            Active Lock: <strong id="active-wallpaper-lock-name" style="color: var(--text-normal);">Default Slate</strong>
+                        </span>
+                    </div>
+                </div>
             </section>
             
             <!-- Tab: Appearance -->
             <section class="settings-tab-pane" id="pane-appearance" style="display: none;">
                 <h2>Appearance</h2>
-                <p class="settings-sub">Choose a workspace theme style.</p>
+                <p class="settings-sub">Choose a workspace color theme.</p>
                 
+                <div class="settings-section-title" style="margin-top:0;">Color Theme</div>
                 <div class="theme-selector">
+                    <!-- Dark (default) -->
                     <div class="theme-card active" id="theme-btn-dark">
-                        <div class="theme-card-preview dark">
-                            <span class="theme-card-bar"></span>
-                            <span class="theme-card-dock"></span>
+                        <div class="theme-card-preview theme-preview-dark">
+                            <div class="tp-topbar"></div>
+                            <div class="tp-body">
+                                <div class="tp-sidebar"></div>
+                                <div class="tp-content"></div>
+                            </div>
+                            <div class="tp-dock"></div>
                         </div>
-                        <span class="theme-card-label">Dark Space</span>
+                        <span class="theme-card-label">Dark</span>
                     </div>
-                    
+
+                    <!-- Light -->
                     <div class="theme-card" id="theme-btn-light">
-                        <div class="theme-card-preview light">
-                            <span class="theme-card-bar"></span>
-                            <span class="theme-card-dock"></span>
+                        <div class="theme-card-preview theme-preview-light">
+                            <div class="tp-topbar"></div>
+                            <div class="tp-body">
+                                <div class="tp-sidebar"></div>
+                                <div class="tp-content"></div>
+                            </div>
+                            <div class="tp-dock"></div>
                         </div>
-                        <span class="theme-card-label">Light Quartz</span>
+                        <span class="theme-card-label">Light</span>
                     </div>
                 </div>
 
@@ -398,6 +506,217 @@
                             <option value="auto">Based on Mouse / Trackpad</option>
                             <option value="scroll">When Scrolling</option>
                             <option value="always">Always Show</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- Tab: Notifications -->
+            <section class="settings-tab-pane" id="pane-notifications" style="display: none;">
+                <h2>Notifications</h2>
+                <p class="settings-sub">Manage how apps and the system notify you.</p>
+                
+                <div class="settings-row-group">
+                    <div class="settings-row">
+                        <div style="display: flex; flex-direction: column; gap: 2px;">
+                            <span class="row-label">Do Not Disturb</span>
+                            <span style="font-size: 10px; color: var(--text-muted);">Silence all incoming alerts and banners</span>
+                        </div>
+                        <label class="switch-container">
+                            <input type="checkbox" id="settings-dnd-toggle">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-section-title">App Notifications</div>
+                <div class="settings-row-group">
+                    <div class="settings-row">
+                        <span class="row-label">Browser</span>
+                        <label class="switch-container">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="settings-row">
+                        <span class="row-label">Calendar</span>
+                        <label class="switch-container">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="settings-row">
+                        <span class="row-label">Messages</span>
+                        <label class="switch-container">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab: Users -->
+            <section class="settings-tab-pane" id="pane-users" style="display: none;">
+                <h2>Users & Groups</h2>
+                <p class="settings-sub">Manage user accounts and access control.</p>
+                
+                <div class="settings-row-group">
+                    <div class="settings-row" style="padding: 20px 14px;">
+                        <div style="display: flex; align-items: center; gap: 16px;">
+                            <div class="settings-user-avatar" style="width: 64px; height: 64px; font-size: 24px;">
+                                <i class="hgi-stroke hgi-user"></i>
+                            </div>
+                            <div style="display: flex; flex-direction: column;">
+                                <span style="font-size: var(--font-size-md); font-weight: 700;">Live User</span>
+                                <span style="font-size: var(--font-size-xs); color: var(--text-muted);">Administrator</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary btn-sm" id="btn-change-password">Change Password</button>
+                    </div>
+                </div>
+
+                <div class="settings-section-title">Other Users</div>
+                <div class="settings-row-group">
+                    <div class="settings-row" style="cursor: pointer;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div class="settings-user-avatar" style="width: 32px; height: 32px; font-size: 14px;">GA</div>
+                            <span class="row-label">Guest Account</span>
+                        </div>
+                        <i class="hgi-stroke hgi-arrow-right-01" style="font-size: var(--icon-sm); color: var(--text-muted);"></i>
+                    </div>
+                    <div class="settings-row" style="cursor: pointer; color: var(--brand);">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 32px; height: 32px; border-radius: 50%; border: 1px dashed var(--brand); display: flex; justify-content: center; align-items: center;">+</div>
+                            <span class="row-label">Add User...</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab: Security -->
+            <section class="settings-tab-pane" id="pane-security" style="display: none;">
+                <h2>Privacy & Security</h2>
+                <p class="settings-sub">Control data access and system hardening.</p>
+                
+                <div class="settings-section-title" style="margin-top: 0;">App Permissions</div>
+                <div class="settings-row-group">
+                    <div class="settings-row" style="cursor: pointer;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <i class="hgi-stroke hgi-camera" style="color: var(--accent-primary);"></i>
+                            <span class="row-label">Camera</span>
+                        </div>
+                        <i class="hgi-stroke hgi-arrow-right-01" style="font-size: var(--icon-sm); color: var(--text-muted);"></i>
+                    </div>
+                    <div class="settings-row" style="cursor: pointer;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <i class="hgi-stroke hgi-mic-01" style="color: var(--success);"></i>
+                            <span class="row-label">Microphone</span>
+                        </div>
+                        <i class="hgi-stroke hgi-arrow-right-01" style="font-size: var(--icon-sm); color: var(--text-muted);"></i>
+                    </div>
+                    <div class="settings-row" style="cursor: pointer;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <i class="hgi-stroke hgi-location-01" style="color: var(--danger);"></i>
+                            <span class="row-label">Location Services</span>
+                        </div>
+                        <i class="hgi-stroke hgi-arrow-right-01" style="font-size: var(--icon-sm); color: var(--text-muted);"></i>
+                    </div>
+                </div>
+
+                <div class="settings-section-title">System Hardening</div>
+                <div class="settings-row-group">
+                    <div class="settings-row">
+                        <div style="display: flex; flex-direction: column; gap: 2px;">
+                            <span class="row-label">FileVault Encryption</span>
+                            <span style="font-size: 10px; color: var(--text-muted);">Encrypt the contents of your disk automatically</span>
+                        </div>
+                        <label class="switch-container">
+                            <input type="checkbox">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="settings-row">
+                        <span class="row-label">Firewall</span>
+                        <label class="switch-container">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab: Keyboard -->
+            <section class="settings-tab-pane" id="pane-keyboard" style="display: none;">
+                <h2>Keyboard & Mouse</h2>
+                <p class="settings-sub">Configure input devices and behavior.</p>
+                
+                <div class="settings-section-title" style="margin-top: 0;">Keyboard</div>
+                <div class="settings-row-group">
+                    <div class="settings-column-row">
+                        <div class="slider-row-header">
+                            <span class="row-label">Key Repeat Rate</span>
+                        </div>
+                        <input type="range" class="settings-slider" min="0" max="100" value="80">
+                    </div>
+                    <div class="settings-column-row">
+                        <div class="slider-row-header">
+                            <span class="row-label">Delay Until Repeat</span>
+                        </div>
+                        <input type="range" class="settings-slider" min="0" max="100" value="30">
+                    </div>
+                </div>
+
+                <div class="settings-section-title">Mouse & Trackpad</div>
+                <div class="settings-row-group">
+                    <div class="settings-column-row">
+                        <div class="slider-row-header">
+                            <span class="row-label">Tracking Speed</span>
+                        </div>
+                        <input type="range" class="settings-slider" id="settings-mouse-speed" min="0" max="100" value="50">
+                    </div>
+                    <div class="settings-row">
+                        <span class="row-label">Natural Scrolling</span>
+                        <label class="switch-container">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab: Power -->
+            <section class="settings-tab-pane" id="pane-power" style="display: none;">
+                <h2>Power & Battery</h2>
+                <p class="settings-sub">Manage energy usage and battery life.</p>
+                
+                <div class="settings-row-group">
+                    <div class="settings-row" style="padding: 20px 14px; background: linear-gradient(to right, var(--success-soft), transparent);">
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <span style="font-size: 24px; font-weight: 700; color: var(--success);">85%</span>
+                            <span style="font-size: var(--font-size-xs); color: var(--text-muted);">Power Source: Battery</span>
+                        </div>
+                        <div style="font-size: var(--font-size-sm); color: var(--text-secondary);">3h 45m remaining</div>
+                    </div>
+                </div>
+
+                <div class="settings-section-title">Energy Saving</div>
+                <div class="settings-row-group">
+                    <div class="settings-row">
+                        <span class="row-label">Low Power Mode</span>
+                        <label class="switch-container">
+                            <input type="checkbox" id="settings-low-power">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="settings-row">
+                        <span class="row-label">Turn off display after</span>
+                        <select class="settings-select">
+                            <option value="1">1 minute</option>
+                            <option value="2">2 minutes</option>
+                            <option value="5" selected>5 minutes</option>
+                            <option value="15">15 minutes</option>
+                            <option value="never">Never</option>
                         </select>
                     </div>
                 </div>
@@ -422,6 +741,36 @@
                             <span id="storage-free-txt">Free: 50 MB</span>
                         </div>
                     </div>
+                </div>
+            </section>
+
+            <!-- Tab: Applications -->
+            <section class="settings-tab-pane" id="pane-applications" style="display: none;">
+                <h2>Applications</h2>
+                <p class="settings-sub">Manage installed apps, toggle system extensions, and run installers.</p>
+                
+                <div class="settings-row-group" style="padding: var(--space-2) var(--space-3); background: linear-gradient(135deg, rgba(79, 124, 255, 0.1), rgba(16, 185, 129, 0.1)); border: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; border-radius: var(--radius-sm); margin-bottom: var(--space-4);">
+                    <div style="display: flex; flex-direction: column; gap: 2px;">
+                        <span class="row-label" style="font-weight: 600;">Install Ready-made Package</span>
+                        <span style="font-size: 10px; color: var(--text-muted);">Run installation wizard from external .app or .pkg sources</span>
+                    </div>
+                    <button class="btn btn-primary btn-sm" id="btn-open-installer-file">
+                        <i class="hgi-stroke hgi-download-01" style="font-size: 14px;"></i> Install Package...
+                    </button>
+                    <!-- Hidden file input -->
+                    <input type="file" id="settings-app-file-input" accept=".app,.pkg" style="display: none;">
+                </div>
+
+                <div class="settings-section-title">App Filters</div>
+                <div class="settings-row-group" style="display: flex; gap: var(--space-2); padding: var(--space-2); background: var(--surface-1);">
+                    <button class="btn btn-secondary btn-sm app-filter-btn active" data-filter="all">All Apps</button>
+                    <button class="btn btn-secondary btn-sm app-filter-btn" data-filter="system">System</button>
+                    <button class="btn btn-secondary btn-sm app-filter-btn" data-filter="installed">User Installed</button>
+                </div>
+
+                <div class="settings-section-title" style="margin-top: var(--space-4);">Application List</div>
+                <div class="app-list-container" id="settings-apps-list-wrapper">
+                    <!-- Dynamic App items populated here -->
                 </div>
             </section>
 
@@ -499,7 +848,7 @@
                             <span class="row-label" style="font-weight: 600;">aisd.service status</span>
                             <span id="settings-ai-daemon-status" style="font-size: 10.5px; color: var(--success);">active (running)</span>
                         </div>
-                        <button class="monitor-kill-btn" id="settings-ai-daemon-restart" style="padding: 4px 10px; font-size: 11px; border-radius: 6px; background-color: var(--surface-active); color: var(--text-primary); border: 1px solid var(--border-default); cursor: pointer;">Restart Daemon</button>
+                        <button class="btn btn-secondary btn-sm" id="settings-ai-daemon-restart">Restart Daemon</button>
                     </div>
                 </div>
 
@@ -570,7 +919,7 @@
             <span class="window-btn minimize"></span>
             <span class="window-btn maximize"></span>
         </div>
-        <div class="window-title">Command Workspace</div>
+        <div class="window-title"><i class="hgi-stroke hgi-folder-01" style="font-size: 14px;"></i> <span>Core Hub</span></div>
     </div>
     <div class="finder-container">
         <!-- Finder Tabs Bar -->
@@ -580,70 +929,6 @@
             </div>
             <button class="finder-add-tab-btn" id="finder-add-tab" title="New Tab">+</button>
         </div>
-        <!-- Top Command Bar (Full Width) -->
-        <div class="files-toolbar">
-            <button class="files-nav-btn" id="files-back-btn" disabled>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="15 18 9 12 15 6"></polyline>
-                </svg>
-            </button>
-            <button class="files-nav-btn" id="files-forward-btn" disabled>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-            </button>
-            <span class="files-path-breadcrumb" id="files-breadcrumb">Workspace</span>
-            <div class="files-action-buttons files-action-buttons-group">
-                <button class="files-nav-btn" id="files-new-file" title="New File" ><i class="hgi-stroke hgi-file-add"></i></button>
-                <button class="files-nav-btn" id="files-new-folder" title="New Folder" ><i class="hgi-stroke hgi-folder-add"></i></button>
-                <button class="files-nav-btn" id="files-rename" title="Rename"  disabled><i class="hgi-stroke hgi-edit-01"></i></button>
-                <button class="files-nav-btn" id="files-delete" title="Delete"  disabled><i class="hgi-stroke hgi-delete-02"></i></button>
-                <div class="files-toolbar-divider"></div>
-                <button class="files-nav-btn active" id="files-view-grid" title="Grid View">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="3" width="7" height="7"></rect>
-                        <rect x="14" y="3" width="7" height="7"></rect>
-                        <rect x="14" y="14" width="7" height="7"></rect>
-                        <rect x="3" y="14" width="7" height="7"></rect>
-                    </svg>
-                </button>
-                <button class="files-nav-btn" id="files-view-list" title="List View">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="8" y1="6" x2="21" y2="6"></line>
-                        <line x1="8" y1="12" x2="21" y2="12"></line>
-                        <line x1="8" y1="18" x2="21" y2="18"></line>
-                        <line x1="3" y1="6" x2="3" y2="6"></line>
-                        <line x1="3" y1="12" x2="3" y2="12"></line>
-                        <line x1="3" y1="18" x2="3" y2="18"></line>
-                    </svg>
-                </button>
-                <button class="files-nav-btn" id="files-view-columns" title="Column View">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="9" y1="3" x2="9" y2="21"></line>
-                        <line x1="15" y1="3" x2="15" y2="21"></line>
-                    </svg>
-                </button>
-                <button class="files-nav-btn" id="files-view-gallery" title="Gallery View">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                        <polyline points="21 15 16 10 5 21"></polyline>
-                    </svg>
-                </button>
-                <div class="files-toolbar-divider"></div>
-                <select class="files-sort-select" id="files-sort" title="Sort Items">
-                    <option value="name">Sort by Name</option>
-                    <option value="date">Sort by Date</option>
-                    <option value="size">Sort by Size</option>
-                </select>
-                <div class="files-toolbar-divider"></div>
-                <button class="files-nav-btn" id="files-toggle-properties" title="Toggle Properties Pane" ><i class="hgi-stroke hgi-information-circle"></i></button>
-                <button class="files-nav-btn" id="files-toggle-view-options" title="View Options" ><i class="hgi-stroke hgi-settings-02"></i></button>
-            </div>
-            <input type="text" class="files-search-bar" id="files-search" placeholder="Search Workspace">
-        </div>
-
         <div class="finder-columns-container">
             <!-- Sidebar (Navigation Rail) -->
             <aside class="finder-sidebar app-sidebar">
@@ -732,6 +1017,130 @@
             
             <!-- Main Folder Explorer (Content Area) -->
             <div class="files-view-container" style="position: relative; display: flex; flex: 1; min-width: 0; height: 100%;">
+                <!-- Top Command Bar (Inside right workspace area) -->
+                <div class="files-toolbar">
+                    <button class="files-nav-btn" id="files-back-btn" disabled>
+                        <i class="hgi-stroke hgi-arrow-left-02"></i>
+                    </button>
+                    <button class="files-nav-btn" id="files-forward-btn" disabled>
+                        <i class="hgi-stroke hgi-arrow-right-02"></i>
+                    </button>
+                    
+                    <span class="files-path-breadcrumb" id="files-breadcrumb">Workspace</span>
+
+                    <div class="files-action-buttons">
+                        <!-- Direct Important Actions -->
+                        <button class="files-nav-btn" id="files-new-file" title="New File"><i class="hgi-stroke hgi-file-add"></i></button>
+                        <button class="files-nav-btn" id="files-new-folder" title="New Folder"><i class="hgi-stroke hgi-folder-add"></i></button>
+                        
+                        <div class="files-toolbar-divider"></div>
+
+                        <!-- Actions Dropdown -->
+                        <div class="files-dropdown" id="files-actions-dropdown">
+                            <button class="files-nav-btn" title="Edit Actions">
+                                <i class="hgi-stroke hgi-more-horizontal"></i>
+                            </button>
+                            <div class="files-dropdown-content">
+                                <div class="dropdown-section-title">Selection</div>
+                                <div class="dropdown-item disabled" id="files-quicklook-dropdown">
+                                    <i class="hgi-stroke hgi-view-main"></i>
+                                    <span>Quick Look</span>
+                                </div>
+                                <div class="dropdown-item disabled" id="files-getinfo-dropdown">
+                                    <i class="hgi-stroke hgi-information-circle"></i>
+                                    <span>Get Info</span>
+                                </div>
+                                
+                                <div class="dropdown-divider"></div>
+                                <div class="dropdown-section-title">Edit</div>
+                                
+                                <div class="dropdown-item disabled" id="files-copy-dropdown">
+                                    <i class="hgi-stroke hgi-copy"></i>
+                                    <span>Copy</span>
+                                </div>
+                                <div class="dropdown-item disabled" id="files-cut-dropdown">
+                                    <i class="hgi-stroke hgi-scissors"></i>
+                                    <span>Cut</span>
+                                </div>
+                                <div class="dropdown-item" id="files-paste-dropdown">
+                                    <i class="hgi-stroke hgi-clipboard"></i>
+                                    <span>Paste</span>
+                                </div>
+                                
+                                <div class="dropdown-divider"></div>
+                                <div class="dropdown-section-title">Manage</div>
+                                
+                                <div class="dropdown-item disabled" id="files-duplicate-dropdown">
+                                    <i class="hgi-stroke hgi-copy-01"></i>
+                                    <span>Duplicate</span>
+                                </div>
+                                <div class="dropdown-item disabled" id="files-rename-dropdown">
+                                    <i class="hgi-stroke hgi-edit-01"></i>
+                                    <span>Rename</span>
+                                </div>
+                                <div class="dropdown-item disabled" id="files-delete-dropdown">
+                                    <i class="hgi-stroke hgi-delete-02"></i>
+                                    <span>Move to Trash</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- View Options Dropdown -->
+                        <div class="files-dropdown" id="files-view-dropdown">
+                            <button class="files-nav-btn" title="View Options">
+                                <i class="hgi-stroke hgi-grid-view"></i>
+                            </button>
+                            <div class="files-dropdown-content">
+                                <div class="dropdown-section-title">View Mode</div>
+                                <div class="dropdown-item active" id="files-view-grid-dropdown">
+                                    <i class="hgi-stroke hgi-grid-view"></i>
+                                    <span>Icons</span>
+                                </div>
+                                <div class="dropdown-item" id="files-view-list-dropdown">
+                                    <i class="hgi-stroke hgi-menu-01"></i>
+                                    <span>List</span>
+                                </div>
+                                <div class="dropdown-item" id="files-view-columns-dropdown">
+                                    <i class="hgi-stroke hgi-layout-column"></i>
+                                    <span>Columns</span>
+                                </div>
+                                <div class="dropdown-item" id="files-view-gallery-dropdown">
+                                    <i class="hgi-stroke hgi-image-02"></i>
+                                    <span>Gallery</span>
+                                </div>
+                                
+                                <div class="dropdown-divider"></div>
+                                <div class="dropdown-section-title">Sort By</div>
+                                <div class="dropdown-item active" id="files-sort-name-dropdown">
+                                    <i class="hgi-stroke hgi-text-font"></i>
+                                    <span>Name</span>
+                                </div>
+                                <div class="dropdown-item" id="files-sort-date-dropdown">
+                                    <i class="hgi-stroke hgi-calendar-03"></i>
+                                    <span>Date Modified</span>
+                                </div>
+                                <div class="dropdown-item" id="files-sort-size-dropdown">
+                                    <i class="hgi-stroke hgi-database"></i>
+                                    <span>Size</span>
+                                </div>
+
+                                <div class="dropdown-divider"></div>
+                                <div class="dropdown-section-title">Display</div>
+                                <div class="dropdown-item" id="files-toggle-properties-dropdown">
+                                    <i class="hgi-stroke hgi-information-circle"></i>
+                                    <span>Show Preview</span>
+                                </div>
+                                <div class="dropdown-item" id="files-toggle-view-options-dropdown">
+                                    <i class="hgi-stroke hgi-settings-02"></i>
+                                    <span>View Options</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="files-toolbar-divider"></div>
+                    <input type="text" class="files-search-bar" id="files-search" placeholder="Search Workspace">
+                </div>
                 <main class="finder-content" id="finder-content-grid" style="flex: 1; overflow-y: auto; padding: 16px;">
                     <!-- Populated dynamically -->
                 </main>
@@ -795,10 +1204,10 @@
         <div class="browser-toolbar">
             <div class="browser-nav-arrows">
                 <button class="browser-nav-btn" id="browser-back">
-                    <i class="hgi-stroke hgi-arrow-left-01" ></i>
+                    <i class="hgi-stroke hgi-arrow-left-02" ></i>
                 </button>
                 <button class="browser-nav-btn" id="browser-forward">
-                    <i class="hgi-stroke hgi-arrow-right-01" ></i>
+                    <i class="hgi-stroke hgi-arrow-right-02" ></i>
                 </button>
                 <button class="browser-nav-btn" id="browser-reload">
                     <i class="hgi-stroke hgi-reload" ></i>
@@ -871,25 +1280,40 @@
     </div>
     <div class="monitor-container">
         <div class="monitor-tabs">
-            <div class="monitor-tab active" data-tab="cpu">CPU</div>
-            <div class="monitor-tab" data-tab="memory">Memory</div>
+            <div class="monitor-tab active" data-tab="performance">Performance</div>
             <div class="monitor-tab" data-tab="processes">Processes</div>
         </div>
         <div class="monitor-content">
-            <div class="monitor-pane" id="monitor-pane-graphs">
+            <div class="monitor-pane" id="monitor-pane-graphs" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-content: start; overflow: hidden;">
                 <div class="monitor-graph-section">
-                    <span class="graph-label">CPU System Core Load</span>
-                    <div class="monitor-graph-wrapper">
+                    <span class="graph-label" id="cpu-graph-label">CPU Load: 0%</span>
+                    <div class="monitor-graph-wrapper" style="height: 100px;">
                         <svg class="monitor-svg-chart" viewBox="0 0 100 40" preserveAspectRatio="none">
                             <path id="cpu-chart-path" d="M0 40 L100 40" fill="rgba(96, 165, 250, 0.15)" stroke="#60a5fa" stroke-width="1.5"></path>
                         </svg>
                     </div>
                 </div>
                 <div class="monitor-graph-section">
-                    <span class="graph-label">Physical Memory Active Usage</span>
-                    <div class="monitor-graph-wrapper">
+                    <span class="graph-label" id="mem-graph-label">Memory Usage: 0%</span>
+                    <div class="monitor-graph-wrapper" style="height: 100px;">
                         <svg class="monitor-svg-chart" viewBox="0 0 100 40" preserveAspectRatio="none">
                             <path id="mem-chart-path" d="M0 40 L100 40" fill="rgba(236, 72, 153, 0.15)" stroke="#ec4899" stroke-width="1.5"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="monitor-graph-section">
+                    <span class="graph-label" id="net-graph-label">Network Traffic: 0 KB/s</span>
+                    <div class="monitor-graph-wrapper" style="height: 100px;">
+                        <svg class="monitor-svg-chart" viewBox="0 0 100 40" preserveAspectRatio="none">
+                            <path id="net-chart-path" d="M0 40 L100 40" fill="rgba(16, 185, 129, 0.15)" stroke="#10b981" stroke-width="1.5"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="monitor-graph-section">
+                    <span class="graph-label" id="disk-graph-label">Disk Activity: 0.0 MB/s</span>
+                    <div class="monitor-graph-wrapper" style="height: 100px;">
+                        <svg class="monitor-svg-chart" viewBox="0 0 100 40" preserveAspectRatio="none">
+                            <path id="disk-chart-path" d="M0 40 L100 40" fill="rgba(245, 158, 11, 0.15)" stroke="#f59e0b" stroke-width="1.5"></path>
                         </svg>
                     </div>
                 </div>
@@ -1233,7 +1657,138 @@
     </div>
 </div>
 
-<!-- App 10: Media Window (VLC) -->
+</div>
+
+<!-- App 9b: Photos Window (Image Viewer) -->
+<div class="window" id="photos-window" style="display: none; width: 920px; height: 600px;">
+    <div class="window-titlebar">
+        <div class="window-controls">
+            <span class="window-btn close" data-target="photos-window"></span>
+            <span class="window-btn minimize"></span>
+            <span class="window-btn maximize"></span>
+        </div>
+        <div class="window-title">Aura Photos</div>
+    </div>
+    <div class="window-content photos-app-content" style="display: flex; flex-direction: column; overflow: hidden; background: var(--surface-primary);">
+        <!-- Top bar actions -->
+        <div class="photos-topbar" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid var(--border-subtle); background: var(--surface-secondary); gap: 12px; z-index: 10;">
+            <div class="photos-left-actions" style="display: flex; align-items: center; gap: 8px;">
+                <button id="photos-open-btn" class="btn btn-secondary btn-sm" style="display: flex; align-items: center; gap: 6px;">
+                    <i class="hgi-stroke hgi-folder-open" style="font-size: 14px;"></i> Open Image
+                </button>
+                <input type="file" id="photos-file-input" accept="image/*" style="display:none;">
+                
+                <div class="photos-nav-group" style="display: flex; align-items: center; gap: 6px; margin-left: 8px; border-left: 1px solid var(--border-strong); padding-left: 14px;">
+                    <button id="photos-prev-btn" class="btn btn-secondary btn-sm" title="Previous Image" style="padding: 4px 6px;">
+                        <i class="hgi-stroke hgi-arrow-left-01" style="font-size: 14px;"></i>
+                    </button>
+                    <span id="photos-index-indicator" style="font-size: 11px; color: var(--text-muted); min-width: 45px; text-align: center; font-weight: 500;">0 / 0</span>
+                    <button id="photos-next-btn" class="btn btn-secondary btn-sm" title="Next Image" style="padding: 4px 6px;">
+                        <i class="hgi-stroke hgi-arrow-right-01" style="font-size: 14px;"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="photos-center-actions" style="display: flex; align-items: center; gap: 8px; flex: 1; justify-content: center; max-width: 340px;">
+                <button id="photos-zoom-out" class="btn btn-secondary btn-sm" title="Zoom Out" style="padding: 4px 6px;">
+                    <i class="hgi-stroke hgi-zoom-out-rectangle" style="font-size: 14px;"></i>
+                </button>
+                <input type="range" id="photos-zoom-slider" min="10" max="400" value="100" class="settings-slider" style="flex: 1; height: 4px; margin: 0 4px;">
+                <span id="photos-zoom-val" style="font-size: 11px; color: var(--text-muted); min-width: 36px; font-weight: 500;">100%</span>
+                <button id="photos-zoom-in" class="btn btn-secondary btn-sm" title="Zoom In" style="padding: 4px 6px;">
+                    <i class="hgi-stroke hgi-zoom-in-rectangle" style="font-size: 14px;"></i>
+                </button>
+                <button id="photos-zoom-reset" class="btn btn-secondary btn-sm" title="Fit to Screen" style="padding: 4px 6px; margin-left: 4px;">
+                    <i class="hgi-stroke hgi-crop-01" style="font-size: 14px;"></i>
+                </button>
+            </div>
+            
+            <div class="photos-right-actions" style="display: flex; align-items: center; gap: 6px;">
+                <button id="photos-rotate-btn" class="btn btn-secondary btn-sm" title="Rotate 90° Clockwise">
+                    <i class="hgi-stroke hgi-rotate-right" style="font-size: 14px;"></i>
+                </button>
+                <button id="photos-flip-h-btn" class="btn btn-secondary btn-sm" title="Flip Horizontal">
+                    <i class="hgi-stroke hgi-arrow-left-right" style="font-size: 14px;"></i>
+                </button>
+                <button id="photos-slideshow-btn" class="btn btn-secondary btn-sm" title="Start Slideshow" style="display: flex; align-items: center; gap: 4px;">
+                    <i id="photos-slideshow-icon" class="hgi-stroke hgi-play-list" style="font-size: 14px;"></i> <span>Slideshow</span>
+                </button>
+                <button id="photos-wallpaper-btn" class="btn btn-secondary btn-sm" title="Set as Wallpaper" style="display: flex; align-items: center; gap: 4px;">
+                    <i class="hgi-stroke hgi-image-01" style="font-size: 14px;"></i> Set Wallpaper
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Area: Content Viewport + Sidebar details -->
+        <div class="photos-main-layout" style="display: flex; flex: 1; overflow: hidden; position: relative;">
+            <!-- Viewport (center) -->
+            <div class="photos-viewport" style="display: flex; flex-direction: column; flex: 1; overflow: hidden; background: #0c0e12; position: relative;">
+                <div class="photos-image-container" id="photos-image-container" style="flex: 1; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; cursor: grab;">
+                    <img id="photos-display-img" src="" alt="Open an image to view" style="display: none; max-width: 100%; max-height: 100%; object-fit: contain; transform-origin: center center; transition: filter var(--transition-fast) ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); user-select: none; pointer-events: none;">
+                    
+                    <div id="photos-empty-state" class="photos-empty-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: var(--text-muted); gap: 12px; pointer-events: none;">
+                        <i class="hgi-stroke hgi-image-add-01" style="font-size: 48px; color: var(--border-strong);"></i>
+                        <p style="font-size: 14px; font-weight: 500; margin: 0;">Drag & drop image here or click Open Image</p>
+                        <p style="font-size: 11px; margin: 0; opacity: 0.7;">Supports JPG, PNG, WebP format</p>
+                    </div>
+                </div>
+                
+                <!-- Bottom Filmstrip Carousel -->
+                <div class="photos-filmstrip" id="photos-filmstrip" style="display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-top: 1px solid var(--border-subtle); background: var(--surface-secondary); height: 72px; box-sizing: border-box; overflow-x: auto; z-index: 5;">
+                    <!-- Carousel items added dynamically -->
+                </div>
+            </div>
+            
+            <!-- Sidebar (right) -->
+            <div class="photos-sidebar" style="width: 240px; border-left: 1px solid var(--border-subtle); background: var(--surface-secondary); display: flex; flex-direction: column; overflow-y: auto; padding: 16px; gap: 20px; box-sizing: border-box;">
+                <div class="photos-sidebar-section">
+                    <div class="photos-section-title" style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 12px; border-bottom: 1px solid var(--border-strong); padding-bottom: 6px;">Image Details</div>
+                    <div class="photos-metadata-list" style="display: flex; flex-direction: column; gap: 8px;">
+                        <div class="metadata-row" style="display: flex; justify-content: space-between; font-size: 12px;"><span class="lbl" style="color: var(--text-muted);">Name:</span> <span class="val" id="meta-name" style="font-weight: 500; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; max-width: 140px;" title="-">-</span></div>
+                        <div class="metadata-row" style="display: flex; justify-content: space-between; font-size: 12px;"><span class="lbl" style="color: var(--text-muted);">Dimensions:</span> <span class="val" id="meta-size" style="font-weight: 500;">-</span></div>
+                        <div class="metadata-row" style="display: flex; justify-content: space-between; font-size: 12px;"><span class="lbl" style="color: var(--text-muted);">File Size:</span> <span class="val" id="meta-bytes" style="font-weight: 500;">-</span></div>
+                        <div class="metadata-row" style="display: flex; justify-content: space-between; font-size: 12px;"><span class="lbl" style="color: var(--text-muted);">Format:</span> <span class="val" id="meta-type" style="font-weight: 500; text-transform: uppercase;">-</span></div>
+                        <div class="metadata-row" style="display: flex; justify-content: space-between; font-size: 12px;"><span class="lbl" style="color: var(--text-muted);">Camera ISO:</span> <span class="val" id="meta-iso" style="font-weight: 500;">-</span></div>
+                        <div class="metadata-row" style="display: flex; justify-content: space-between; font-size: 12px;"><span class="lbl" style="color: var(--text-muted);">Exposure:</span> <span class="val" id="meta-exposure" style="font-weight: 500;">-</span></div>
+                    </div>
+                </div>
+                
+                <div class="photos-sidebar-section">
+                    <div class="photos-section-title" style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 12px; border-bottom: 1px solid var(--border-strong); padding-bottom: 6px;">Visual Adjustments</div>
+                    <div class="photos-adjustments" style="display: flex; flex-direction: column; gap: 12px;">
+                        <div class="adj-row" style="display: flex; flex-direction: column; gap: 4px;">
+                            <div style="display: flex; justify-content: space-between; font-size: 11px;"><span style="color: var(--text-normal); font-weight: 500;">Brightness</span> <span id="val-brightness" style="color: var(--text-muted);">100%</span></div>
+                            <input type="range" id="adj-brightness" min="50" max="150" value="100" class="settings-slider" style="width: 100%;">
+                        </div>
+                        <div class="adj-row" style="display: flex; flex-direction: column; gap: 4px;">
+                            <div style="display: flex; justify-content: space-between; font-size: 11px;"><span style="color: var(--text-normal); font-weight: 500;">Contrast</span> <span id="val-contrast" style="color: var(--text-muted);">100%</span></div>
+                            <input type="range" id="adj-contrast" min="50" max="150" value="100" class="settings-slider" style="width: 100%;">
+                        </div>
+                        <div class="adj-row" style="display: flex; flex-direction: column; gap: 4px;">
+                            <div style="display: flex; justify-content: space-between; font-size: 11px;"><span style="color: var(--text-normal); font-weight: 500;">Saturation</span> <span id="val-saturation" style="color: var(--text-muted);">100%</span></div>
+                            <input type="range" id="adj-saturation" min="0" max="200" value="100" class="settings-slider" style="width: 100%;">
+                        </div>
+                        <div class="adj-row" style="display: flex; flex-direction: column; gap: 4px;">
+                            <div style="display: flex; justify-content: space-between; font-size: 11px;"><span style="color: var(--text-normal); font-weight: 500;">Sepia</span> <span id="val-sepia" style="color: var(--text-muted);">0%</span></div>
+                            <input type="range" id="adj-sepia" min="0" max="100" value="0" class="settings-slider" style="width: 100%;">
+                        </div>
+                        <div class="adj-row" style="display: flex; flex-direction: column; gap: 4px;">
+                            <div style="display: flex; justify-content: space-between; font-size: 11px;"><span style="color: var(--text-normal); font-weight: 500;">Grayscale</span> <span id="val-grayscale" style="color: var(--text-muted);">0%</span></div>
+                            <input type="range" id="adj-grayscale" min="0" max="100" value="0" class="settings-slider" style="width: 100%;">
+                        </div>
+                        <div class="adj-row" style="display: flex; flex-direction: column; gap: 4px;">
+                            <div style="display: flex; justify-content: space-between; font-size: 11px;"><span style="color: var(--text-normal); font-weight: 500;">Blur</span> <span id="val-blur" style="color: var(--text-muted);">0px</span></div>
+                            <input type="range" id="adj-blur" min="0" max="10" value="0" class="settings-slider" style="width: 100%;">
+                        </div>
+                        <button id="photos-reset-adj" class="btn btn-secondary btn-sm" style="width: 100%; margin-top: 6px; font-size: 11px;">Reset Adjustments</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- App 10: Aura Player (Media Window) -->
 <div class="window" id="media-window" style="display: none;">
     <div class="window-titlebar">
         <div class="window-controls">
@@ -1241,44 +1796,187 @@
             <span class="window-btn minimize"></span>
             <span class="window-btn maximize"></span>
         </div>
-        <div class="window-title">VLC Media Player</div>
+        <div class="window-title">Aura Player</div>
     </div>
     <div class="window-content media-app-content">
-        <div class="media-display">
-            <div id="media-visualizer" class="media-visualizer-container">
-                <i class="hgi-stroke hgi-music-note-01 media-visualizer-icon" id="media-icon"></i>
-                <div id="media-now-playing" class="media-now-playing">No Media Loaded</div>
-                <div id="media-visual-waves" class="media-visual-waves">
-                    <div class="media-wave-bar"></div>
-                    <div class="media-wave-bar"></div>
-                    <div class="media-wave-bar"></div>
-                    <div class="media-wave-bar"></div>
-                    <div class="media-wave-bar"></div>
+        <div class="media-main-layout">
+            <div class="media-visualizer-section">
+                <canvas id="media-canvas"></canvas>
+                <div class="media-info-overlay">
+                    <div class="media-vibe-badge">
+                        <i class="hgi-stroke hgi-ai-brain-01"></i>
+                        <span id="media-vibe-text">Analyzing Vibe...</span>
+                    </div>
+                    <div class="media-now-playing-title" id="media-now-playing-title">No Track Loaded</div>
+                    <div class="media-now-playing-artist" id="media-now-playing-artist">Select a song from the playlist</div>
                 </div>
             </div>
+            <aside class="media-playlist-sidebar">
+                <div class="media-playlist-header">
+                    <span>Playlist</span>
+                    <button class="media-vibe-check-btn" id="media-vibe-check">Vibe Check</button>
+                </div>
+                <div class="media-playlist-scroll" id="media-playlist-scroll">
+                    <!-- Tracks populated dynamically -->
+                </div>
+            </aside>
         </div>
-        <div class="media-playlist-panel">
-            <div class="media-playlist-header">Playlist</div>
-            <div id="media-playlist" class="media-playlist-container"></div>
-        </div>
-        <div class="media-controls-container">
+        <div class="media-controls-bar">
             <div class="media-progress-row">
-                <span id="media-time-current" class="media-time-text">00:00</span>
-                <input type="range" id="media-progress" min="0" max="100" value="0" class="media-progress-slider">
-                <span id="media-time-duration" class="media-time-text">00:00</span>
+                <span class="media-time" id="media-time-current">0:00</span>
+                <input type="range" class="media-slider" id="media-progress" min="0" value="0">
+                <span class="media-time" id="media-time-duration">0:00</span>
             </div>
-            <div class="media-action-row">
-                <div class="media-playback-btns">
-                    <button id="media-btn-prev" class="media-btn-icon"><i class="hgi-stroke hgi-previous-item-01" ></i></button>
-                    <button id="media-btn-play" class="media-btn-play"><i class="hgi-stroke hgi-play"  id="media-play-icon"></i></button>
-                    <button id="media-btn-next" class="media-btn-icon"><i class="hgi-stroke hgi-next-item-01" ></i></button>
+            <div class="media-actions-row">
+                <div class="media-btns-group">
+                    <button class="media-btn" id="media-btn-prev"><i class="hgi-stroke hgi-previous-item-01"></i></button>
+                    <button class="media-btn play-pause" id="media-btn-play"><i class="hgi-stroke hgi-play" id="media-play-icon"></i></button>
+                    <button class="media-btn" id="media-btn-next"><i class="hgi-stroke hgi-next-item-01"></i></button>
                 </div>
-                <div class="media-volume-controls">
-                    <i class="hgi-stroke hgi-volume-high" ></i>
-                    <input type="range" id="media-volume" min="0" max="100" value="80" class="media-volume-slider">
+                <div class="media-volume-group">
+                    <i class="hgi-stroke hgi-volume-high" style="color: var(--text-muted);"></i>
+                    <input type="range" class="media-slider media-volume-slider" id="media-volume" min="0" max="100" value="80">
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- App 16: MailBox Window -->
+<div class="window" id="mail-window" style="display: none;">
+    <div class="window-titlebar">
+        <div class="window-controls">
+            <span class="window-btn close" data-target="mail-window"></span>
+            <span class="window-btn minimize"></span>
+            <span class="window-btn maximize"></span>
+        </div>
+        <div class="window-title">MailBox</div>
+    </div>
+    <div class="window-content mail-container">
+        <aside class="mail-sidebar">
+            <button class="mail-compose-btn" id="mail-compose-btn">
+                <i class="hgi-stroke hgi-plus"></i>
+                <span>Compose</span>
+            </button>
+            <nav class="mail-nav-list">
+                <div class="mail-nav-item active">
+                    <i class="hgi-stroke hgi-mail-01"></i>
+                    <span>Inbox</span>
+                </div>
+                <div class="mail-nav-item">
+                    <i class="hgi-stroke hgi-sent-01"></i>
+                    <span>Sent</span>
+                </div>
+                <div class="mail-nav-item">
+                    <i class="hgi-stroke hgi-star"></i>
+                    <span>Starred</span>
+                </div>
+                <div class="mail-nav-item">
+                    <i class="hgi-stroke hgi-delete-02"></i>
+                    <span>Trash</span>
+                </div>
+            </nav>
+        </aside>
+        <div class="mail-list-pane">
+            <div class="mail-list-header">Inbox</div>
+            <div class="mail-list-scroll" id="mail-list-scroll">
+                <!-- Mails populated dynamically -->
+            </div>
+        </div>
+        <div class="mail-content-pane">
+            <div class="mail-content-header">
+                <div class="mail-header-main">
+                    <h2 class="mail-full-subject" id="mail-full-subject">No Message Selected</h2>
+                    <button class="mail-ai-summary-btn" id="mail-ai-summary-btn">
+                        <i class="hgi-stroke hgi-ai-brain-01"></i>
+                        <span>AI Summary</span>
+                    </button>
+                </div>
+                <div class="mail-sender-info">
+                    <div class="mail-avatar" id="mail-avatar">?</div>
+                    <div class="mail-details">
+                        <span class="mail-sender-name" id="mail-sender-name">Select an email</span>
+                        <span class="mail-sender-email" id="mail-sender-email">to read its content</span>
+                    </div>
+                </div>
+            </div>
+            <div class="mail-body-scroll">
+                <div id="mail-ai-summary-container" style="display: none;"></div>
+                <div class="mail-body-text" id="mail-body-content">
+                    <!-- Mail body -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Compose Modal -->
+        <div class="mail-compose-modal" id="mail-compose-modal" style="display: none;">
+            <div class="mail-compose-header">
+                <span>New Message</span>
+                <i class="hgi-stroke hgi-cancel-01" id="mail-compose-close" style="cursor: pointer;"></i>
+            </div>
+            <div class="mail-compose-body">
+                <div class="mail-input-group">
+                    <label>To</label>
+                    <input type="text" class="mail-input" id="mail-to">
+                </div>
+                <div class="mail-input-group">
+                    <label>Subject</label>
+                    <input type="text" class="mail-input" id="mail-subject-input">
+                </div>
+                <textarea class="mail-textarea" id="mail-body-input" placeholder="Write your message..."></textarea>
+            </div>
+            <div class="mail-compose-footer">
+                <button class="mail-btn-send" id="mail-btn-send">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- App 17: PlanIt (Tasks Window) -->
+<div class="window" id="tasks-window" style="display: none;">
+    <div class="window-titlebar">
+        <div class="window-controls">
+            <span class="window-btn close" data-target="tasks-window"></span>
+            <span class="window-btn minimize"></span>
+            <span class="window-btn maximize"></span>
+        </div>
+        <div class="window-title">PlanIt Tasks</div>
+    </div>
+    <div class="window-content tasks-container">
+        <aside class="tasks-sidebar">
+            <div class="tasks-nav-item active">
+                <i class="hgi-stroke hgi-inbox-01"></i>
+                <span>Inbox</span>
+                <span class="tasks-nav-count" id="tasks-inbox-count"></span>
+            </div>
+            <div class="tasks-nav-item">
+                <i class="hgi-stroke hgi-calendar-01"></i>
+                <span>Today</span>
+            </div>
+            <div class="tasks-nav-item">
+                <i class="hgi-stroke hgi-star"></i>
+                <span>Important</span>
+            </div>
+        </aside>
+        <main class="tasks-content">
+            <div class="tasks-header">
+                <h1 class="tasks-title">Inbox</h1>
+                <button class="tasks-ai-btn" id="tasks-ai-prioritize">
+                    <i class="hgi-stroke hgi-ai-brain-01"></i>
+                    <span>Prioritize my day</span>
+                </button>
+            </div>
+            <div class="tasks-input-area">
+                <i class="hgi-stroke hgi-plus tasks-add-icon"></i>
+                <input type="text" class="tasks-add-input" id="tasks-add-input" placeholder="Add a new task...">
+            </div>
+            <div class="tasks-section">
+                <div class="tasks-section-title">Pending</div>
+                <div class="tasks-list" id="tasks-list">
+                    <!-- Tasks populated dynamically -->
+                </div>
+            </div>
+        </main>
     </div>
 </div>
 
@@ -1843,5 +2541,172 @@
     </div>
 </div>
 
+<!-- App Installer Wizard Dialog Overlay -->
+<div class="app-installer-overlay" id="app-installer-dialog" style="display: none;">
+    <div class="app-installer-card">
+        <div class="app-installer-header">
+            <div style="display: flex; align-items: center; gap: var(--space-2);">
+                <div class="app-installer-icon-box" id="installer-app-icon">
+                    <i class="hgi-stroke hgi-download-01"></i>
+                </div>
+                <div style="display: flex; flex-direction: column;">
+                    <span class="app-installer-title" id="installer-app-name">App Installer</span>
+                    <span class="app-installer-subtitle" id="installer-app-pkg">Ready-made Package Installer</span>
+                </div>
+            </div>
+            <span class="app-installer-close-btn" id="btn-installer-close">&times;</span>
+        </div>
 
+        <div class="app-installer-body">
+            <!-- Step 1: Package Info -->
+            <div class="installer-step" id="installer-step-1">
+                <p class="installer-info-text">A third-party application package has been loaded. Please verify the application source and permissions before proceeding.</p>
+                <div class="installer-spec-box">
+                    <div class="installer-spec-row">
+                        <span class="spec-label">Version</span>
+                        <span class="spec-value" id="installer-spec-version">1.0.0</span>
+                    </div>
+                    <div class="installer-spec-row">
+                        <span class="spec-label">Installed Size</span>
+                        <span class="spec-value" id="installer-spec-size">12.4 MB</span>
+                    </div>
+                    <div class="installer-spec-row">
+                        <span class="spec-label">Source</span>
+                        <span class="spec-value">Local Package (.app / .pkg)</span>
+                    </div>
+                </div>
+                <div class="installer-security-warning">
+                    <i class="hgi-stroke hgi-alert-02" style="font-size: 16px; color: var(--color-warning);"></i>
+                    <span style="font-size: 11px; color: var(--text-secondary); line-height: 1.3;">
+                        <strong>Security Warning:</strong> This application runs with user privileges and can access documents, media, and other network utilities.
+                    </span>
+                </div>
+            </div>
+
+            <!-- Step 2: Progress -->
+            <div class="installer-step" id="installer-step-2" style="display: none;">
+                <p class="installer-info-text" id="installer-progress-text">Installing application assets...</p>
+                <div class="volume-mic-meter" style="width: 100%; height: 8px; border-radius: var(--radius-sm); background-color: var(--surface-1); margin-top: var(--space-2);">
+                    <div class="meter-bar" id="installer-progress-bar" style="width: 0%; height: 100%; background-color: var(--accent-primary); border-radius: inherit;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: var(--font-size-xs); color: var(--text-muted); margin-top: var(--space-1);">
+                    <span id="installer-progress-pct">0%</span>
+                    <span id="installer-progress-bytes">Unpacking...</span>
+                </div>
+            </div>
+
+            <!-- Step 3: Success -->
+            <div class="installer-step" id="installer-step-3" style="display: none; text-align: center; padding: var(--space-4) 0;">
+                <div style="width: 54px; height: 54px; border-radius: 50%; background-color: rgba(16, 185, 129, 0.1); border: 2px solid var(--color-success); display: flex; justify-content: center; align-items: center; margin: 0 auto var(--space-3); color: var(--color-success); font-size: 24px;">
+                    ✓
+                </div>
+                <h3 style="color: var(--text-primary); margin-bottom: var(--space-1); font-size: var(--font-size-md);">Installation Successful</h3>
+                <p class="installer-info-text" style="text-align: center; margin-bottom: 0;">The application has been successfully installed and added to your Launchpad app drawer.</p>
+            </div>
+        </div>
+
+        <div class="app-installer-footer">
+            <button class="settings-select" id="btn-installer-cancel" style="background-color: var(--surface-active); color: var(--text-primary); border: 1px solid var(--border-default);">Cancel</button>
+            <button class="settings-select" id="btn-installer-action" style="background-color: var(--accent-primary); color: var(--text-on-accent); border: none; font-weight: 500;">Install App</button>
+        </div>
+    </div>
+</div>
+
+<!-- Power Menu Dialog Overlay -->
+<div class="power-overlay" id="power-dialog-overlay" style="display: none;">
+    <div class="power-dialog-card">
+        <h2 class="power-dialog-title">Power Options</h2>
+        <p class="power-dialog-desc" id="power-countdown-text">Choose a power action or system will stay idle.</p>
+        
+        <div class="power-options-grid">
+            <div class="power-option-item" id="power-opt-sleep">
+                <div class="power-option-icon sleep">
+                    <i class="hgi-stroke hgi-moon"></i>
+                </div>
+                <span class="power-option-label">Sleep</span>
+            </div>
+            <div class="power-option-item" id="power-opt-restart">
+                <div class="power-option-icon restart">
+                    <i class="hgi-stroke hgi-reload"></i>
+                </div>
+                <span class="power-option-label">Restart</span>
+            </div>
+            <div class="power-option-item" id="power-opt-shutdown">
+                <div class="power-option-icon shutdown">
+                    <i class="hgi-stroke hgi-logout-01"></i>
+                </div>
+                <span class="power-option-label">Shut Down</span>
+            </div>
+            <div class="power-option-item" id="power-opt-lock">
+                <div class="power-option-icon lock">
+                    <i class="hgi-stroke hgi-lock"></i>
+                </div>
+                <span class="power-option-label">Lock Screen</span>
+            </div>
+        </div>
+        
+        <div class="power-dialog-footer">
+            <button class="power-cancel-btn" id="btn-power-cancel">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Lock Screen Fullscreen Overlay -->
+<div class="lock-screen-overlay" id="lock-screen-overlay" style="display: none;">
+    <div class="lock-screen-content">
+        <!-- Time and Date Status -->
+        <div class="lock-screen-time-container">
+            <h1 class="lock-time" id="lock-time">12:00 PM</h1>
+            <p class="lock-date" id="lock-date">Monday, May 20</p>
+        </div>
+        
+        <!-- Click to Unlock Prompt -->
+        <div class="lock-unlock-prompt" id="lock-unlock-prompt">
+            <span>Click or press any key to unlock</span>
+        </div>
+        
+        <!-- User Login Form -->
+        <div class="lock-login-container" id="lock-login-box">
+            <div class="lock-avatar-wrapper">
+                <div class="lock-avatar"></div>
+            </div>
+            <h3 class="lock-username">aios</h3>
+            
+            <div class="lock-input-row">
+                <input type="password" id="lock-password-input" class="lock-password-field" placeholder="Enter password (aios)" autocomplete="off">
+                <button class="lock-submit-btn" id="btn-lock-submit">
+                    <i class="hgi-stroke hgi-arrow-right-01"></i>
+                </button>
+            </div>
+            <p class="lock-hint" id="lock-hint">Password is "aios" or click submit</p>
+        </div>
+        
+        <!-- Lock Screen Bottom Controls -->
+        <div class="lock-bottom-controls">
+            <div class="lock-ctrl-btn" id="lock-ctrl-sleep" title="Sleep">
+                <i class="hgi-stroke hgi-moon"></i>
+                <span>Sleep</span>
+            </div>
+            <div class="lock-ctrl-btn" id="lock-ctrl-restart" title="Restart">
+                <i class="hgi-stroke hgi-reload"></i>
+                <span>Restart</span>
+            </div>
+            <div class="lock-ctrl-btn" id="lock-ctrl-shutdown" title="Shut Down">
+                <i class="hgi-stroke hgi-logout-01"></i>
+                <span>Shut Down</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- System Transition Screen (Shutting Down / Restarting / Waking up) -->
+<div class="system-transition-overlay" id="system-transition-overlay" style="display: none;">
+    <div class="transition-content">
+        <div class="transition-spinner">
+            <i class="hgi-stroke hgi-loading spin-icon"></i>
+        </div>
+        <h2 class="transition-title" id="transition-title">Shutting down...</h2>
+        <p class="transition-subtitle">Please wait while system components save states.</p>
+    </div>
+</div>
 

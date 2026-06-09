@@ -49,11 +49,6 @@ export function initFiles() {
     const sidebarItems = document.querySelectorAll('.finder-sidebar .app-sidebar-item');
     const backBtn = document.getElementById('files-back-btn');
     const forwardBtn = document.getElementById('files-forward-btn');
-    const viewGridBtn = document.getElementById('files-view-grid');
-    const viewListBtn = document.getElementById('files-view-list');
-    const viewColumnsBtn = document.getElementById('files-view-columns');
-    const viewGalleryBtn = document.getElementById('files-view-gallery');
-    const sortSelect = document.getElementById('files-sort');
     const breadcrumb = document.getElementById('files-breadcrumb');
     const searchInput = document.getElementById('files-search');
 
@@ -64,13 +59,55 @@ export function initFiles() {
     // Toolbar actions
     const newFileBtn = document.getElementById('files-new-file');
     const newFolderBtn = document.getElementById('files-new-folder');
-    const renameBtn = document.getElementById('files-rename');
-    const deleteBtn = document.getElementById('files-delete');
-    const togglePropertiesBtn = document.getElementById('files-toggle-properties');
+    const sortSelect = document.getElementById('files-sort');
+    const toggleViewOptionsBtn = document.getElementById('files-toggle-view-options'); // Keep for sidebar if needed
     const closePropertiesBtn = document.getElementById('properties-close-btn');
-    const toggleViewOptionsBtn = document.getElementById('files-toggle-view-options');
 
-    // Context Menu element
+    // New Dropdown Elements
+    const actionsDropdown = document.getElementById('files-actions-dropdown');
+    const viewDropdown = document.getElementById('files-view-dropdown');
+    
+    // Dropdown Item Proxies
+    const renameBtn = document.getElementById('files-rename-dropdown');
+    const deleteBtn = document.getElementById('files-delete-dropdown');
+    const copyBtn = document.getElementById('files-copy-dropdown');
+    const cutBtn = document.getElementById('files-cut-dropdown');
+    const pasteBtn = document.getElementById('files-paste-dropdown');
+    const duplicateBtn = document.getElementById('files-duplicate-dropdown');
+    const quicklookBtn = document.getElementById('files-quicklook-dropdown');
+    const getinfoBtn = document.getElementById('files-getinfo-dropdown');
+
+    const viewGridBtn = document.getElementById('files-view-grid-dropdown');
+    const viewListBtn = document.getElementById('files-view-list-dropdown');
+    const viewColumnsBtn = document.getElementById('files-view-columns-dropdown');
+    const viewGalleryBtn = document.getElementById('files-view-gallery-dropdown');
+    const togglePropertiesBtn = document.getElementById('files-toggle-properties-dropdown');
+    const toggleViewOptionsItem = document.getElementById('files-toggle-view-options-dropdown');
+
+    const sortNameBtn = document.getElementById('files-sort-name-dropdown');
+    const sortDateBtn = document.getElementById('files-sort-date-dropdown');
+    const sortSizeBtn = document.getElementById('files-sort-size-dropdown');
+
+    // Dropdown Toggling Logic
+    document.querySelectorAll('.files-dropdown .files-nav-btn').forEach(trigger => {
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const parent = trigger.parentElement;
+            const wasActive = parent.classList.contains('active');
+            
+            // Close all other dropdowns
+            document.querySelectorAll('.files-dropdown').forEach(d => d.classList.remove('active'));
+            
+            if (!wasActive) parent.classList.add('active');
+        });
+    });
+
+    // Close dropdowns on click outside
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.files-dropdown').forEach(d => d.classList.remove('active'));
+    });
+
+    // Helper: get current active tab state object
     let contextMenu = document.getElementById('files-context-menu');
     if (!contextMenu) {
         contextMenu = document.createElement('div');
@@ -308,8 +345,10 @@ export function initFiles() {
             activeAccumPath += '/' + part;
             
             const divider = document.createElement('span');
-            divider.textContent = ' > ';
-            divider.style.opacity = '0.5';
+            divider.style.display = 'inline-flex';
+            divider.style.alignItems = 'center';
+            divider.style.margin = '0 6px';
+            divider.innerHTML = '<i class="hgi-stroke hgi-arrow-right-01" style="font-size: 10px; opacity: 0.5;"></i>';
             breadcrumb.appendChild(divider);
 
             const segmentSpan = document.createElement('span');
@@ -993,13 +1032,14 @@ export function initFiles() {
         const tab = getActiveTab();
         const hasSelection = selectedItem || tab.selectedItem;
 
-        if (hasSelection) {
-            if (renameBtn) renameBtn.disabled = false;
-            if (deleteBtn) deleteBtn.disabled = false;
-        } else {
-            if (renameBtn) renameBtn.disabled = true;
-            if (deleteBtn) deleteBtn.disabled = true;
-        }
+        const actionBtns = [renameBtn, deleteBtn, copyBtn, cutBtn, duplicateBtn, quicklookBtn, getinfoBtn];
+        
+        actionBtns.forEach(btn => {
+            if (btn) {
+                if (hasSelection) btn.classList.remove('disabled');
+                else btn.classList.add('disabled');
+            }
+        });
     }
 
     // Bind selection & drag events to rendered grid/list cards
@@ -2031,28 +2071,133 @@ export function initFiles() {
     if (newFileBtn) newFileBtn.onclick = (e) => { e.stopPropagation(); createNewFilePrompt(); };
     if (newFolderBtn) newFolderBtn.onclick = (e) => { e.stopPropagation(); createNewFolderPrompt(); };
     
-    if (renameBtn) {
-        renameBtn.onclick = (e) => {
+    if (copyBtn) {
+        copyBtn.addEventListener('click', (e) => {
             e.stopPropagation();
+            if (copyBtn.classList.contains('disabled')) return;
+            const tab = getActiveTab();
+            if (tab.selectedItem) copyToClipboard(tab.selectedItem, false);
+        });
+    }
+
+    if (cutBtn) {
+        cutBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (cutBtn.classList.contains('disabled')) return;
+            const tab = getActiveTab();
+            if (tab.selectedItem) copyToClipboard(tab.selectedItem, true);
+        });
+    }
+
+    if (pasteBtn) {
+        pasteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            pasteFromClipboard();
+        });
+    }
+
+    if (duplicateBtn) {
+        duplicateBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (duplicateBtn.classList.contains('disabled')) return;
+            const tab = getActiveTab();
+            if (tab.selectedItem) duplicateNode(tab.selectedItem);
+        });
+    }
+
+    if (quicklookBtn) {
+        quicklookBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (quicklookBtn.classList.contains('disabled')) return;
+            const tab = getActiveTab();
+            if (tab.selectedItem) toggleQuickLook(tab.selectedItem);
+        });
+    }
+
+    if (getinfoBtn) {
+        getinfoBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (getinfoBtn.classList.contains('disabled')) return;
+            const tab = getActiveTab();
+            if (tab.selectedItem) openGetInfoWindow(tab.selectedItem);
+        });
+    }
+
+    if (renameBtn) {
+        renameBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (renameBtn.classList.contains('disabled')) return;
             const tab = getActiveTab();
             if (tab.selectedItem) triggerInlineRename(tab.selectedItem);
-        };
+        });
     }
 
     if (deleteBtn) {
-        deleteBtn.onclick = (e) => {
+        deleteBtn.addEventListener('click', (e) => {
             e.stopPropagation();
+            if (deleteBtn.classList.contains('disabled')) return;
             const tab = getActiveTab();
             if (tab.selectedItem) moveToTrash(tab.selectedItem);
-        };
+        });
+    }
+
+    // Sort Listeners
+    if (sortNameBtn) {
+        sortNameBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.querySelectorAll('#files-view-dropdown .dropdown-item').forEach(i => i.classList.remove('active'));
+            sortNameBtn.classList.add('active');
+            if (sortSelect) sortSelect.value = 'name';
+            renderFolder();
+        });
+    }
+    if (sortDateBtn) {
+        sortDateBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.querySelectorAll('#files-view-dropdown .dropdown-item').forEach(i => i.classList.remove('active'));
+            sortDateBtn.classList.add('active');
+            if (sortSelect) sortSelect.value = 'date';
+            renderFolder();
+        });
+    }
+    if (sortSizeBtn) {
+        sortSizeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.querySelectorAll('#files-view-dropdown .dropdown-item').forEach(i => i.classList.remove('active'));
+            sortSizeBtn.classList.add('active');
+            if (sortSelect) sortSelect.value = 'size';
+            renderFolder();
+        });
     }
 
     if (togglePropertiesBtn && propertiesSidebar) {
         togglePropertiesBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             propertiesSidebar.classList.toggle('collapsed');
+            
+            // Sync dropdown item state
+            if (propertiesSidebar.classList.contains('collapsed')) {
+                togglePropertiesBtn.classList.remove('active');
+            } else {
+                togglePropertiesBtn.classList.add('active');
+            }
         });
     }
+
+    if (toggleViewOptionsItem) {
+        toggleViewOptionsItem.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const pane = document.getElementById('view-options-pane');
+            if (pane) {
+                const isHidden = (pane.style.display === 'none');
+                pane.style.display = isHidden ? 'flex' : 'none';
+                
+                if (isHidden) toggleViewOptionsItem.classList.add('active');
+                else toggleViewOptionsItem.classList.remove('active');
+            }
+        });
+    }
+    
     if (closePropertiesBtn && propertiesSidebar) {
         closePropertiesBtn.addEventListener('click', (e) => {
             e.stopPropagation();

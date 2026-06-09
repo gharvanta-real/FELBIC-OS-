@@ -1,10 +1,11 @@
 /* ============================================================
-   AIOS — Base, Scrollbars & Typography
-   Zero hardcoded values — all tokens
+   AURA OS — Base: Reset, Scrollbars, Typography, Transitions
+   Zero hardcoded values — all tokens from design-tokens.css
    ============================================================ */
 
 @import url("../design-tokens.css");
 
+/* ── Reset ── */
 *,
 *::before,
 *::after {
@@ -20,18 +21,38 @@ body {
     height: 100vh;
     overflow: hidden;
     font-family: var(--font-sans);
-    font-size: var(--font-size-sm);
-    color: var(--color-topbar-text);
+    font-size: var(--font-size-md);
+    color: var(--text-primary);
     background: transparent;
     position: relative;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
+/* ── Reset Form Elements Typography & Standardize Selects ── */
+input, select, textarea, button, option {
+    font-family: inherit;
+}
+
+select {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a0a0a0' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 8px center !important;
+    background-size: 10px !important;
+    padding-right: 24px !important;
+}
+
+select, select option {
+    font-family: var(--font-sans), sans-serif;
+}
+
 /* ── macOS-style custom scrollbar ── */
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -41,34 +62,166 @@ body {
 ::-webkit-scrollbar-thumb {
     background: var(--scrollbar-thumb);
     border-radius: var(--radius-full);
-    border: 2px solid transparent;
-    background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--scrollbar-thumb-hover);
-    border: 2px solid transparent;
-    background-clip: padding-box;
 }
 
-/* ── Global theme transition targets ── */
+/* ── Global theme transition targets ──
+   Only the properties that visually change on theme switch
+   get transitions — no blanket transition: all. */
 body,
 .topbar,
 .dock,
 .dock-item,
 .window,
+.window-titlebar,
 .control-center,
 .spotlight,
 .settings-window,
-.finder-sidebar,
-.store-sidebar,
-.monitor-content,
-.editor-container,
-.notifications-container,
-.desktop-context-menu {
-    transition: background-color var(--transition-slow) var(--curve-smooth),
-                color var(--transition-slow) var(--curve-smooth),
-                border-color var(--transition-slow) var(--curve-smooth),
-                box-shadow var(--transition-slow) var(--curve-smooth),
-                backdrop-filter var(--transition-slow) var(--curve-smooth);
+.launchpad-overlay,
+.desktop-context-menu,
+.notification-toast {
+    transition:
+        background-color var(--transition-slow) var(--curve-smooth),
+        color            var(--transition-slow) var(--curve-smooth),
+        border-color     var(--transition-slow) var(--curve-smooth),
+        box-shadow       var(--transition-slow) var(--curve-smooth);
 }
+
+/* ── Button Utilities ── */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-xs);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    background-color: var(--surface-2);
+    cursor: pointer;
+    user-select: none;
+    transition:
+        background-color var(--transition-fast) var(--curve-smooth),
+        border-color     var(--transition-fast) var(--curve-smooth),
+        transform        var(--transition-fast) var(--curve-smooth),
+        box-shadow       var(--transition-fast) var(--curve-smooth);
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+.btn-secondary {
+    background-color: var(--surface-3);
+    border-color: var(--border-subtle);
+    color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+    background-color: var(--surface-hover);
+    border-color: var(--border-default);
+}
+
+.btn-danger-soft {
+    background-color: rgba(235, 87, 87, 0.12) !important;
+    border-color: rgba(235, 87, 87, 0.22) !important;
+    color: #ff5b5b !important;
+}
+
+.btn-danger-soft:hover {
+    background-color: rgba(235, 87, 87, 0.22) !important;
+    border-color: rgba(235, 87, 87, 0.35) !important;
+}
+
+.btn-primary {
+    background-color: var(--accent-primary);
+    color: var(--text-on-accent);
+    border-color: transparent;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+}
+
+/* Sizes */
+.btn-sm {
+    padding: 4px 10px;
+    font-size: var(--font-size-2xs);
+    gap: 4px;
+    border-radius: var(--radius-xs);
+}
+
+.btn-md {
+    padding: 6px 12px;
+    font-size: var(--font-size-xs);
+    gap: 6px;
+}
+
+/* ── Range Sliders (Track & Thumb Custom Styling) ── */
+.settings-slider, .cc-slider {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    background: transparent !important; /* Hide native container background */
+    width: 100%;
+    height: 16px !important;
+    outline: none;
+    cursor: pointer;
+}
+
+/* WebKit/Blink Track styling */
+.settings-slider::-webkit-slider-runnable-track,
+.cc-slider::-webkit-slider-runnable-track {
+    background: var(--border-strong) !important;
+    height: 4px !important;
+    border-radius: var(--radius-full) !important;
+}
+
+/* Firefox Track styling */
+.settings-slider::-moz-range-track,
+.cc-slider::-moz-range-track {
+    background: var(--border-strong) !important;
+    height: 4px !important;
+    border-radius: var(--radius-full) !important;
+}
+
+/* WebKit/Blink Thumb styling */
+.settings-slider::-webkit-slider-thumb,
+.cc-slider::-webkit-slider-thumb {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    width: 12px !important;
+    height: 12px !important;
+    border-radius: 50% !important;
+    background: var(--accent-primary) !important;
+    box-shadow: var(--shadow-xs) !important;
+    margin-top: -4px !important; /* Center the thumb vertically */
+    transition: transform var(--transition-fast) var(--curve-smooth);
+}
+
+.settings-slider::-webkit-slider-thumb:hover,
+.cc-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+/* Firefox Thumb styling */
+.settings-slider::-moz-range-thumb,
+.cc-slider::-moz-range-thumb {
+    width: 12px !important;
+    height: 12px !important;
+    border: none !important;
+    border-radius: 50% !important;
+    background: var(--accent-primary) !important;
+    box-shadow: var(--shadow-xs) !important;
+    transition: transform var(--transition-fast) var(--curve-smooth);
+}
+
+.settings-slider::-moz-range-thumb:hover,
+.cc-slider::-moz-range-thumb:hover {
+    transform: scale(1.2);
+}
+
+

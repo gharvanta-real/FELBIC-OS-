@@ -5,7 +5,8 @@ export async function loadComponents() {
         { id: 'spotlight-container', file: 'components/spotlight.html' },
         { id: 'dock-container', file: 'components/dock.html' },
         { id: 'windows-container', file: 'components/windows.html' },
-        { id: 'notification-center-container', file: 'components/notification-center.html' }
+        { id: 'notification-center-container', file: 'components/notification-center.html' },
+        { id: 'audit-log-container', file: 'components/audit-log.html' }
     ];
 
     for (const comp of components) {

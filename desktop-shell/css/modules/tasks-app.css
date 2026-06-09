@@ -1,0 +1,111 @@
+/* ============================================================
+   AURA OS — Tasks App
+   Zero hardcoded values — all tokens
+   ============================================================ */
+
+.tasks-container {
+    display: flex;
+    height: 100%;
+    background: var(--app-glass-bg);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+}
+
+.tasks-sidebar {
+    width: 180px;
+    min-width: 180px;
+    max-width: 180px;
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--app-border);
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-3);
+}
+
+.tasks-nav-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    transition: background-color var(--transition-fast) var(--curve-smooth),
+                color            var(--transition-fast) var(--curve-smooth);
+}
+
+.tasks-nav-item:hover,
+.tasks-nav-item.active {
+    background: var(--surface-hover);
+    color: var(--text-primary);
+}
+
+.tasks-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-5);
+    overflow-y: auto;
+}
+
+.tasks-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-4);
+}
+
+.tasks-title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+}
+
+.tasks-add-input {
+    width: 100%;
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
+    padding: var(--space-3);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-md);
+    font-family: var(--font-sans);
+    margin-bottom: var(--space-3);
+    outline: none;
+    transition: border-color var(--transition-fast) var(--curve-smooth);
+}
+
+.tasks-add-input:focus {
+    border-color: var(--accent-primary);
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    background: var(--surface-1);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-2);
+    transition: background-color var(--transition-fast) var(--curve-smooth);
+}
+
+.task-item:hover { background: var(--surface-hover); }
+
+.task-text {
+    flex: 1;
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+}
+
+.task-badge {
+    font-size: var(--font-size-2xs);
+    padding: 2px var(--space-2);
+    border-radius: var(--radius-full);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    background: var(--accent-soft);
+    color: var(--accent-primary);
+}

@@ -1,25 +1,23 @@
 /* ============================================================
-   AIOS — Top Bar & Clock
+   AURA OS — Top Bar & Status Icons
    Zero hardcoded values — all tokens
    ============================================================ */
 
+/* ── Shell ── */
 .topbar {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: var(--topbar-height);
-    background-color: transparent !important;
+    background-color: var(--color-topbar-bg);
     border-bottom: 1px solid var(--color-topbar-border);
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 24px;
+    padding: 0 var(--space-6);
     z-index: 1000;
-    transition: background-color var(--transition-normal) var(--curve-smooth),
-                border-color var(--transition-normal) var(--curve-smooth);
+    flex-shrink: 0;
 }
 
 /* ── Left cluster ── */
@@ -29,25 +27,23 @@
     gap: 14px;
 }
 
-/* ── Topbar Apps Tray ── */
+/* ── Apps tray (pinned app icons in topbar) ── */
 .topbar-apps-dock {
     display: flex;
     align-items: center;
-    gap: 6px;
-    margin-left: 12px;
-    border-left: 1.5px solid var(--color-topbar-border);
-    padding-left: 12px;
+    gap: var(--space-2);
+    margin-left: var(--space-3);
+    border-left: 1px solid var(--color-topbar-border);
+    padding-left: var(--space-3);
 }
 
 .topbar-apps-dock .dock-item {
     width: 24px;
     height: 24px;
     border-radius: var(--radius-xs);
-    background-color: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -55,38 +51,29 @@
     color: var(--color-topbar-text-muted);
     position: relative;
     flex-shrink: 0;
-    transition: transform var(--transition-fast) var(--curve-smooth),
-                color var(--transition-fast) var(--curve-smooth),
-                background-color var(--transition-fast) var(--curve-smooth);
+    transition:
+        color            var(--transition-fast) var(--curve-smooth),
+        background-color var(--transition-fast) var(--curve-smooth);
 }
 
 .topbar-apps-dock .dock-item:hover {
-    transform: scale(1.1);
-    background-color: var(--color-accent-dim) !important;
+    background-color: var(--color-accent-dim);
     color: var(--color-topbar-text);
 }
 
 .topbar-apps-dock .dock-item:active {
-    transform: scale(0.95);
-    background-color: var(--surface-active) !important;
+    background-color: var(--surface-active);
 }
 
 .topbar-apps-dock .dock-item svg,
 .topbar-apps-dock .dock-item i {
-    width: 14px;
-    height: 14px;
-    font-size: 14px;
+    font-size: var(--icon-topbar);
     line-height: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    fill: currentColor;
     color: currentColor;
     pointer-events: none;
-    -webkit-text-stroke: 0.3px currentColor;
 }
 
-/* ── Running indicator dot ── */
+/* Running indicator */
 .topbar-apps-dock .dock-item.running::after {
     content: "";
     position: absolute;
@@ -97,26 +84,28 @@
     height: 3px;
     border-radius: 50%;
     background-color: var(--accent-primary);
-    box-shadow: var(--shadow-xs);
 }
 
+/* ── Logo ── */
 .topbar-logo {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--space-2);
     cursor: pointer;
-    padding: 4px 8px;
+    padding: var(--space-1) var(--space-2);
     border-radius: var(--radius-xs);
     transition: background-color var(--transition-fast) var(--curve-smooth);
     user-select: none;
 }
 
-.topbar-logo:hover { background-color: var(--color-accent-dim); }
+.topbar-logo:hover {
+    background-color: var(--color-accent-dim);
+}
 
 .topbar-logo-icon {
     width: 26px;
     height: 26px;
-    border-radius: 6px;
+    border-radius: var(--radius-2);
     background: var(--gradient-logo);
     display: flex;
     justify-content: center;
@@ -125,18 +114,21 @@
     flex-shrink: 0;
 }
 
-.topbar-logo-icon i { font-size: var(--icon-md); }
+.topbar-logo-icon i {
+    font-size: var(--icon-sm);
+}
 
 .topbar-logo-text {
     font-weight: var(--font-weight-bold);
-    font-size: var(--text-md);
+    font-size: var(--font-size-sm);
     color: var(--color-topbar-text);
     letter-spacing: 0.5px;
 }
 
+/* ── Menu bar (app name + menus) ── */
 .topbar-menu {
     display: flex;
-    gap: 12px;
+    gap: var(--space-3);
     color: var(--color-topbar-text-muted);
 }
 
@@ -148,135 +140,159 @@
     user-select: none;
 }
 
-.topbar-menu-item:hover { color: var(--color-topbar-text); }
+.topbar-menu-item:hover {
+    color: var(--color-topbar-text);
+}
 
 .topbar-active-app {
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-bold);
     color: var(--color-topbar-text);
-    margin-right: 4px;
+    margin-right: var(--space-1);
     cursor: pointer;
     user-select: none;
 }
 
-/* ── Center Date, Time & Weather ── */
+/* ── Center: Date, Time, Weather ── */
 .topbar-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px;
-    font-size: var(--text-sm);
+    gap: var(--space-2);
+    height: 100%;
+}
+
+.topbar-center > * {
+    background: var(--surface-hover);
+    padding: 3px 10px;
+    border-radius: var(--radius-xs);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
     color: var(--color-topbar-text);
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    transition: background-color var(--transition-fast) var(--curve-smooth);
+    border: 1px solid var(--border-subtle);
+}
+
+.topbar-center > *:hover {
+    background: var(--surface-active);
+    border-color: var(--border-default);
 }
 
 .topbar-date {
-    opacity: 0.85;
-    font-weight: var(--font-weight-medium);
+    color: var(--color-topbar-text-muted);
 }
 
 .topbar-time {
-    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
 }
 
 .topbar-weather {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    opacity: 0.85;
     cursor: pointer;
-    transition: opacity var(--transition-fast) var(--curve-smooth);
-}
-
-.topbar-weather:hover {
-    opacity: 1;
 }
 
 .topbar-weather i {
-    font-size: var(--icon-sm);
+    font-size: var(--icon-topbar);
+    color: var(--color-topbar-text-muted);
 }
 
 /* ── Right cluster ── */
 .topbar-right {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--space-3);
     font-size: var(--font-size-xs);
     color: var(--color-topbar-text-muted);
+}
+
+.topbar-right i {
+    -webkit-text-stroke: 0.4px currentColor;
 }
 
 .topbar-right-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     border-radius: var(--radius-2xs);
     cursor: pointer;
-    color: var(--text-secondary);
-    transition: color var(--transition-fast) var(--curve-smooth),
-                background-color var(--transition-fast) var(--curve-smooth);
+    color: var(--color-icon-secondary);
+    transition:
+        color            var(--transition-fast) var(--curve-smooth),
+        background-color var(--transition-fast) var(--curve-smooth);
 }
 
 .topbar-right-icon:hover {
-    color: var(--text-primary);
+    color: var(--color-icon-primary);
     background-color: var(--color-accent-dim);
 }
 
-.topbar-right-icon i { 
-    font-size: var(--icon-topbar); 
-    -webkit-text-stroke: 0.4px currentColor;
+.topbar-right-icon i {
+    font-size: var(--icon-topbar);
 }
 
+/* Battery */
 .topbar-battery {
     display: flex;
     align-items: center;
-    gap: 4px;
-    font-size: var(--text-xs);
-    color: var(--text-secondary);
+    gap: var(--space-1);
+    font-size: var(--font-size-xs);
+    color: var(--color-icon-secondary);
 }
 
 .topbar-battery i {
     font-size: var(--icon-topbar);
-    color: var(--success);
-    -webkit-text-stroke: 0.4px currentColor;
+    color: var(--color-success);
 }
 
+/* Clock */
 .topbar-clock {
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-semibold);
-    color: var(--color-topbar-text);
+    color: var(--color-icon-primary);
     cursor: pointer;
-    padding: 2px 6px;
+    padding: 2px var(--space-2);
     border-radius: var(--radius-2xs);
     transition: background-color var(--transition-fast) var(--curve-smooth);
     user-select: none;
 }
 
-.topbar-clock:hover { background-color: var(--color-accent-dim); }
+.topbar-clock:hover {
+    background-color: var(--color-accent-dim);
+}
 
+/* Theme toggle */
 .topbar-theme-toggle {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     border-radius: var(--radius-2xs);
     cursor: pointer;
-    color: var(--text-secondary);
-    transition: color var(--transition-fast) var(--curve-smooth),
-                background-color var(--transition-fast) var(--curve-smooth);
+    color: var(--color-icon-secondary);
+    transition:
+        color            var(--transition-fast) var(--curve-smooth),
+        background-color var(--transition-fast) var(--curve-smooth);
 }
 
 .topbar-theme-toggle:hover {
-    color: var(--text-primary);
+    color: var(--color-icon-primary);
     background-color: var(--color-accent-dim);
 }
 
-.topbar-theme-toggle i { 
-    font-size: var(--icon-topbar); 
-    -webkit-text-stroke: 0.4px currentColor;
+.topbar-theme-toggle i {
+    font-size: var(--icon-topbar);
 }
 
+/* Avatar */
 .topbar-avatar {
     display: flex;
     align-items: center;
@@ -290,9 +306,9 @@
 .avatar-circle {
     width: 24px;
     height: 24px;
-    border-radius: 50%;
+    border-radius: var(--radius-xs);
     background: var(--gradient-avatar);
-    border: 1.5px solid var(--border-default);
+    border: 1px solid var(--border-default);
 }
 
 .avatar-status-dot {
@@ -301,40 +317,37 @@
     right: -1px;
     width: 8px;
     height: 8px;
-    background-color: var(--success);
+    background-color: var(--color-success);
     border-radius: 50%;
     border: 1.5px solid var(--bg-primary);
-    box-shadow: var(--shadow-xs);
 }
 
-/* ── Topbar Dropdown Menus ── */
+/* ── Topbar Dropdown Menu ── */
 .topbar-dropdown {
     position: absolute;
     top: calc(var(--topbar-height) + 4px);
-    background-color: var(--surface-2);
+    background-color: var(--panel);
     border: 1px solid var(--border-strong);
-    backdrop-filter: var(--blur-md);
-    -webkit-backdrop-filter: var(--blur-md);
     border-radius: var(--radius-xs);
     box-shadow: var(--shadow-md);
     z-index: 4500;
     min-width: 170px;
-    padding: 5px;
+    padding: var(--space-1);
     display: flex;
     flex-direction: column;
     gap: 2px;
-    
     /* Hidden state */
     opacity: 0;
-    transform: translateY(-4px) scale(0.98);
+    transform: translateY(-4px);
     pointer-events: none;
-    transition: transform var(--transition-fast) var(--curve-swift),
-                opacity var(--transition-fast) ease;
+    transition:
+        transform var(--transition-fast) var(--curve-swift),
+        opacity   var(--transition-fast) ease;
 }
 
 .topbar-dropdown.active {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
     pointer-events: auto;
 }
 
@@ -342,7 +355,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 6px 12px;
+    padding: 6px var(--space-3);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-medium);
     color: var(--text-primary);
@@ -350,7 +363,7 @@
     cursor: pointer;
     transition: background-color var(--transition-fast) var(--curve-smooth);
     user-select: none;
-    gap: 16px;
+    gap: var(--space-4);
 }
 
 .topbar-dropdown .dropdown-item:hover {
@@ -360,10 +373,10 @@
 .topbar-dropdown .dropdown-divider {
     height: 1px;
     background-color: var(--border-subtle);
-    margin: 3px 6px;
+    margin: 3px var(--space-2);
 }
 
 .topbar-dropdown .dropdown-shortcut {
-    font-size: 9px;
+    font-size: 10px;
     color: var(--text-muted);
 }

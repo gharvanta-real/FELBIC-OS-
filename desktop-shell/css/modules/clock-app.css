@@ -157,7 +157,6 @@
     font-size: var(--font-size-md);
     font-family: var(--font-mono);
     border-radius: var(--radius-xs);
-    outline: none;
 }
 
 .alarm-time-input:focus {
@@ -308,15 +307,15 @@
     color: var(--text-muted);
 }
 
-.timer-select {
+.timer-select,
+.timer-select option {
     background-color: var(--surface-1);
     border: 1px solid var(--border-default);
     color: var(--text-primary);
     padding: 6px 10px;
     border-radius: var(--radius-xs);
-    font-family: var(--font-mono);
+    font-family: var(--font-mono), monospace !important;
     font-size: var(--font-size-sm);
-    outline: none;
 }
 
 /* Visual Ring Display */

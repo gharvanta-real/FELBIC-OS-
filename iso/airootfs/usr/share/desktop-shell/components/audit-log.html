@@ -1,0 +1,50 @@
+<div id="audit-log-window" class="window glass-window" data-workspace="1" style="display: none;">
+    <div class="window-titlebar">
+        <div class="window-title">
+            <i class="hgi-stroke hgi-shield-01"></i>
+            <span>Audit Log Viewer</span>
+        </div>
+        <div class="window-controls">
+            <button class="window-btn minimize" data-target="audit-log-window"><i class="hgi-stroke hgi-minus"></i></button>
+            <button class="window-btn maximize" data-target="audit-log-window"><i class="hgi-stroke hgi-square-2"></i></button>
+            <button class="window-btn close" data-target="audit-log-window"><i class="hgi-stroke hgi-multiply-01"></i></button>
+        </div>
+    </div>
+    
+    <div class="window-content">
+        <div class="audit-log-container">
+            <div class="audit-header">
+                <h2>AI Action History</h2>
+                <div class="audit-toolbar">
+                    <button id="audit-refresh-btn" class="btn btn-secondary btn-sm">
+                        <i class="hgi-stroke hgi-refresh"></i> Refresh
+                    </button>
+                    <button id="audit-clear-btn" class="btn btn-danger-soft btn-sm">
+                        <i class="hgi-stroke hgi-delete-01"></i> Clear
+                    </button>
+                </div>
+            </div>
+            
+            <div class="audit-table-wrapper">
+                <table class="audit-table">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>UID</th>
+                            <th>Method</th>
+                            <th>Capability</th>
+                            <th>Decision</th>
+                        </tr>
+                    </thead>
+                    <tbody id="audit-log-tbody">
+                        <!-- Logs will be injected here -->
+                    </tbody>
+                </table>
+                <div id="audit-empty-state" class="audit-empty-state" style="display: none;">
+                    <i class="hgi-stroke hgi-shield-01"></i>
+                    <span>No audit entries found.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

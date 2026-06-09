@@ -1,5 +1,5 @@
 /* ============================================================
-   AIOS — Control Center (Quick Settings Panel)
+   AURA OS — Control Center (Quick Settings Panel)
    Zero hardcoded values — all tokens
    ============================================================ */
 
@@ -8,62 +8,62 @@
     top: calc(var(--topbar-height) + 6px);
     right: 12px;
     width: 310px;
-    background-color: var(--color-dock-bg);
-    border: 1px solid var(--color-dock-border);
-    backdrop-filter: var(--blur-intensity-heavy);
-    -webkit-backdrop-filter: var(--blur-intensity-heavy);
+    background-color: var(--panel);
+    border: 1px solid var(--border-default);
     border-radius: var(--radius-md);
-    padding: 14px;
+    padding: var(--space-3);
     box-shadow: var(--shadow-window);
     z-index: 2000;
-
     /* Hidden state */
     opacity: 0;
     transform: translateY(-8px) scale(0.97);
     pointer-events: none;
-    transition: transform var(--transition-normal) var(--curve-swift),
-                opacity var(--transition-normal) ease;
+    transition:
+        transform var(--transition-normal) var(--curve-swift),
+        opacity   var(--transition-normal) ease;
 }
 
 .control-center.active {
     opacity: 1;
     transform: translateY(0) scale(1);
-    pointer-events: all;
+    pointer-events: auto;
 }
 
 /* ── Quick toggle grid ── */
 .cc-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 10px;
-    margin-bottom: 12px;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
 }
 
 .cc-card {
     background-color: var(--color-accent-dim);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
-    padding: 10px;
+    padding: var(--space-2);
 }
 
 .cc-toggles {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--space-2);
 }
 
 .cc-toggle-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 6px;
+    gap: var(--space-2);
+    padding: var(--space-1) var(--space-2);
     border-radius: var(--radius-xs);
     cursor: pointer;
     transition: background-color var(--transition-fast) var(--curve-smooth);
     user-select: none;
 }
 
-.cc-toggle-item:hover { background-color: var(--color-accent-hover); }
+.cc-toggle-item:hover {
+    background-color: var(--surface-hover);
+}
 
 .cc-toggle-icon {
     width: 26px;
@@ -76,8 +76,9 @@
     font-size: var(--icon-sm);
     color: var(--text-primary);
     flex-shrink: 0;
-    transition: background-color var(--transition-fast) var(--curve-smooth),
-                color var(--transition-fast) var(--curve-smooth);
+    transition:
+        background-color var(--transition-fast) var(--curve-smooth),
+        color            var(--transition-fast) var(--curve-smooth);
 }
 
 .cc-toggle-item.active .cc-toggle-icon {
@@ -90,33 +91,32 @@
 .cc-toggle-label {
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
-    color: var(--color-topbar-text);
+    color: var(--text-primary);
 }
 
 .cc-toggle-sub {
-    font-size: var(--text-2xs);
-    color: var(--color-topbar-text-muted);
+    font-size: var(--font-size-2xs);
+    color: var(--text-muted);
 }
 
 /* ── Focus mode ── */
 .cc-focus {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--space-2);
     cursor: pointer;
-    padding: 6px;
+    padding: var(--space-1) var(--space-2);
     border-radius: var(--radius-xs);
     transition: background-color var(--transition-fast) var(--curve-smooth);
     user-select: none;
 }
 
-.cc-focus:hover { background-color: var(--color-accent-hover); }
-
-.cc-focus.active { background-color: var(--accent-soft); }
+.cc-focus:hover   { background-color: var(--surface-hover); }
+.cc-focus.active  { background-color: var(--accent-soft);   }
 
 .cc-focus-icon {
     font-size: var(--icon-md);
-    color: var(--color-topbar-text-muted);
+    color: var(--text-muted);
     transition: color var(--transition-fast) var(--curve-smooth);
 }
 
@@ -125,27 +125,26 @@
 .cc-focus-label {
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-medium);
-    color: var(--color-topbar-text);
+    color: var(--text-primary);
 }
 
 /* ── Sliders ── */
 .cc-sliders {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-bottom: 12px;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
 }
 
 .cc-slider-row {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--space-2);
 }
 
 .cc-slider-icon {
     font-size: var(--icon-sm);
-    color: var(--color-topbar-text-muted);
-    width: var(--icon-sm);
+    color: var(--text-muted);
     flex-shrink: 0;
 }
 
@@ -153,10 +152,9 @@
     flex: 1;
     -webkit-appearance: none;
     appearance: none;
-    height: 5px;
+    height: 4px;
     border-radius: var(--radius-full);
     background-color: var(--border-default);
-    outline: none;
     transition: background-color var(--transition-fast) var(--curve-smooth);
 }
 
@@ -168,7 +166,7 @@
     width: 13px;
     height: 13px;
     border-radius: 50%;
-    background-color: var(--color-accent);
+    background-color: var(--accent-primary);
     cursor: pointer;
     box-shadow: var(--shadow-xs);
     transition: transform var(--transition-fast) var(--curve-elastic);
@@ -181,15 +179,14 @@
 .cc-power-row {
     display: flex;
     justify-content: space-between;
-    gap: 6px;
+    gap: var(--space-1);
 }
 
 .cc-power-btn {
     flex: 1;
     border: 1px solid var(--border-subtle);
-    outline: none;
     background-color: var(--color-accent-dim);
-    color: var(--color-topbar-text);
+    color: var(--text-primary);
     padding: 7px 0;
     border-radius: var(--radius-xs);
     font-size: var(--font-size-xs);
@@ -199,15 +196,17 @@
     transition: background-color var(--transition-fast) var(--curve-smooth);
 }
 
-.cc-power-btn:hover { background-color: var(--color-accent-hover); }
+.cc-power-btn:hover {
+    background-color: var(--surface-hover);
+}
 
 .cc-power-btn.danger { color: var(--color-danger); }
 .cc-power-btn.danger:hover {
     background-color: var(--accent-soft);
-    border-color: var(--danger);
+    border-color: var(--color-danger);
 }
 
-/* ── Toggle switches (used inside CC too) ── */
+/* ── Toggle switches ── */
 .switch-container {
     position: relative;
     display: inline-block;
@@ -224,10 +223,10 @@
     top: 0; left: 0; right: 0; bottom: 0;
     background-color: var(--border-strong);
     border-radius: var(--radius-full);
-    transition: var(--transition-normal) var(--curve-smooth);
+    transition: background-color var(--transition-normal) var(--curve-smooth);
 }
 
-.toggle-slider:before {
+.toggle-slider::before {
     position: absolute;
     content: "";
     height: 15px;
@@ -237,16 +236,16 @@
     background-color: var(--text-on-accent);
     border-radius: 50%;
     box-shadow: var(--shadow-xs);
-    transition: var(--transition-normal) var(--curve-elastic);
+    transition: transform var(--transition-normal) var(--curve-elastic);
 }
 
 input:checked + .toggle-slider { background-color: var(--accent-primary); }
-input:checked + .toggle-slider:before { transform: translateX(15px); }
+input:checked + .toggle-slider::before { transform: translateX(15px); }
 
 /* ── Mic meter ── */
 .volume-mic-meter {
     flex: 0 0 110px;
-    height: 5px;
+    height: 4px;
     border-radius: var(--radius-full);
     background-color: var(--border-default);
     overflow: hidden;
@@ -258,13 +257,13 @@ input:checked + .toggle-slider:before { transform: translateX(15px); }
     transition: width 0.1s var(--curve-linear);
 }
 
-/* ── Settings rows (used when CC hosts quick settings) ── */
+/* ── Settings rows (shared with Settings app) ── */
 .settings-section-title {
-    font-size: var(--text-2xs);
+    font-size: var(--font-size-2xs);
     text-transform: uppercase;
     font-weight: var(--font-weight-bold);
-    color: var(--color-topbar-text-muted);
-    margin: 14px 4px 6px;
+    color: var(--text-muted);
+    margin: var(--space-3) var(--space-1) var(--space-1);
     letter-spacing: 0.6px;
 }
 
@@ -273,17 +272,17 @@ input:checked + .toggle-slider:before { transform: translateX(15px); }
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
     overflow: hidden;
-    margin-bottom: 10px;
+    margin-bottom: var(--space-2);
 }
 
 .settings-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 9px 12px;
+    padding: 9px var(--space-3);
     border-bottom: 1px solid var(--border-subtle);
     font-size: var(--font-size-sm);
-    color: var(--color-topbar-text);
+    color: var(--text-primary);
 }
 
 .settings-row:last-child { border-bottom: none; }
@@ -291,11 +290,11 @@ input:checked + .toggle-slider:before { transform: translateX(15px); }
 .settings-column-row {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    padding: 9px 12px;
+    gap: var(--space-1);
+    padding: 9px var(--space-3);
     border-bottom: 1px solid var(--border-subtle);
     font-size: var(--font-size-sm);
-    color: var(--color-topbar-text);
+    color: var(--text-primary);
 }
 
 .settings-column-row:last-child { border-bottom: none; }
@@ -304,7 +303,7 @@ input:checked + .toggle-slider:before { transform: translateX(15px); }
     display: flex;
     justify-content: space-between;
     font-size: var(--font-size-xs);
-    color: var(--color-topbar-text-muted);
+    color: var(--text-muted);
 }
 
 .row-label { font-weight: var(--font-weight-medium); }
@@ -314,8 +313,7 @@ input:checked + .toggle-slider:before { transform: translateX(15px); }
     appearance: none;
     height: 4px;
     border-radius: var(--radius-full);
-    background-color: var(--border-default);
-    outline: none;
+    background-color: var(--border-strong) !important;
     width: 100%;
 }
 
@@ -325,7 +323,7 @@ input:checked + .toggle-slider:before { transform: translateX(15px); }
     width: 13px;
     height: 13px;
     border-radius: 50%;
-    background-color: var(--color-accent);
+    background-color: var(--accent-primary);
     cursor: pointer;
     box-shadow: var(--shadow-xs);
 }
@@ -334,9 +332,8 @@ input:checked + .toggle-slider:before { transform: translateX(15px); }
     background-color: var(--surface-1);
     border: 1px solid var(--border-default);
     border-radius: var(--radius-xs);
-    color: var(--color-topbar-text);
-    outline: none;
-    padding: 2px 8px;
+    color: var(--text-primary);
+    padding: 2px var(--space-2);
     font-size: var(--font-size-xs);
     font-family: var(--font-sans);
     cursor: pointer;
@@ -344,5 +341,5 @@ input:checked + .toggle-slider:before { transform: translateX(15px); }
 
 .settings-select option {
     background-color: var(--bg-primary);
-    color: var(--color-topbar-text);
+    color: var(--text-primary);
 }

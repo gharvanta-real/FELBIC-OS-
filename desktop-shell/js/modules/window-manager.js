@@ -125,6 +125,9 @@ export function focusWindow(win) {
         else if (win.id === 'store-window') appDisplayName = 'Software';
         else if (win.id === 'monitor-window') appDisplayName = 'Task Manager';
         else if (win.id === 'editor-window') appDisplayName = 'Text Editor';
+        else if (win.id === 'mail-window') appDisplayName = 'MailBox';
+        else if (win.id === 'tasks-window') appDisplayName = 'PlanIt Tasks';
+        else if (win.id === 'audit-log-window') appDisplayName = 'Audit Logs';
         
         activeAppLabel.textContent = appDisplayName;
     }

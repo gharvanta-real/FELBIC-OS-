@@ -1,5 +1,5 @@
 /* ============================================================
-   AIOS — Window Chrome, Workspace, Snap, Resize
+   AURA OS — Window Chrome, Workspace, Snap, Resize
    Zero hardcoded values — all tokens
    ============================================================ */
 
@@ -12,8 +12,7 @@
     right: 0;
     width: 100%;
     z-index: 10;
-    pointer-events: none; /* Let events pass to desktop icons */
-    /* No padding — windows use absolute positioning */
+    pointer-events: none;
     transform: scale(var(--workspace-scale, 1));
     transform-origin: center center;
     transition: transform var(--transition-normal) var(--curve-smooth);
@@ -27,27 +26,26 @@
     min-height: 300px;
     background-color: var(--app-glass-bg);
     border: 1px solid var(--app-border);
-    backdrop-filter: var(--app-glass-blur);
-    -webkit-backdrop-filter: var(--app-glass-blur);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-window);
     display: flex;
     flex-direction: column;
     overflow: hidden;
     position: absolute;
-    pointer-events: auto; /* Enable interaction for windows */
-    animation: windowFadeIn 0.4s var(--curve-swift);
-    transition: transform var(--transition-slow) var(--curve-swift),
-                opacity var(--transition-slow) ease,
-                box-shadow var(--transition-normal) var(--curve-smooth),
-                border-color var(--transition-normal) var(--curve-smooth),
-                left var(--transition-slow) var(--curve-smooth),
-                top var(--transition-slow) var(--curve-smooth),
-                width var(--transition-slow) var(--curve-smooth),
-                height var(--transition-slow) var(--curve-smooth);
+    pointer-events: auto;
+    animation: window-fade-in 0.35s var(--curve-swift);
+    transition:
+        transform     var(--transition-slow)   var(--curve-swift),
+        opacity       var(--transition-slow)   ease,
+        box-shadow    var(--transition-normal)  var(--curve-smooth),
+        border-color  var(--transition-normal)  var(--curve-smooth),
+        left          var(--transition-slow)   var(--curve-smooth),
+        top           var(--transition-slow)   var(--curve-smooth),
+        width         var(--transition-slow)   var(--curve-smooth),
+        height        var(--transition-slow)   var(--curve-smooth);
 }
 
-/* No transition lag while dragging / resizing */
+/* No transition lag during drag / resize */
 .window.dragging,
 .window.resizing {
     transition: none !important;
@@ -58,40 +56,40 @@
     box-shadow: var(--shadow-window);
 }
 
-@keyframes windowFadeIn {
+@keyframes window-fade-in {
     from { opacity: 0; transform: scale(0.95) translateY(14px); }
-    to   { opacity: 1; transform: scale(1) translateY(0); }
+    to   { opacity: 1; transform: scale(1)    translateY(0);    }
 }
 
 /* ── TITLE BAR ── */
 .window-titlebar {
-    height: 34px;
-    /* Match sidebar color — same bg-secondary so controls tray feels unified */
+    height: var(--ui-titlebar-height);
     background-color: var(--bg-secondary);
     border-bottom: 1px solid var(--border-subtle);
     display: flex;
     align-items: center;
-    padding: 0 14px;
+    padding: 0 var(--space-5);
     position: relative;
     flex-shrink: 0;
     cursor: move;
 }
 
+/* ── WINDOW CONTROL BUTTONS ── */
 .window-controls {
     display: flex;
-    gap: 8px;
+    gap: var(--space-2);
     position: absolute;
-    left: 14px;
+    right: var(--space-5);
+    left: auto;
     cursor: default;
     align-items: center;
     z-index: 10;
 }
 
-/* Window control buttons */
 .window-btn {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
+    width: 24px;
+    height: 18px;
+    border-radius: var(--radius-xs);
     cursor: pointer;
     position: relative;
     display: flex;
@@ -99,70 +97,70 @@
     align-items: center;
     border: none;
     transition: background-color var(--transition-fast) var(--curve-smooth);
+    background-color: var(--surface-3);
 }
 
-.window-btn.close          { background-color: #ff5f56; }
-.window-btn.minimize       { background-color: #ffbd2e; }
-.window-btn.maximize       { background-color: #27c93f; }
+.window-btn.close          { background-color: var(--surface-3); border-radius: var(--radius-xs); }
+.window-btn.close:hover    { background-color: var(--color-danger); }
+.window-btn.minimize:hover,
+.window-btn.maximize:hover { background-color: var(--surface-hover); }
 
-/* Icon glyphs via Hugeicons font */
+/* Icon glyphs via Hugeicons */
 .window-btn::after {
     font-family: "hgi-stroke-rounded" !important;
     font-style: normal;
     -webkit-font-smoothing: antialiased;
-    color: rgba(0, 0, 0, 0.55);
+    color: var(--text-primary);
     line-height: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0;
-    transition: opacity var(--transition-fast) var(--curve-smooth);
+    opacity: 0.7;
+    transition:
+        opacity var(--transition-fast) var(--curve-smooth),
+        color   var(--transition-fast) var(--curve-smooth);
 }
 
-.window-btn.close::after    { content: "\3d42"; font-size: 7px; font-weight: bold; }  /* hgi-cancel-01   */
-.window-btn.minimize::after { content: "\43b0"; font-size: 7px; font-weight: bold; }  /* hgi-minus-sign  */
-.window-btn.maximize::after { content: "\47d8"; font-size: 7px; font-weight: bold; }  /* hgi-square      */
+.window-btn.close::after          { content: "\3d42"; font-size: 8px; font-weight: 700; color: var(--text-primary); }
+.window-btn.close:hover::after    { color: var(--text-on-accent); }
+.window-btn.minimize::after       { content: "\43b0"; font-size: 8px; font-weight: 700; }
+.window-btn.maximize::after       { content: "\47d8"; font-size: 8px; font-weight: 700; }
 
-/* Show icons when hovering the window-controls container */
-.window-controls:hover .window-btn::after {
-    opacity: 1;
-}
+.window-controls:hover .window-btn::after { opacity: 1; }
 
-/* Dim buttons on unfocused window */
-.window:not(.active-focus) .window-controls .window-btn {
-    background-color: var(--border-strong) !important;
-}
+/* Dim on unfocused window */
+.window:not(.active-focus) .window-controls .window-btn     { opacity: 0.5; }
+.window:not(.active-focus) .window-controls:hover .window-btn::after { opacity: 0.85; }
 
-.window:not(.active-focus) .window-controls:hover .window-btn::after {
-    opacity: 0.85;
-}
-
-/* Window title text */
+/* ── WINDOW TITLE ── */
 .window-title {
-    width: 100%;
-    text-align: center;
+    position: absolute;
+    left: var(--space-5);
+    max-width: calc(100% - 120px);
     margin: 0;
-    padding: 0 80px;
     font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-medium);
-    color: var(--text-muted);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     user-select: none;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
 }
 
-/* Generic window content area */
+/* ── WINDOW CONTENT AREA ── */
 .window-content {
     flex: 1;
-    padding: 14px;
-    font-family: var(--font-mono);
+    padding: var(--space-3);
+    font-family: var(--font-sans);
     font-size: var(--font-size-sm);
-    color: var(--color-topbar-text);
+    color: var(--text-primary);
     line-height: 1.5;
-    overflow-y: auto;          /* scrollable by default */
+    overflow-y: auto;
     overflow-x: hidden;
-    min-height: 0;             /* allow flex child to shrink */
+    min-height: 0;
 }
 
 /* ── SNAP GHOST ── */
@@ -170,17 +168,16 @@
     position: absolute;
     background-color: var(--accent-soft);
     border: 1px solid var(--accent-primary);
-    backdrop-filter: var(--blur-sm);
-    -webkit-backdrop-filter: var(--blur-sm);
     border-radius: var(--radius-sm);
     z-index: 900;
     opacity: 0;
     pointer-events: none;
-    transition: opacity var(--transition-normal) var(--curve-swift),
-                left var(--transition-normal) var(--curve-swift),
-                top var(--transition-normal) var(--curve-swift),
-                width var(--transition-normal) var(--curve-swift),
-                height var(--transition-normal) var(--curve-swift);
+    transition:
+        opacity  var(--transition-normal) var(--curve-swift),
+        left     var(--transition-normal) var(--curve-swift),
+        top      var(--transition-normal) var(--curve-swift),
+        width    var(--transition-normal) var(--curve-swift),
+        height   var(--transition-normal) var(--curve-swift);
 }
 
 .snap-preview.visible { opacity: 1; }
@@ -188,22 +185,23 @@
 /* ── RESIZE HANDLES ── */
 .resize-handle { position: absolute; z-index: 1000; }
 
-.handle-t  { top: -4px;    left: 8px;    right: 8px;    height: 8px;  cursor: ns-resize; }
-.handle-b  { bottom: -4px; left: 8px;    right: 8px;    height: 8px;  cursor: ns-resize; }
-.handle-l  { left: -4px;   top: 8px;     bottom: 8px;   width: 8px;   cursor: ew-resize; }
-.handle-r  { right: -4px;  top: 8px;     bottom: 8px;   width: 8px;   cursor: ew-resize; }
+.handle-t  { top: -4px;    left: 8px;    right: 8px;    height: 8px;  cursor: ns-resize;   }
+.handle-b  { bottom: -4px; left: 8px;    right: 8px;    height: 8px;  cursor: ns-resize;   }
+.handle-l  { left: -4px;   top: 8px;     bottom: 8px;   width: 8px;   cursor: ew-resize;   }
+.handle-r  { right: -4px;  top: 8px;     bottom: 8px;   width: 8px;   cursor: ew-resize;   }
 .handle-tl { top: -5px;    left: -5px;   width: 12px;   height: 12px; cursor: nwse-resize; }
 .handle-tr { top: -5px;    right: -5px;  width: 12px;   height: 12px; cursor: nesw-resize; }
 .handle-bl { bottom: -5px; left: -5px;   width: 12px;   height: 12px; cursor: nesw-resize; }
 .handle-br { bottom: -5px; right: -5px;  width: 12px;   height: 12px; cursor: nwse-resize; }
 
-/* ── OVERVIEW / EXPOSÉ MODE ── */
+/* ── OVERVIEW / EXPOSÉ ── */
 .window.in-overview {
-    transition: transform 0.38s var(--curve-swift),
-                left 0.38s var(--curve-swift),
-                top 0.38s var(--curve-swift),
-                width 0.38s var(--curve-swift),
-                height 0.38s var(--curve-swift) !important;
+    transition:
+        transform  0.38s var(--curve-swift),
+        left       0.38s var(--curve-swift),
+        top        0.38s var(--curve-swift),
+        width      0.38s var(--curve-swift),
+        height     0.38s var(--curve-swift) !important;
     cursor: pointer;
 }
 

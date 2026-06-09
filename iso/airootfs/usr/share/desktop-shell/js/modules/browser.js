@@ -41,7 +41,7 @@ export function initBrowser() {
                 <h1 style="font-size: 32px; font-weight: 800; letter-spacing: -1px; background: var(--gradient-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Search Engine</h1>
             </div>
             <div style="display:flex; justify-content:center; margin-bottom: 30px;">
-                <input type="text" placeholder="Search the World Wide Web" style="width: 80%; height: 32px; border-radius: 16px; border: 1px solid var(--border-default); background-color: var(--surface-3); padding: 0 16px; color: var(--text-primary); outline: none;">
+                <input type="text" placeholder="Search the World Wide Web" style="width: 80%; height: 32px; border-radius: 16px; border: 1px solid var(--border-default); background-color: var(--surface-3); padding: 0 16px; color: var(--text-primary);">
             </div>
             <div class="browser-mock-card" style="background: var(--bg-tertiary); border: 1px solid var(--border-default); border-radius: var(--radius-sm); padding: 12px;">
                 <h4 style="font-size:12px; font-weight:600; margin-bottom:4px; color: var(--text-primary);">Trending Searches</h4>

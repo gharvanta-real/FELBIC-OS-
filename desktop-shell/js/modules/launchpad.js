@@ -7,23 +7,6 @@ export function initLaunchpad() {
     const appsGrid = document.getElementById('launchpad-apps-grid');
     const searchInput = document.getElementById('launchpad-search');
 
-    // Default system apps list
-    const systemApps = [
-        { id: 'files', name: 'Files Explorer', icon: '<i class="hgi-stroke hgi-folder-01"></i>', windowId: 'files-window' },
-        { id: 'browser', name: 'Web Browser', icon: '<i class="hgi-stroke hgi-compass"></i>', windowId: 'browser-window' },
-        { id: 'software', name: 'Software Center', icon: '<i class="hgi-stroke hgi-app-store"></i>', windowId: 'store-window' },
-        { id: 'terminal', name: 'Terminal Console', icon: '<i class="hgi-stroke hgi-command-line"></i>', windowId: 'terminal-window' },
-        { id: 'monitor', name: 'Task Manager', icon: '<i class="hgi-stroke hgi-activity-01"></i>', windowId: 'monitor-window' },
-        { id: 'settings', name: 'System Settings', icon: '<i class="hgi-stroke hgi-settings-01"></i>', windowId: 'settings-window' },
-        { id: 'editor', name: 'Text Editor', icon: '<i class="hgi-stroke hgi-file-01"></i>', windowId: 'editor-window' },
-        { id: 'calculator', name: 'Calculator', icon: '<i class="hgi-stroke hgi-calculator"></i>', windowId: 'calculator-window' },
-        { id: 'calendar', name: 'Calendar', icon: '<i class="hgi-stroke hgi-calendar-01"></i>', windowId: 'calendar-window' },
-        { id: 'notes', name: 'Notes', icon: '<i class="hgi-stroke hgi-file-01"></i>', windowId: 'notes-window' },
-        { id: 'clock', name: 'Clock', icon: '<i class="hgi-stroke hgi-time-02"></i>', windowId: 'clock-app-window' }
-    ];
-
-    let installedApps = [];
-
     // Trigger window open events via app.js triggers
     function launchApplication(winId) {
         // Toggle overlay off
@@ -41,11 +24,24 @@ export function initLaunchpad() {
         if (!appsGrid) return;
         appsGrid.innerHTML = '';
 
-        const allApps = [...systemApps, ...installedApps];
+        if (!window.AppManager) {
+            console.error('[launchpad] AppManager is not initialized yet.');
+            return;
+        }
+
+        const apps = window.AppManager.getApps();
         const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
-        // Filter apps if search query exists
-        const filtered = allApps.filter(app => app.name.toLowerCase().includes(query));
+        // Filter apps:
+        // 1. Must match search query (if any)
+        // 2. Cannot be disabled
+        // 3. If store app, must be installed
+        const filtered = apps.filter(app => {
+            const matchesQuery = app.name.toLowerCase().includes(query);
+            const isNotDisabled = !app.disabled;
+            const isInstalled = app.type === 'system' || app.installed === true;
+            return matchesQuery && isNotDisabled && isInstalled;
+        });
 
         filtered.forEach(app => {
             const item = document.createElement('div');
@@ -62,6 +58,13 @@ export function initLaunchpad() {
                 } else if (app.action) {
                     overlay.classList.remove('active');
                     app.action();
+                } else {
+                    overlay.classList.remove('active');
+                    if (window.showDialog && window.showDialog.alert) {
+                        window.showDialog.alert(`Running application: ${app.name}`, 'Application Launcher');
+                    } else {
+                        alert(`Running application: ${app.name}`);
+                    }
                 }
             });
 
@@ -69,28 +72,15 @@ export function initLaunchpad() {
         });
     }
 
-    // Register event listener for software center dynamic installs
-    document.addEventListener('app-installed', (e) => {
-        const newApp = e.detail;
-        if (!newApp) return;
-
-        // Check if already in installedApps list to prevent duplicates
-        if (!installedApps.some(app => app.id === newApp.id)) {
-            let winId = null;
-            if (newApp.id === 'gimp') winId = 'paint-window';
-            else if (newApp.id === 'vlc') winId = 'media-window';
-            else if (newApp.id === 'discord') winId = 'chat-window';
-
-            installedApps.push({
-                id: newApp.id,
-                name: newApp.name,
-                icon: newApp.icon,
-                windowId: winId,
-                action: winId ? null : newApp.action
-            });
-            renderApps();
-            console.log(`[launchpad] Added newly installed app: ${newApp.name}`);
-        }
+    // Listen to AppManager events to re-render
+    document.addEventListener('app-state-changed', () => {
+        renderApps();
+    });
+    document.addEventListener('app-uninstalled', () => {
+        renderApps();
+    });
+    document.addEventListener('app-installed', () => {
+        renderApps();
     });
 
     // Close Launchpad clicking empty space

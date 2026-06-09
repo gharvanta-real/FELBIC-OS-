@@ -11,8 +11,8 @@
 
 .calendar-content {
     display: flex;
-    height: calc(100% - 34px);
-    background-color: var(--bg-secondary);
+    height: calc(100% - var(--ui-titlebar-height));
+    background-color: var(--app-content-bg);
     box-sizing: border-box;
     overflow: hidden;
 }
@@ -20,11 +20,13 @@
 /* Sidebar */
 .calendar-sidebar {
     width: 180px;
-    background-color: var(--bg-tertiary);
-    border-right: 1px solid var(--border-default);
+    min-width: 180px;
+    max-width: 180px;
+    background-color: var(--app-sidebar-bg);
+    border-right: 1px solid var(--app-border);
     display: flex;
     flex-direction: column;
-    padding: 14px;
+    padding: var(--ui-sidebar-padding);
     box-sizing: border-box;
     flex-shrink: 0;
 }
@@ -38,7 +40,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-bottom: 12px;
+    margin-bottom: var(--ui-space-sm);
 }
 
 .calendar-today-dayname {
@@ -63,10 +65,10 @@
     color: var(--text-primary);
     font-size: var(--font-size-2xs);
     font-weight: var(--font-weight-medium);
-    padding: 6px 12px;
+    padding: 6px var(--ui-space-sm);
     border-radius: var(--radius-xs);
     cursor: pointer;
-    margin-bottom: 16px;
+    margin-bottom: var(--ui-space-md);
     transition: background-color var(--transition-fast);
 }
 
@@ -75,7 +77,7 @@
 }
 
 .calendar-event-search-box {
-    margin-bottom: 16px;
+    margin-bottom: var(--ui-space-md);
 }
 
 .cal-search-input {
@@ -85,9 +87,8 @@
     border: 1px solid var(--border-default);
     border-radius: var(--radius-xs);
     color: var(--text-primary);
-    padding: 0 8px;
+    padding: 0 var(--ui-space-xs);
     font-size: var(--font-size-2xs);
-    outline: none;
     box-sizing: border-box;
 }
 
@@ -106,7 +107,7 @@
     font-size: var(--font-size-2xs);
     font-weight: var(--font-weight-semibold);
     color: var(--text-muted);
-    margin-bottom: 8px;
+    margin-bottom: var(--ui-space-xs);
 }
 
 .calendar-events-list {
@@ -114,7 +115,7 @@
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--ui-item-gap);
 }
 
 .calendar-event-sidebar-card {
@@ -165,7 +166,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 16px;
+    padding: var(--ui-app-padding);
     box-sizing: border-box;
     min-width: 0;
 }
@@ -287,12 +288,12 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: var(--overlay-scrim-dark);
     z-index: 100;
     display: flex;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(4px);
+    backdrop-filter: var(--glass-blur);
 }
 
 .cal-modal-content {
@@ -364,7 +365,6 @@
     color: var(--text-primary);
     padding: 6px 8px;
     font-size: var(--font-size-xs);
-    outline: none;
     box-sizing: border-box;
     font-family: var(--font-sans);
 }
@@ -412,4 +412,102 @@
 }
 .cal-btn-sec:hover {
     background-color: var(--surface-hover);
+}
+
+/* ==========================================================================
+   LIGHT THEME OVERRIDES
+   ========================================================================== */
+body.light-theme .calendar-content,
+body.theme-light .calendar-content {
+    background-color: var(--bg-elevated) !important;
+}
+
+body.light-theme .calendar-sidebar,
+body.theme-light .calendar-sidebar {
+    background-color: var(--panel) !important;
+    border-right: 1px solid var(--border-default) !important;
+}
+
+body.light-theme .calendar-today-box,
+body.theme-light .calendar-today-box {
+    background-color: var(--bg-elevated) !important;
+    border: 1px solid var(--border-default) !important;
+    box-shadow: var(--shadow-sm);
+}
+
+body.light-theme .cal-today-btn,
+body.theme-light .cal-today-btn,
+body.light-theme .cal-nav-btn,
+body.theme-light .cal-nav-btn,
+body.light-theme .cal-search-input,
+body.theme-light .cal-search-input {
+    background-color: var(--bg-elevated) !important;
+    border: 1px solid var(--border-default) !important;
+    color: var(--text-primary) !important;
+}
+
+body.light-theme .cal-today-btn:hover,
+body.theme-light .cal-today-btn:hover,
+body.light-theme .cal-nav-btn:hover,
+body.theme-light .cal-nav-btn:hover,
+body.light-theme .cal-search-input:focus,
+body.theme-light .cal-search-input:focus {
+    background-color: var(--surface-hover) !important;
+    border-color: var(--border-strong) !important;
+}
+
+body.light-theme .calendar-main-view,
+body.theme-light .calendar-main-view {
+    background-color: var(--bg-elevated) !important;
+}
+
+body.light-theme .calendar-day-cell,
+body.theme-light .calendar-day-cell {
+    background-color: var(--bg-elevated) !important;
+    border: 1px solid var(--border-subtle) !important;
+}
+
+body.light-theme .calendar-day-cell:hover,
+body.theme-light .calendar-day-cell:hover {
+    background-color: var(--surface-hover) !important;
+}
+
+body.light-theme .calendar-day-cell.today,
+body.theme-light .calendar-day-cell.today {
+    background-color: var(--accent-soft) !important;
+    border: 1px solid var(--accent-primary) !important;
+}
+
+body.light-theme .calendar-event-sidebar-card,
+body.theme-light .calendar-event-sidebar-card {
+    background-color: var(--bg-elevated) !important;
+    border: 1px solid var(--border-default) !important;
+    border-left: 3px solid var(--accent-primary) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+body.light-theme .calendar-event-sidebar-card.tag-work,
+body.theme-light .calendar-event-sidebar-card.tag-work {
+    border-left-color: var(--accent-primary) !important;
+}
+
+body.light-theme .calendar-event-sidebar-card.tag-personal,
+body.theme-light .calendar-event-sidebar-card.tag-personal {
+    border-left-color: var(--success) !important;
+}
+
+body.light-theme .calendar-event-sidebar-card.tag-important,
+body.theme-light .calendar-event-sidebar-card.tag-important {
+    border-left-color: var(--danger) !important;
+}
+
+body.light-theme .cal-input,
+body.theme-light .cal-input,
+body.light-theme .cal-textarea,
+body.theme-light .cal-textarea,
+body.light-theme .cal-select,
+body.theme-light .cal-select {
+    background-color: var(--bg-elevated) !important;
+    border: 1px solid var(--border-default) !important;
+    color: var(--text-primary) !important;
 }

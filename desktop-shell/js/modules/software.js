@@ -3,15 +3,13 @@
 export function initSoftware() {
     console.log('[felbicos] Initializing Software Center Module...');
 
-    const appsDb = [
-        { id: 'firefox', name: 'Firefox Browser', desc: 'Secure, modern web browsing platform.', cat: 'featured', icon: '<i class="hgi-stroke hgi-internet"></i>', installed: false },
-        { id: 'vscode', name: 'VS Code', desc: 'Powerful open-source code and text editor.', cat: 'developer', icon: '<i class="hgi-stroke hgi-code"></i>', installed: false },
-        { id: 'rust', name: 'Rust Compiler', desc: 'Compile safe and fast programs.', cat: 'developer', icon: '<i class="hgi-stroke hgi-developer"></i>', installed: false },
-        { id: 'gimp', name: 'GIMP Editor', desc: 'GNU Image Manipulation program.', cat: 'graphics', icon: '<i class="hgi-stroke hgi-brush"></i>', installed: false },
-        { id: 'blender', name: 'Blender 3D', desc: 'Open-source 3D modeling and rendering.', cat: 'graphics', icon: '<i class="hgi-stroke hgi-artboard"></i>', installed: false },
-        { id: 'vlc', name: 'VLC Media Player', desc: 'Play any video or audio stream instantly.', cat: 'utilities', icon: '<i class="hgi-stroke hgi-video-console"></i>', installed: false },
-        { id: 'discord', name: 'Discord Client', desc: 'Voice, video, and text communication.', cat: 'utilities', icon: '<i class="hgi-stroke hgi-bubble-chat-user"></i>', installed: false }
-    ];
+    // Dynamic getter for Store applications from AppManager
+    function getAppsDb() {
+        if (window.AppManager) {
+            return window.AppManager.getApps().filter(app => app.type === 'store');
+        }
+        return [];
+    }
 
     let currentCategory = 'featured';
     let searchQuery = '';
@@ -40,32 +38,36 @@ export function initSoftware() {
             }
         }
 
+        const appsDb = getAppsDb();
+
         // Render Hero Banner for Firefox in the featured / Explore view
         if (currentCategory === 'featured' && !searchQuery) {
             const heroBanner = document.createElement('div');
             heroBanner.className = 'store-hero-banner';
             const firefoxApp = appsDb.find(a => a.id === 'firefox');
             
-            heroBanner.innerHTML = `
-                <div class="store-hero-content">
-                    <span class="store-hero-tag">FEATURED APP</span>
-                    <h1 class="store-hero-title">Firefox Browser</h1>
-                    <p class="store-hero-desc">Secure, modern web browsing platform with built-in privacy protection.</p>
-                    <button class="store-hero-btn ${firefoxApp.installed ? 'installed' : (firefoxApp.isInstalling ? 'installing' : '')}" data-id="firefox" ${firefoxApp.isInstalling ? 'disabled' : ''}>
-                        ${firefoxApp.installed ? 'Installed' : (firefoxApp.isInstalling ? `<span class="store-btn-progress-fill" style="width: ${firefoxApp.installProgress}%;"></span><span class="store-btn-text">${Math.floor(firefoxApp.installProgress)}%</span>` : 'GET')}
-                    </button>
-                </div>
-                <div class="store-hero-visual">
-                    <i class="hgi-stroke hgi-internet"></i>
-                </div>
-            `;
-            const heroBtn = heroBanner.querySelector('.store-hero-btn');
-            if (heroBtn && !firefoxApp.installed && !firefoxApp.isInstalling) {
-                heroBtn.addEventListener('click', () => {
-                    installApp(firefoxApp);
-                });
+            if (firefoxApp) {
+                heroBanner.innerHTML = `
+                    <div class="store-hero-content">
+                        <span class="store-hero-tag">FEATURED APP</span>
+                        <h1 class="store-hero-title">Firefox Browser</h1>
+                        <p class="store-hero-desc">Secure, modern web browsing platform with built-in privacy protection.</p>
+                        <button class="store-hero-btn ${firefoxApp.installed ? 'installed' : (firefoxApp.isInstalling ? 'installing' : '')}" data-id="firefox" ${firefoxApp.isInstalling ? 'disabled' : ''}>
+                            ${firefoxApp.installed ? 'Installed' : (firefoxApp.isInstalling ? `<span class="store-btn-progress-fill" style="width: ${firefoxApp.installProgress}%;"></span><span class="store-btn-text">${Math.floor(firefoxApp.installProgress)}%</span>` : 'GET')}
+                        </button>
+                    </div>
+                    <div class="store-hero-visual">
+                        <i class="hgi-stroke hgi-internet"></i>
+                    </div>
+                `;
+                const heroBtn = heroBanner.querySelector('.store-hero-btn');
+                if (heroBtn && !firefoxApp.installed && !firefoxApp.isInstalling) {
+                    heroBtn.addEventListener('click', () => {
+                        installApp(firefoxApp);
+                    });
+                }
+                appsList.appendChild(heroBanner);
             }
-            appsList.appendChild(heroBanner);
         }
 
         // Filter apps to show in the grid
@@ -160,26 +162,29 @@ export function initSoftware() {
                 app.installProgress = 100;
                 clearInterval(interval);
 
-                app.installed = true;
                 app.isInstalling = false;
-                
-                updateUI();
 
-                // Notify Launchpad App Drawer that a new app has been installed
-                const installEvent = new CustomEvent('app-installed', {
-                    detail: {
-                        id: app.id,
-                        name: app.name,
-                        icon: app.icon,
-                        action: () => showDialog.alert(`Running installed program: ${app.name}`, 'Software Center')
+                if (window.AppManager) {
+                    window.AppManager.installApp(app.id);
+                } else {
+                    app.installed = true;
+                    // Fallback
+                    const installEvent = new CustomEvent('app-installed', {
+                        detail: {
+                            id: app.id,
+                            name: app.name,
+                            icon: app.icon,
+                            action: () => showDialog.alert(`Running installed program: ${app.name}`, 'Software Center')
+                        }
+                    });
+                    document.dispatchEvent(installEvent);
+
+                    if (window.showNotification) {
+                        window.showNotification('Software Installed', `${app.name} has been added to your app drawer.`, 'hgi-app-store');
                     }
-                });
-                document.dispatchEvent(installEvent);
-
-                if (window.showNotification) {
-                    window.showNotification('Software Installed', `${app.name} has been added to your app drawer.`, 'hgi-app-store');
                 }
 
+                updateUI();
                 console.log(`[software] Installed app: ${app.name}`);
                 if (callback) callback(true);
             } else {
@@ -213,6 +218,7 @@ export function initSoftware() {
     // Expose installer API globally for terminal pacman command
     window.SoftwareCenter = {
         installApp: (appId, callback) => {
+            const appsDb = getAppsDb();
             const app = appsDb.find(a => a.id === appId);
             if (!app) {
                 if (callback) callback(false);
@@ -226,6 +232,11 @@ export function initSoftware() {
             installApp(app, callback);
         }
     };
+
+    // Listen to AppManager events to update the Software Center UI
+    document.addEventListener('app-state-changed', () => {
+        renderApps();
+    });
 
     // Initial load
     renderApps();

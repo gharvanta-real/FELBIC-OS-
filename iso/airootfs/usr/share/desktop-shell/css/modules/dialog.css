@@ -1,6 +1,6 @@
 /* ============================================================
-   AIOS — macOS-style Custom Alert / Confirm / Prompt Dialogs
-   Zero hardcoded values — all tokens, responsive, premium glassmorphism
+   AURA OS — Custom Alert / Confirm / Prompt Dialogs
+   Zero hardcoded values — all tokens
    ============================================================ */
 
 .dialog-overlay {
@@ -10,9 +10,7 @@
     width: 100vw;
     height: 100vh;
     background-color: var(--overlay-scrim-dark);
-    backdrop-filter: var(--blur-sm);
-    -webkit-backdrop-filter: var(--blur-sm);
-    z-index: 99999; /* higher than anything */
+    z-index: 99999;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -27,21 +25,18 @@
 }
 
 .dialog-box {
-    width: 270px; /* standard macOS dialog width is narrow */
-    background-color: var(--surface-2);
+    width: 270px;
+    background-color: var(--panel);
     border: 1px solid var(--border-strong);
-    backdrop-filter: var(--blur-lg);
-    -webkit-backdrop-filter: var(--blur-lg);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-lg);
-    padding: 20px;
+    padding: var(--space-5);
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: var(--space-4);
     transform: scale(0.9) translateY(10px);
     transition: transform var(--transition-normal) var(--curve-elastic);
-    text-align: center; /* macOS text alignment is centered in dialogs */
-    box-sizing: border-box;
+    text-align: center;
 }
 
 .dialog-overlay.active .dialog-box {
@@ -52,7 +47,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: var(--space-3);
 }
 
 .dialog-icon {
@@ -62,19 +57,19 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 24px;
+    font-size: var(--icon-lg);
     box-shadow: var(--shadow-xs);
 }
 
-.dialog-icon.info    { background-color: var(--accent-soft); color: var(--accent-primary); }
-.dialog-icon.danger  { background-color: var(--danger-soft); color: var(--danger); }
-.dialog-icon.help    { background-color: var(--surface-3); color: var(--text-secondary); }
-.dialog-icon.prompt  { background-color: var(--accent-soft); color: var(--accent-primary); }
+.dialog-icon.info   { background-color: var(--accent-soft); color: var(--accent-primary); }
+.dialog-icon.danger { background-color: var(--accent-soft); color: var(--color-danger); }
+.dialog-icon.help   { background-color: var(--surface-3);   color: var(--text-secondary); }
+.dialog-icon.prompt { background-color: var(--accent-soft); color: var(--accent-primary); }
 
 .dialog-header-text {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--space-1);
 }
 
 .dialog-title {
@@ -99,17 +94,16 @@
 
 .dialog-prompt-input {
     width: 100%;
-    height: 28px;
+    height: 32px;
     background-color: var(--surface-1);
     border: 1px solid var(--border-default);
     border-radius: var(--radius-xs);
     color: var(--text-primary);
-    padding: 0 10px;
+    padding: 0 var(--space-2);
     font-size: var(--font-size-sm);
     font-family: var(--font-sans);
-    outline: none;
     text-align: center;
-    box-sizing: border-box;
+    outline: none;
     transition: border-color var(--transition-fast) var(--curve-smooth);
 }
 
@@ -120,7 +114,7 @@
 
 .dialog-buttons {
     display: flex;
-    gap: 10px;
+    gap: var(--space-2);
     width: 100%;
 }
 
@@ -136,10 +130,10 @@
     align-items: center;
     justify-content: center;
     border: 1px solid transparent;
-    transition: background-color var(--transition-fast) var(--curve-smooth),
-                color var(--transition-fast) var(--curve-smooth),
-                border-color var(--transition-fast) var(--curve-smooth);
-    outline: none;
+    transition:
+        background-color var(--transition-fast) var(--curve-smooth),
+        color            var(--transition-fast) var(--curve-smooth),
+        border-color     var(--transition-fast) var(--curve-smooth);
 }
 
 .dialog-btn.primary {
@@ -152,8 +146,8 @@
 }
 
 .dialog-btn.primary.danger {
-    background-color: var(--danger);
-    color: var(--text-on-danger);
+    background-color: var(--color-danger);
+    color: var(--text-on-accent);
 }
 
 .dialog-btn.primary.danger:hover {

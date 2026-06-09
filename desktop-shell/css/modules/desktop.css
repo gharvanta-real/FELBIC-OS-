@@ -1,10 +1,10 @@
 /* ============================================================
-   AIOS — Desktop Icons, Wallpaper, Context Menu,
-          Workspaces, Notifications, Tooltips
+   AURA OS — Desktop: Icons, Wallpaper, Context Menu,
+             Workspace Switcher, Toasts, Tooltips
    Zero hardcoded values — all tokens
    ============================================================ */
 
-/* ── WALLPAPER BACKGROUNDS ── */
+/* ── WALLPAPER LAYER ── */
 .wallpaper-bg {
     position: absolute;
     top: 0;
@@ -20,7 +20,6 @@
     transition: background var(--transition-slow) var(--curve-smooth);
 }
 
-/* JS sets wallpaper via .wallpaper-bg-* classes or inline style */
 .wallpaper-bg.wallpaper-aurora   { background: var(--gradient-wallpaper-aurora); }
 .wallpaper-bg.wallpaper-sunset   { background: var(--gradient-wallpaper-sunset); }
 .wallpaper-bg.wallpaper-mono     { background: var(--gradient-wallpaper-monochrome); }
@@ -40,7 +39,7 @@
     transition: opacity var(--transition-slow) var(--curve-smooth);
 }
 
-/* ── DESKTOP ICONS ── */
+/* ── DESKTOP ICON GRID ── */
 .desktop-icon-grid {
     position: absolute;
     top: var(--topbar-height);
@@ -65,8 +64,9 @@
     pointer-events: auto;
     border-radius: var(--radius-sm);
     border: 1px solid transparent;
-    transition: background-color var(--transition-fast) var(--curve-smooth),
-                border-color var(--transition-fast) var(--curve-smooth);
+    transition:
+        background-color var(--transition-fast) var(--curve-smooth),
+        border-color     var(--transition-fast) var(--curve-smooth);
     user-select: none;
 }
 
@@ -77,27 +77,26 @@
 
 .desktop-icon.active-select {
     background-color: var(--accent-soft);
-    border-color: rgba(90, 127, 255, 0.3);
+    border-color: var(--accent-soft);
 }
 
 .desktop-icon-visual {
     width: 50px;
     height: 50px;
-    border-radius: 13px;
+    border-radius: var(--radius-5);
     background-color: var(--app-icon-bg);
     border: 1px solid var(--app-icon-border);
-    backdrop-filter: var(--blur-sm);
-    -webkit-backdrop-filter: var(--blur-sm);
     box-shadow: var(--app-icon-shadow);
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: var(--icon-lg);
     color: var(--text-primary);
-    transition: transform var(--transition-normal) var(--curve-elastic),
-                background-color var(--transition-normal) var(--curve-smooth),
-                border-color var(--transition-normal) var(--curve-smooth),
-                box-shadow var(--transition-normal) var(--curve-smooth);
+    transition:
+        transform         var(--transition-normal) var(--curve-elastic),
+        background-color  var(--transition-normal) var(--curve-smooth),
+        border-color      var(--transition-normal) var(--curve-smooth),
+        box-shadow        var(--transition-normal) var(--curve-smooth);
 }
 
 .desktop-icon:hover .desktop-icon-visual {
@@ -111,11 +110,10 @@
     background-color: var(--accent-soft);
     border-color: var(--accent-primary);
     color: var(--accent-primary);
-    box-shadow: var(--shadow-accent);
 }
 
 .desktop-icon-label {
-    font-size: var(--text-xs);
+    font-size: var(--font-size-xs);
     font-weight: var(--font-weight-medium);
     color: var(--desktop-icon-text-color);
     text-align: center;
@@ -123,7 +121,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    text-shadow: var(--desktop-icon-shadow);
     transition: color var(--transition-fast) var(--curve-smooth);
 }
 
@@ -143,21 +140,20 @@
 /* ── CONTEXT MENU ── */
 .desktop-context-menu {
     position: absolute;
-    background: var(--surface-2);
-    backdrop-filter: var(--blur-intensity-heavy);
-    -webkit-backdrop-filter: var(--blur-intensity-heavy);
+    background: var(--panel);
     border: 1px solid var(--border-default);
     box-shadow: var(--shadow-md);
     border-radius: var(--radius-sm);
-    padding: 5px;
+    padding: var(--space-1);
     width: 168px;
     z-index: 4000;
     opacity: 0;
     transform: scale(0.96);
     pointer-events: none;
     color: var(--text-primary);
-    transition: opacity var(--transition-fast) var(--curve-swift),
-                transform var(--transition-fast) var(--curve-swift);
+    transition:
+        opacity   var(--transition-fast) var(--curve-swift),
+        transform var(--transition-fast) var(--curve-swift);
 }
 
 .desktop-context-menu.active {
@@ -169,8 +165,8 @@
 .desktop-context-menu .menu-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 7px 10px;
+    gap: var(--space-2);
+    padding: 7px var(--space-2);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-medium);
     color: var(--text-primary);
@@ -195,30 +191,29 @@
 .desktop-context-menu .menu-divider {
     height: 1px;
     background-color: var(--border-subtle);
-    margin: 4px 6px;
+    margin: var(--space-1) var(--space-2);
 }
 
-/* ── WORKSPACE SWITCHER ── */
+/* ── WORKSPACE SWITCHER OVERLAY ── */
 .workspace-switcher-overlay {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0.94);
-    background: var(--surface-2);
-    backdrop-filter: var(--blur-intensity-heavy);
-    -webkit-backdrop-filter: var(--blur-intensity-heavy);
+    background: var(--panel);
     border: 1px solid var(--border-default);
     color: var(--text-primary);
     border-radius: var(--radius-md);
-    padding: 18px 36px;
+    padding: var(--space-5) var(--space-7);
     font-size: var(--font-size-xl);
     font-weight: var(--font-weight-bold);
     box-shadow: var(--shadow-window);
     z-index: 3000;
     opacity: 0;
     pointer-events: none;
-    transition: opacity var(--transition-normal) ease,
-                transform var(--transition-normal) var(--curve-elastic);
+    transition:
+        opacity   var(--transition-normal) ease,
+        transform var(--transition-normal) var(--curve-elastic);
 }
 
 .workspace-switcher-overlay.visible {
@@ -234,29 +229,28 @@
     width: 300px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--space-2);
     z-index: 5000;
     pointer-events: none;
 }
 
 .notification-toast {
-    background: var(--surface-2);
-    backdrop-filter: var(--blur-intensity-light);
-    -webkit-backdrop-filter: var(--blur-intensity-light);
+    background: var(--panel);
     border: 1px solid var(--border-default);
     box-shadow: var(--shadow-md);
     border-radius: var(--radius-sm);
-    padding: 10px 12px;
+    padding: var(--space-2) var(--space-3);
     display: flex;
-    gap: 10px;
+    gap: var(--space-2);
     align-items: flex-start;
     position: relative;
     pointer-events: auto;
     transform: translateX(320px);
     opacity: 0;
-    transition: transform var(--transition-slow) var(--curve-swift),
-                opacity var(--transition-slow) ease,
-                margin var(--transition-normal) ease;
+    transition:
+        transform   var(--transition-slow)   var(--curve-swift),
+        opacity     var(--transition-slow)   ease,
+        margin-top  var(--transition-normal) ease;
 }
 
 .notification-toast.active {
@@ -280,7 +274,7 @@
     justify-content: center;
     align-items: center;
     font-size: var(--icon-sm);
-    color: var(--color-topbar-text);
+    color: var(--text-primary);
 }
 
 .notification-emoji { font-size: var(--icon-sm); }
@@ -290,7 +284,7 @@
 .notification-title {
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-semibold);
-    color: var(--color-topbar-text);
+    color: var(--text-primary);
     margin-bottom: 2px;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -298,8 +292,8 @@
 }
 
 .notification-message {
-    font-size: var(--text-xs);
-    color: var(--color-topbar-text-muted);
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
     line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -310,8 +304,7 @@
 .notification-close {
     background: transparent;
     border: none;
-    outline: none;
-    color: var(--color-topbar-text-muted);
+    color: var(--text-muted);
     cursor: pointer;
     padding: 0;
     display: flex;
@@ -325,11 +318,11 @@
 .notification-close:hover { opacity: 1; }
 .notification-close i { font-size: var(--icon-sm); }
 
-/* ── WALLPAPER SETTINGS GRID ── */
+/* ── WALLPAPER SETTINGS GRID (inside Settings app) ── */
 .wallpaper-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
+    gap: var(--space-3);
 }
 
 .wallpaper-thumb {
@@ -340,15 +333,14 @@
     position: relative;
     box-shadow: var(--shadow-sm);
     overflow: hidden;
-    transition: transform var(--transition-fast) var(--curve-smooth),
-                border-color var(--transition-fast) var(--curve-smooth);
+    transition:
+        transform     var(--transition-fast) var(--curve-smooth),
+        border-color  var(--transition-fast) var(--curve-smooth);
 }
 
 .wallpaper-thumb:hover { transform: translateY(-2px); }
-
 .wallpaper-thumb.active { border-color: var(--accent-primary); }
 
-/* Wallpaper preview backgrounds */
 .wallpaper-preview-slate      { background: var(--gradient-wallpaper-default); }
 .wallpaper-preview-aurora     { background: var(--gradient-wallpaper-aurora); }
 .wallpaper-preview-sunset     { background: var(--gradient-wallpaper-sunset); }
@@ -360,11 +352,9 @@
     left: 6px;
     background-color: var(--surface-1);
     border: 1px solid var(--border-default);
-    backdrop-filter: var(--blur-sm);
-    -webkit-backdrop-filter: var(--blur-sm);
-    padding: 2px 6px;
+    padding: 2px var(--space-2);
     border-radius: var(--radius-2xs);
-    font-size: var(--text-2xs);
+    font-size: var(--font-size-2xs);
     font-weight: var(--font-weight-medium);
     color: var(--text-primary);
 }
@@ -372,8 +362,8 @@
 /* ── ACCENT COLOR DOTS ── */
 .accent-color-list {
     display: flex;
-    gap: 10px;
-    padding: 4px;
+    gap: var(--space-2);
+    padding: var(--space-1);
     flex-wrap: wrap;
 }
 
@@ -395,34 +385,27 @@
     left: 50%;
     transform: translate(-50%, -50%);
     color: var(--text-on-accent);
-    font-size: var(--text-2xs);
+    font-size: var(--font-size-2xs);
     font-weight: var(--font-weight-bold);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-.accent-dot[data-color="white"].active::after {
-    color: var(--text-primary-inverse);
-    text-shadow: none;
 }
 
 /* ── OS TOOLTIPS ── */
 .os-tooltip {
     position: absolute;
-    background: var(--surface-2);
-    backdrop-filter: var(--blur-intensity-light);
-    -webkit-backdrop-filter: var(--blur-intensity-light);
+    background: var(--panel);
     border: 1px solid var(--border-default);
-    color: var(--color-topbar-text);
-    padding: 5px 10px;
+    color: var(--text-primary);
+    padding: 5px var(--space-2);
     border-radius: var(--radius-xs);
-    font-size: var(--text-xs);
+    font-size: var(--font-size-xs);
     font-weight: var(--font-weight-medium);
     pointer-events: none;
     z-index: 9999;
     opacity: 0;
     transform: scale(0.95);
-    transition: opacity var(--transition-fast) var(--curve-smooth),
-                transform var(--transition-fast) var(--curve-smooth);
+    transition:
+        opacity   var(--transition-fast) var(--curve-smooth),
+        transform var(--transition-fast) var(--curve-smooth);
     box-shadow: var(--shadow-sm);
     white-space: nowrap;
 }
@@ -430,4 +413,432 @@
 .os-tooltip.visible {
     opacity: 1;
     transform: scale(1);
+}
+
+/* ============================================================
+   POWER MENU & LOCK SCREEN OVERLAYS
+   ============================================================ */
+
+/* Fullscreen Power Menu Overlay */
+.power-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(9, 11, 15, 0.45);
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-normal) var(--curve-smooth);
+}
+
+.power-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.power-dialog-card {
+    background-color: var(--panel) !important;
+    border: 1px solid var(--border-default) !important;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.15) !important;
+    border-radius: var(--radius-md);
+    width: 380px;
+    padding: var(--space-5);
+    text-align: center;
+    transform: scale(0.92);
+    transition: transform var(--transition-normal) var(--curve-elastic);
+    backdrop-filter: blur(12px);
+}
+
+.power-overlay.active .power-dialog-card {
+    transform: scale(1);
+}
+
+.power-dialog-title {
+    font-size: var(--font-size-md);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+
+.power-dialog-desc {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    margin-bottom: var(--space-4);
+    min-height: 16px;
+}
+
+.power-options-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-2);
+    margin-bottom: var(--space-5);
+}
+
+.power-option-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    border-radius: var(--radius-xs);
+    padding: 8px 4px;
+    transition: background-color var(--transition-fast);
+}
+
+.power-option-item:hover {
+    background-color: var(--surface-hover);
+}
+
+.power-option-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    background-color: var(--surface-2) !important;
+    border: 1px solid var(--border-default) !important;
+    color: var(--text-secondary);
+    transition: all var(--transition-normal) var(--curve-smooth);
+}
+
+.power-option-item:hover .power-option-icon {
+    background-color: var(--text-primary) !important;
+    border-color: var(--text-primary) !important;
+    color: var(--bg-primary) !important;
+    transform: scale(1.08);
+}
+
+.power-option-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.power-dialog-footer {
+    display: flex;
+    justify-content: center;
+}
+
+.power-cancel-btn {
+    background-color: var(--surface-2) !important;
+    border: 1px solid var(--border-default) !important;
+    color: var(--text-primary) !important;
+    padding: 8px 24px;
+    border-radius: var(--radius-xs);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.power-cancel-btn:hover {
+    background-color: var(--surface-hover) !important;
+}
+
+/* Lock Screen Styles */
+.lock-screen-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--gradient-wallpaper-default);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 6000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity var(--transition-slow) var(--curve-smooth), transform var(--transition-slow) var(--curve-smooth);
+}
+
+.lock-screen-overlay::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(9, 11, 15, 0.25);
+    backdrop-filter: blur(0px);
+    z-index: 1;
+    transition: background-color var(--transition-normal) var(--curve-smooth), backdrop-filter var(--transition-normal) var(--curve-smooth);
+}
+
+.lock-screen-overlay.login-active::before {
+    background-color: rgba(9, 11, 15, 0.5);
+    backdrop-filter: blur(16px);
+}
+
+.lock-screen-overlay.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.lock-screen-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 60px 40px;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 10;
+}
+
+/* Time & Date */
+.lock-screen-time-container {
+    text-align: center;
+    margin-top: 20px;
+    text-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    transition: transform var(--transition-normal) var(--curve-smooth), opacity var(--transition-normal) var(--curve-smooth);
+}
+
+.lock-screen-time-container.login-active {
+    transform: translateY(-20px) scale(0.92);
+    opacity: 0.85;
+}
+
+.lock-time {
+    font-size: 72px;
+    font-weight: 300;
+    color: #FFFFFF;
+    margin: 0;
+    letter-spacing: -1.5px;
+}
+
+.lock-date {
+    font-size: var(--font-size-md);
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 8px 0 0 0;
+}
+
+/* Login box */
+.lock-login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    width: 260px;
+    margin-bottom: 40px;
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+    transition: transform var(--transition-normal) var(--curve-smooth), opacity var(--transition-normal) var(--curve-smooth);
+}
+
+.lock-login-container.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.lock-unlock-prompt {
+    font-size: var(--font-size-xs);
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    animation: pulse 2.5s infinite ease-in-out;
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-normal) var(--curve-smooth), transform var(--transition-normal) var(--curve-smooth);
+}
+
+.lock-unlock-prompt.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.45; transform: translate(-50%, -50%) scale(0.98); }
+    50% { opacity: 0.9; transform: translate(-50%, -50%) scale(1.02); }
+}
+
+.lock-avatar-wrapper {
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    padding: 3px;
+    background: linear-gradient(135deg, var(--accent-primary), rgba(255, 255, 255, 0.1));
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.lock-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--gradient-avatar);
+}
+
+.lock-username {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: #FFFFFF;
+    margin: 0;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.lock-input-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 20px;
+    padding: 2px;
+    box-sizing: border-box;
+}
+
+.lock-password-field {
+    flex: 1;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    color: #FFFFFF !important;
+    padding: 8px 16px;
+    font-size: var(--font-size-xs);
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.lock-password-field::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.lock-submit-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color var(--transition-fast);
+}
+
+.lock-submit-btn:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.lock-hint {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+}
+
+/* Bottom Controls */
+.lock-bottom-controls {
+    display: flex;
+    gap: 32px;
+}
+
+.lock-ctrl-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.65);
+    transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+.lock-ctrl-btn:hover {
+    color: #FFFFFF;
+    transform: translateY(-2px);
+}
+
+.lock-ctrl-btn i {
+    font-size: 18px;
+}
+
+.lock-ctrl-btn span {
+    font-size: 10px;
+    font-weight: 500;
+}
+
+/* Shake Animation on Error */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+}
+
+.lock-login-container.shake {
+    animation: shake 0.4s ease;
+}
+
+/* Transition overlay (Shutdown/Restart) */
+.system-transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #090b0f;
+    z-index: 9000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #FFFFFF;
+}
+
+.transition-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.transition-spinner {
+    font-size: 40px;
+    color: var(--accent-primary);
+}
+
+.transition-title {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    margin: 0;
+}
+
+.transition-subtitle {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* Spinner Rotate Animation */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.spin-icon {
+    display: inline-block;
+    animation: spin 1.5s linear infinite;
 }

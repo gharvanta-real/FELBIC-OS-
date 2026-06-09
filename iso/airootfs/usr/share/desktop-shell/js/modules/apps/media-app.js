@@ -1,188 +1,204 @@
-/* FELBIC OS — Media Player (VLC Mockup) Application Module */
+/* FELBIC OS — Aura Player Application Module */
+import { aisd } from '../aisd-client.js';
 
 export function initMediaApp() {
-    console.log('[media-app] Initializing Media App...');
+    console.log('[media-app] Initializing Aura Player...');
+
+    const playlist = [
+        { id: 0, title: "Midnight City", artist: "M83", duration: 243, vibe: "Electronic / Nostalgic" },
+        { id: 1, title: "Starboy", artist: "The Weeknd", duration: 230, vibe: "R&B / Dark" },
+        { id: 2, title: "Blinding Lights", artist: "The Weeknd", duration: 200, vibe: "Synthwave / Energetic" },
+        { id: 3, title: "Instant Crush", artist: "Daft Punk", duration: 337, vibe: "Disco / Melancholic" },
+        { id: 4, title: "Nightcall", artist: "Kavinsky", duration: 258, vibe: "Outrun / Moody" }
+    ];
+
+    let currentIdx = 0;
+    let isPlaying = false;
+    let currentTime = 0;
+    let timer = null;
+    let animationId = null;
+
+    // UI Elements
+    const canvas = document.getElementById('media-canvas');
+    const ctx = canvas ? canvas.getContext('2d') : null;
     const playBtn = document.getElementById('media-btn-play');
     const playIcon = document.getElementById('media-play-icon');
     const prevBtn = document.getElementById('media-btn-prev');
     const nextBtn = document.getElementById('media-btn-next');
-    const progressInput = document.getElementById('media-progress');
-    const volumeInput = document.getElementById('media-volume');
-    const currentText = document.getElementById('media-time-current');
-    const durationText = document.getElementById('media-time-duration');
-    const nowPlayingText = document.getElementById('media-now-playing');
-    const playlistContainer = document.getElementById('media-playlist');
-    const mediaIcon = document.getElementById('media-icon');
-    const visualWaves = document.getElementById('media-visual-waves');
+    const progressSlider = document.getElementById('media-progress');
+    const volumeSlider = document.getElementById('media-volume');
+    const currentTimeTxt = document.getElementById('media-time-current');
+    const durationTxt = document.getElementById('media-time-duration');
+    const titleTxt = document.getElementById('media-now-playing-title');
+    const artistTxt = document.getElementById('media-now-playing-artist');
+    const vibeBadge = document.getElementById('media-vibe-text');
+    const playlistScroll = document.getElementById('media-playlist-scroll');
+    const vibeCheckBtn = document.getElementById('media-vibe-check');
 
-    const playlist = [
-        { id: 0, title: "Lofi Chill Coding Beats", duration: 180, type: "audio" },
-        { id: 1, title: "Cyberpunk Horizon", duration: 240, type: "audio" },
-        { id: 2, title: "FELBIC OS Promo Video", duration: 90, type: "video" }
-    ];
-
-    let currentTrackIdx = 0;
-    let isPlaying = false;
-    let currentTime = 0;
-    let timer = null;
-
-    function formatTime(secs) {
-        const m = Math.floor(secs / 60).toString().padStart(2, '0');
-        const s = Math.floor(secs % 60).toString().padStart(2, '0');
-        return `${m}:${s}`;
-    }
-
-    function loadTrack(idx) {
-        currentTrackIdx = idx;
-        const track = playlist[currentTrackIdx];
-        if (nowPlayingText) nowPlayingText.textContent = track.title;
-        if (durationText) durationText.textContent = formatTime(track.duration);
-        if (progressInput) {
-            progressInput.max = track.duration;
-            progressInput.value = 0;
-        }
-        currentTime = 0;
-        if (currentText) currentText.textContent = "00:00";
-
-        // Update active class in playlist elements
-        if (playlistContainer) {
-            const items = playlistContainer.querySelectorAll('.playlist-item');
-            items.forEach((item, i) => {
-                if (i === idx) {
-                    item.style.background = "rgba(249, 115, 22, 0.2)";
-                    item.style.color = "#fff";
-                } else {
-                    item.style.background = "transparent";
-                    item.style.color = "#aaa";
-                }
-            });
-        }
-
-        if (mediaIcon) {
-            if (track.type === 'video') {
-                mediaIcon.className = "hgi-stroke hgi-video-console";
-                mediaIcon.style.color = "#3b82f6";
-            } else {
-                mediaIcon.className = "hgi-stroke hgi-music-note-01";
-                mediaIcon.style.color = "#f97316";
-            }
-        }
+    function formatTime(s) {
+        const min = Math.floor(s / 60);
+        const sec = Math.floor(s % 60);
+        return `${min}:${sec.toString().padStart(2, '0')}`;
     }
 
     function renderPlaylist() {
-        if (!playlistContainer) return;
-        playlistContainer.innerHTML = '';
+        if (!playlistScroll) return;
+        playlistScroll.innerHTML = '';
         playlist.forEach((track, idx) => {
             const item = document.createElement('div');
-            item.className = 'playlist-item';
-            item.style.display = "flex";
-            item.style.justifyContent = "space-between";
-            item.style.alignItems = "center";
-            item.style.padding = "6px 8px";
-            item.style.borderRadius = "4px";
-            item.style.cursor = "pointer";
-            item.style.fontSize = "12px";
-            item.style.color = "#aaa";
-            item.style.transition = "background 0.2s";
-            
-            const icon = track.type === 'video' ? '<i class="hgi-stroke hgi-video-console" style="margin-right: 6px;"></i>' : '<i class="hgi-stroke hgi-music-note-01" style="margin-right: 6px;"></i>';
+            item.className = `media-playlist-item ${idx === currentIdx ? 'active' : ''}`;
             item.innerHTML = `
-                <div style="display: flex; align-items: center;">
-                    ${icon}
-                    <span>${track.title}</span>
+                <div class="media-item-thumb">
+                    <i class="hgi-stroke hgi-music-note-01"></i>
                 </div>
-                <span>${formatTime(track.duration)}</span>
+                <div class="media-item-info">
+                    <div class="media-item-title">${track.title}</div>
+                    <div class="media-item-duration">${formatTime(track.duration)}</div>
+                </div>
             `;
-
             item.addEventListener('click', () => {
                 loadTrack(idx);
-                playTrack();
+                play();
             });
-
-            playlistContainer.appendChild(item);
+            playlistScroll.appendChild(item);
         });
     }
 
-    function playTrack() {
+    function loadTrack(idx) {
+        currentIdx = idx;
+        const track = playlist[currentIdx];
+        if (titleTxt) titleTxt.textContent = track.title;
+        if (artistTxt) artistTxt.textContent = track.artist;
+        if (vibeBadge) vibeBadge.textContent = track.vibe;
+        if (durationTxt) durationTxt.textContent = formatTime(track.duration);
+        if (progressSlider) {
+            progressSlider.max = track.duration;
+            progressSlider.value = 0;
+        }
+        currentTime = 0;
+        if (currentTimeTxt) currentTimeTxt.textContent = "0:00";
+        renderPlaylist();
+    }
+
+    function play() {
         isPlaying = true;
         if (playIcon) playIcon.className = "hgi-stroke hgi-pause";
+        startTimer();
+        startVisualizer();
+    }
+
+    function pause() {
+        isPlaying = false;
+        if (playIcon) playIcon.className = "hgi-stroke hgi-play";
+        stopTimer();
+        stopVisualizer();
+    }
+
+    function startTimer() {
         if (timer) clearInterval(timer);
         timer = setInterval(() => {
-            const track = playlist[currentTrackIdx];
-            if (currentTime < track.duration) {
+            if (currentTime < playlist[currentIdx].duration) {
                 currentTime++;
-                if (progressInput) progressInput.value = currentTime;
-                if (currentText) currentText.textContent = formatTime(currentTime);
-                animateVisualizer();
+                if (progressSlider) progressSlider.value = currentTime;
+                if (currentTimeTxt) currentTimeTxt.textContent = formatTime(currentTime);
             } else {
-                nextTrack();
+                next();
             }
         }, 1000);
     }
 
-    function pauseTrack() {
-        isPlaying = false;
-        if (playIcon) playIcon.className = "hgi-stroke hgi-play";
-        if (timer) {
-            clearInterval(timer);
-            timer = null;
-        }
-        resetVisualizer();
+    function stopTimer() {
+        clearInterval(timer);
+        timer = null;
     }
 
-    function nextTrack() {
-        let nextIdx = currentTrackIdx + 1;
-        if (nextIdx >= playlist.length) nextIdx = 0;
-        loadTrack(nextIdx);
-        if (isPlaying) playTrack();
+    function next() {
+        loadTrack((currentIdx + 1) % playlist.length);
+        if (isPlaying) play();
     }
 
-    function prevTrack() {
-        let prevIdx = currentTrackIdx - 1;
-        if (prevIdx < 0) prevIdx = playlist.length - 1;
-        loadTrack(prevIdx);
-        if (isPlaying) playTrack();
+    function prev() {
+        loadTrack((currentIdx - 1 + playlist.length) % playlist.length);
+        if (isPlaying) play();
     }
 
-    function animateVisualizer() {
-        if (!visualWaves) return;
-        const waveBars = visualWaves.querySelectorAll('.wave-bar');
-        waveBars.forEach(bar => {
-            const randHeight = Math.floor(Math.random() * 25) + 5;
-            bar.style.height = `${randHeight}px`;
-        });
-    }
-
-    function resetVisualizer() {
-        if (!visualWaves) return;
-        const waveBars = visualWaves.querySelectorAll('.wave-bar');
-        waveBars.forEach(bar => {
-            bar.style.height = `8px`;
-        });
-    }
-
-    // Event listeners
-    if (playBtn) {
-        playBtn.addEventListener('click', () => {
-            if (isPlaying) {
-                pauseTrack();
-            } else {
-                playTrack();
+    // Canvas Visualizer
+    function startVisualizer() {
+        if (!ctx) return;
+        
+        function draw() {
+            if (!isPlaying) return;
+            animationId = requestAnimationFrame(draw);
+            
+            const w = canvas.width = canvas.offsetWidth;
+            const h = canvas.height = canvas.offsetHeight;
+            
+            ctx.clearRect(0, 0, w, h);
+            
+            const bars = 64;
+            const barWidth = w / bars;
+            
+            for (let i = 0; i < bars; i++) {
+                const barHeight = Math.random() * (h / 2);
+                const hue = (i / bars) * 360;
+                
+                ctx.fillStyle = `hsla(${hue}, 70%, 50%, 0.4)`;
+                ctx.fillRect(i * barWidth, h - barHeight, barWidth - 2, barHeight);
+                
+                // Mirror
+                ctx.fillStyle = `hsla(${hue}, 70%, 50%, 0.1)`;
+                ctx.fillRect(i * barWidth, 0, barWidth - 2, barHeight);
             }
+        }
+        draw();
+    }
+
+    function stopVisualizer() {
+        cancelAnimationFrame(animationId);
+        if (ctx) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+    }
+
+    async function vibeCheck() {
+        if (!vibeCheckBtn) return;
+        
+        const originalText = vibeCheckBtn.textContent;
+        vibeCheckBtn.textContent = "Checking...";
+        vibeCheckBtn.disabled = true;
+
+        try {
+            const currentVibe = playlist[currentIdx].vibe;
+            const prompt = `Current vibe is "${currentVibe}". Suggest another musical vibe that would complement this for a late-night coding session. Be creative but concise (2-3 words).`;
+            
+            const response = await aisd.call('ai/chat', { prompt });
+            
+            if (vibeBadge) {
+                vibeBadge.textContent = `AI Suggests: ${response}`;
+                setTimeout(() => {
+                    vibeBadge.textContent = playlist[currentIdx].vibe;
+                }, 5000);
+            }
+        } catch (err) {
+            console.error("Vibe check failed", err);
+        } finally {
+            vibeCheckBtn.textContent = originalText;
+            vibeCheckBtn.disabled = false;
+        }
+    }
+
+    // Listeners
+    if (playBtn) playBtn.addEventListener('click', () => isPlaying ? pause() : play());
+    if (nextBtn) nextBtn.addEventListener('click', next);
+    if (prevBtn) prevBtn.addEventListener('click', prev);
+    if (vibeCheckBtn) vibeCheckBtn.addEventListener('click', vibeCheck);
+    
+    if (progressSlider) {
+        progressSlider.addEventListener('input', () => {
+            currentTime = parseInt(progressSlider.value);
+            if (currentTimeTxt) currentTimeTxt.textContent = formatTime(currentTime);
         });
     }
 
-    if (prevBtn) prevBtn.addEventListener('click', prevTrack);
-    if (nextBtn) nextBtn.addEventListener('click', nextTrack);
-
-    if (progressInput) {
-        progressInput.addEventListener('input', () => {
-            currentTime = parseInt(progressInput.value);
-            if (currentText) currentText.textContent = formatTime(currentTime);
-        });
-    }
-
-    // Render & load initial state
-    renderPlaylist();
     loadTrack(0);
 }

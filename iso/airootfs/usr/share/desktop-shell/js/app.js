@@ -1,6 +1,8 @@
 import { initClock } from './modules/clock.js';
+import { initWeather } from './modules/weather.js';
 import { initStats } from './modules/system-stats.js';
 import { initSettings } from './modules/settings.js';
+import { initAppManager } from './modules/app-manager.js';
 import { initFiles } from './modules/files.js';
 import { initSoftware } from './modules/software.js';
 import { initMonitor } from './modules/monitor.js';
@@ -20,22 +22,33 @@ import { initCalculatorApp } from './modules/apps/calculator-app.js';
 import { initCalendarApp } from './modules/apps/calendar-app.js';
 import { initNotesApp } from './modules/apps/notes-app.js';
 import { initClockApp } from './modules/apps/clock-app.js';
+import { initMailApp } from './modules/apps/mail-app.js';
+import { initTasksApp } from './modules/apps/tasks-app.js';
+import { initAuditLog } from './modules/apps/audit-log.js';
 import { initDialog } from './modules/dialog.js';
 import { initVFS } from './modules/vfs.js';
 import { loadComponents } from './modules/component-loader.js';
 import { initTopbarMenus } from './modules/topbar-menus.js';
 import { initAIAssistant } from './modules/ai-assistant.js';
-// aisd-client is imported here to eagerly open the connection
 import { aisd } from './modules/aisd-client.js';
 import { initAgentAPI } from './modules/aios-agent.js';
 import { initNotificationCenter } from './modules/notification-center.js';
 
-document.addEventListener('DOMContentLoaded', async () => {
-    console.log('[felbicos] Loading components...');
-    await loadComponents();
-    console.log('[felbicos] Components loaded. Initializing Desktop Shell...');
+const APP_ID_MAP = {
+    'terminal-window': 'terminal', 'settings-window': 'settings', 'files-window': 'files',
+    'browser-window': 'browser', 'store-window': 'software', 'monitor-window': 'monitor',
+    'editor-window': 'editor', 'installer-window': 'installer', 'paint-window': 'gimp',
+    'media-window': 'vlc', 'chat-window': 'discord', 'calculator-window': 'calculator',
+    'calendar-window': 'calendar', 'notes-window': 'notes', 'clock-app-window': 'clock',
+    'mail-window': 'mail', 'tasks-window': 'tasks', 'ai-window': 'ai', 'audit-log-window': 'audit'
+};
 
-    // ── 1. Init Base & System Modules ──
+async function init() {
+    console.log('[AIOS] Starting system initialization...');
+    initAppManager();
+    await loadComponents();
+
+    // 1. Initialize core services
     initDialog();
     initVFS();
     initNotifications();
@@ -43,11 +56,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     initDesktop();
     initAesthetics();
     initTopbarMenus();
-    initAgentAPI();       // MUST be before initAIAssistant so window.AIOS_AGENT is ready
+    initAgentAPI();
     initAIAssistant();
     initNotificationCenter();
 
+    // 2. Initialize system features
     initClock('topbar-clock');
+    initWeather();
     initStats('stat-cpu', 'stat-mem');
     initSettings();
     initFiles();
@@ -59,25 +74,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     initInstaller();
     initTerminal();
 
-    // Register paint, media, chat, calculator, calendar, notes, clock windows under the Window Manager
-    const paintWin = document.getElementById('paint-window');
-    const mediaWin = document.getElementById('media-window');
-    const chatWin = document.getElementById('chat-window');
-    const calcWin = document.getElementById('calculator-window');
-    const calendarWin = document.getElementById('calendar-window');
-    const notesWin = document.getElementById('notes-window');
-    const clockWin = document.getElementById('clock-app-window');
-    const aiWin = document.getElementById('ai-window');
-    if (paintWin) registerWindow(paintWin);
-    if (mediaWin) registerWindow(mediaWin);
-    if (chatWin) registerWindow(chatWin);
-    if (calcWin) registerWindow(calcWin);
-    if (calendarWin) registerWindow(calendarWin);
-    if (notesWin) registerWindow(notesWin);
-    if (clockWin) registerWindow(clockWin);
-    if (aiWin) registerWindow(aiWin);
+    // 3. Register windows
+    Object.keys(APP_ID_MAP).forEach(id => {
+        const win = document.getElementById(id);
+        if (win) registerWindow(win);
+    });
 
-    // Initialize paint, media, chat, calculator, calendar, notes, clock app logics
+    // 4. Initialize application logic
     initPaintApp();
     initMediaApp();
     initChatApp();
@@ -85,440 +88,179 @@ document.addEventListener('DOMContentLoaded', async () => {
     initCalendarApp();
     initNotesApp();
     initClockApp();
+    initMailApp();
+    initTasksApp();
+    initAuditLog();
 
-    // ── 2. Window Control & Focus Actions ──
-    // Close button click handler
-    const closeBtns = document.querySelectorAll('.window-btn.close');
-    closeBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation(); // prevent triggering focus on close
-            const targetId = btn.getAttribute('data-target');
-            const targetWindow = document.getElementById(targetId);
-            if (targetWindow) {
-                let appName = "";
-                if (targetId === 'terminal-window') appName = 'terminal';
-                else if (targetId === 'settings-window') appName = 'settings';
-                else if (targetId === 'files-window') appName = 'files';
-                else if (targetId === 'browser-window') appName = 'browser';
-                else if (targetId === 'store-window') appName = 'software';
-                else if (targetId === 'monitor-window') appName = 'monitor';
-                else if (targetId === 'editor-window') appName = 'editor';
-                else if (targetId === 'installer-window') appName = 'installer';
-                else if (targetId === 'paint-window') appName = 'gimp';
-                else if (targetId === 'media-window') appName = 'vlc';
-                else if (targetId === 'chat-window') appName = 'discord';
-                else if (targetId === 'calculator-window') appName = 'calculator';
-                else if (targetId === 'calendar-window') appName = 'calendar';
-                else if (targetId === 'notes-window') appName = 'notes';
-                else if (targetId === 'clock-app-window') appName = 'clock';
-                else if (targetId === 'ai-window') appName = 'ai';
-
-                const dockItem = appName ? document.querySelector(`.dock-item[data-app="${appName}"]`) : null;
-                
-                if (dockItem) {
-                    const dockRect = dockItem.getBoundingClientRect();
-                    const winRect = targetWindow.getBoundingClientRect();
-                    
-                    const winCenterX = winRect.left + winRect.width / 2;
-                    const winCenterY = winRect.top + winRect.height / 2;
-                    const dockCenterX = dockRect.left + dockRect.width / 2;
-                    const dockCenterY = dockRect.top + dockRect.height / 2;
-
-                    const deltaX = dockCenterX - winCenterX;
-                    const deltaY = dockCenterY - winCenterY;
-
-                    targetWindow.style.transition = 'transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease';
-                    targetWindow.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.05)`;
-                } else {
-                    targetWindow.style.transition = 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease';
-                    targetWindow.style.transform = 'scale(0.93) translateY(12px)';
-                }
-                
-                targetWindow.style.opacity = '0';
-                setTimeout(() => {
-                    targetWindow.style.display = 'none';
-                    targetWindow.classList.remove('active-focus');
-                    targetWindow.style.transform = 'scale(1) translateY(0) translate(0px, 0px)'; // Reset for next open
-                }, 450);
-
-                // Remove running indicator dot
-                if (appName) {
-                    const dockItem = document.querySelector(`.dock-item[data-app="${appName}"]`);
-                    if (dockItem) dockItem.classList.remove('running');
-                }
-            }
-        });
-    });
-
-    // Function to show/re-open a window
-    function openWindow(windowId) {
+    // 5. Global Window Controller
+    window.openWindow = (windowId) => {
         const win = document.getElementById(windowId);
-        if (win) {
-            let appName = "";
-            if (windowId === 'terminal-window') appName = 'terminal';
-            else if (windowId === 'settings-window') appName = 'settings';
-            else if (windowId === 'files-window') appName = 'files';
-            else if (windowId === 'browser-window') appName = 'browser';
-            else if (windowId === 'store-window') appName = 'software';
-            else if (windowId === 'monitor-window') appName = 'monitor';
-            else if (windowId === 'editor-window') appName = 'editor';
-            else if (windowId === 'installer-window') appName = 'installer';
-            else if (windowId === 'paint-window') appName = 'gimp';
-            else if (windowId === 'media-window') appName = 'vlc';
-            else if (windowId === 'chat-window') appName = 'discord';
-            else if (windowId === 'calculator-window') appName = 'calculator';
-            else if (windowId === 'calendar-window') appName = 'calendar';
-            else if (windowId === 'notes-window') appName = 'notes';
-            else if (windowId === 'clock-app-window') appName = 'clock';
-            else if (windowId === 'ai-window') appName = 'ai';
+        if (!win) return;
 
-            const dockItem = appName ? document.querySelector(`.dock-item[data-app="${appName}"]`) : null;
-
-            if (win.style.display === 'none') {
-                if (dockItem) {
-                    // Temporarily set display to flex to get bounding rect of the target window
-                    win.style.display = 'flex';
-                    win.style.opacity = '0';
-                    win.style.transition = 'none';
-                    
-                    const dockRect = dockItem.getBoundingClientRect();
-                    const winRect = win.getBoundingClientRect();
-                    const winCenterX = winRect.left + winRect.width / 2;
-                    const winCenterY = winRect.top + winRect.height / 2;
-                    const dockCenterX = dockRect.left + dockRect.width / 2;
-                    const dockCenterY = dockRect.top + dockRect.height / 2;
-
-                    const deltaX = dockCenterX - winCenterX;
-                    const deltaY = dockCenterY - winCenterY;
-
-                    win.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.05)`;
-                    win.offsetHeight; // trigger reflow
-                    
-                    win.style.transition = 'transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease';
-                    win.style.transform = 'translate(0px, 0px) scale(1)';
-                    win.style.opacity = '1';
+        // Check if disabled in AppManager
+        if (window.AppManager) {
+            const associatedApp = window.AppManager.getApps().find(app => app.windowId === windowId);
+            if (associatedApp && associatedApp.disabled) {
+                if (window.showDialog && window.showDialog.alert) {
+                    window.showDialog.alert(`The application "${associatedApp.name}" is currently disabled. Please enable it in Settings -> Applications.`, 'Application Blocked');
                 } else {
-                    win.style.display = 'flex';
-                    win.style.transform = 'scale(0.93) translateY(12px)';
-                    win.style.opacity = '0';
-                    win.offsetHeight; // trigger reflow
-                    win.style.transition = 'transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease';
-                    win.style.transform = 'scale(1) translateY(0)';
-                    win.style.opacity = '1';
+                    alert(`The application "${associatedApp.name}" is currently disabled. Please enable it in Settings.`);
                 }
-
-                // Add running indicator dot
-                if (dockItem) {
-                    dockItem.classList.add('running');
-                }
+                return;
             }
-            
-            // Move window to active workspace if needed
-            const activeWS = document.body.getAttribute('data-active-workspace') || '1';
-            win.dataset.workspace = activeWS;
-            
-            focusWindow(win);
         }
-    }
 
-    // Expose openWindow globally so other modules can use it
-    window.openWindow = openWindow;
+        const appName = APP_ID_MAP[windowId] || "";
+        const dockItem = appName ? document.querySelector(`.dock-item[data-app="${appName}"]`) : null;
 
-    // Set initial running indicators and focus (Terminal open by default)
-    const initialTerminal = document.getElementById('terminal-window');
-    if (initialTerminal) {
-        // Move to active workspace 1
-        initialTerminal.dataset.workspace = '1';
-        focusWindow(initialTerminal);
-        const termDock = document.querySelector('.dock-item[data-app="terminal"]');
-        if (termDock) termDock.classList.add('running');
-    }
-
-    // ── 3. Control Center Dropdown Panel ──
-    const ccTrigger = document.getElementById('control-center-trigger');
-    const ccPanel = document.getElementById('control-center-panel');
-
-    ccTrigger.addEventListener('click', (e) => {
-        e.stopPropagation();
-        ccPanel.classList.toggle('active');
-    });
-
-    document.addEventListener('click', (e) => {
-        if (ccPanel.classList.contains('active') && !ccPanel.contains(e.target) && e.target !== ccTrigger) {
-            ccPanel.classList.remove('active');
+        if (win.style.display === 'none') {
+            win.style.display = 'flex';
+            if (dockItem) {
+                win.style.opacity = '0';
+                win.style.transition = 'none';
+                const dRect = dockItem.getBoundingClientRect();
+                const wRect = win.getBoundingClientRect();
+                win.style.transform = `translate(${(dRect.left + dRect.width/2) - (wRect.left + wRect.width/2)}px, ${(dRect.top + dRect.height/2) - (wRect.top + wRect.height/2)}px) scale(0.05)`;
+                win.offsetHeight;
+                win.style.transition = 'transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease';
+                win.style.transform = 'translate(0, 0) scale(1)';
+                win.style.opacity = '1';
+                dockItem.classList.add('running');
+            } else {
+                win.style.transform = 'scale(0.93) translateY(12px)';
+                win.style.opacity = '0';
+                win.offsetHeight;
+                win.style.transition = 'transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease';
+                win.style.transform = 'scale(1) translateY(0)';
+                win.style.opacity = '1';
+            }
         }
-    });
-
-    // CC Toggles
-    const toggleWifi = document.getElementById('toggle-wifi');
-    const toggleBluetooth = document.getElementById('toggle-bluetooth');
-    const toggleDnd = document.getElementById('toggle-dnd');
-
-    toggleWifi.addEventListener('click', () => {
-        const isActive = toggleWifi.classList.toggle('active');
-        toggleWifi.querySelector('.cc-toggle-sub').textContent = isActive ? 'Connected' : 'Off';
         
-        // Sync Settings toggle if loaded
-        const settingsWifi = document.getElementById('settings-wifi-toggle');
-        if (settingsWifi) {
-            settingsWifi.checked = isActive;
-            settingsWifi.dispatchEvent(new Event('change'));
+        const activeWS = document.body.getAttribute('data-active-workspace') || '1';
+        win.dataset.workspace = activeWS;
+        focusWindow(win);
+    };
+
+    // 6. Event Listeners
+    document.addEventListener('click', (e) => {
+        const dockItem = e.target.closest('.dock-item');
+        if (dockItem) {
+            const app = dockItem.getAttribute('data-app');
+            const map = {
+                'launchpad': () => document.getElementById('launchpad-overlay').classList.toggle('active'),
+                'files': () => window.openWindow('files-window'),
+                'browser': () => window.openWindow('browser-window'),
+                'software': () => window.openWindow('store-window'),
+                'terminal': () => window.openWindow('terminal-window'),
+                'monitor': () => window.openWindow('monitor-window'),
+                'settings': () => window.openWindow('settings-window'),
+                'editor': () => window.openWindow('editor-window'),
+                'installer': () => window.openWindow('installer-window'),
+                'calculator': () => window.openWindow('calculator-window'),
+                'calendar': () => window.openWindow('calendar-window'),
+                'notes': () => window.openWindow('notes-window'),
+                'clock': () => window.openWindow('clock-app-window'),
+                'audit': () => window.openWindow('audit-log-window'),
+                'mail': () => window.openWindow('mail-window'),
+                'tasks': () => window.openWindow('tasks-window'),
+                'ai': () => window.openWindow('ai-window'),
+                'trash': () => alert('Trash is empty.')
+            };
+            if (map[app]) map[app]();
+        }
+
+        const closeBtn = e.target.closest('.window-btn.close');
+        if (closeBtn) {
+            e.stopPropagation();
+            const win = closeBtn.closest('.window');
+            const appId = APP_ID_MAP[win.id];
+            win.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+            win.style.transform = 'scale(0.95)';
+            win.style.opacity = '0';
+            setTimeout(() => {
+                win.style.display = 'none';
+                win.style.transform = '';
+                if (appId) {
+                    const di = document.querySelector(`.dock-item[data-app="${appId}"]`);
+                    if (di) di.classList.remove('running');
+                }
+            }, 300);
         }
     });
 
-    toggleBluetooth.addEventListener('click', () => {
-        const isActive = toggleBluetooth.classList.toggle('active');
-        toggleBluetooth.querySelector('.cc-toggle-sub').textContent = isActive ? 'On' : 'Off';
+    document.addEventListener('launch-app-window', (e) => {
+        if (e.detail && e.detail.windowId) window.openWindow(e.detail.windowId);
+    });
 
-        // Sync Settings toggle if loaded
-        const settingsBt = document.getElementById('settings-bluetooth-toggle');
-        if (settingsBt) {
-            settingsBt.checked = isActive;
-            settingsBt.dispatchEvent(new Event('change'));
+
+
+    document.getElementById('control-center-trigger')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const cc = document.getElementById('control-center-panel');
+        if (cc) cc.classList.toggle('active');
+    });
+
+    document.getElementById('topbar-theme-toggle')?.addEventListener('click', () => {
+        document.body.classList.toggle('light-theme');
+        // Optional: Update icon
+        const icon = document.getElementById('theme-toggle-icon');
+        if (icon) {
+            icon.className = document.body.classList.contains('light-theme') ? 'hgi-stroke hgi-moon' : 'hgi-stroke hgi-sun-01';
         }
     });
 
-    toggleDnd.addEventListener('click', () => {
-        toggleDnd.classList.toggle('active');
-    });
-
-    // CC Power Actions
-    document.getElementById('btn-lock').addEventListener('click', () => showDialog.alert('Locking screen...', 'System Lock'));
-    document.getElementById('btn-restart').addEventListener('click', () => showDialog.alert('Rebooting system...', 'System Restart'));
-    document.getElementById('btn-shutdown').addEventListener('click', () => showDialog.alert('Shutting down...', 'System Shutdown'));
-
-
-    // ── 4. Spotlight Search Overlay ──
-    const spotlightOverlay = document.getElementById('spotlight-overlay');
-    const spotlightInput = document.getElementById('spotlight-input');
-    const spotlightResults = document.getElementById('spotlight-results');
-
+    // 8. Spotlight Integration
+    const spotlight = document.getElementById('spotlight-overlay');
+    const input = document.getElementById('spotlight-input');
+    const results = document.getElementById('spotlight-results');
     const appList = [
-        { name: 'Terminal Console', icon: '💻', desc: 'Open command shell terminal', action: () => openWindow('terminal-window') },
-        { name: 'Settings', icon: '⚙️', desc: 'Configure system settings & controls', action: () => openWindow('settings-window') },
-        { name: 'Files Explorer', icon: '📁', desc: 'Explore folders and files', action: () => openWindow('files-window') },
-        { name: 'Web Browser', icon: '🧭', desc: 'Browse web pages', action: () => openWindow('browser-window') },
-        { name: 'Software Center', icon: '🚀', desc: 'Install Linux apps', action: () => openWindow('store-window') },
-        { name: 'Task Manager', icon: '📊', desc: 'Monitor CPU and system tasks', action: () => openWindow('monitor-window') },
-        { name: 'Text Editor', icon: '📝', desc: 'Write or edit text draft files', action: () => openWindow('editor-window') },
-        { name: 'Install System', icon: '⚙️', desc: 'Run Calamares Live Installer', action: () => openWindow('installer-window') }
+        { name: 'Terminal', icon: '💻', action: () => window.openWindow('terminal-window') },
+        { name: 'MailBox', icon: '📩', action: () => window.openWindow('mail-window') },
+        { name: 'PlanIt Tasks', icon: '✅', action: () => window.openWindow('tasks-window') },
+        { name: 'Files Explorer', icon: '📁', action: () => window.openWindow('files-window') },
+        { name: 'Web Browser', icon: '🧭', action: () => window.openWindow('browser-window') },
+        { name: 'System Settings', icon: '⚙️', action: () => window.openWindow('settings-window') }
     ];
 
-    let selectedIndex = 0;
-    let filteredApps = [...appList];
+    let selIdx = 0;
+    let filtered = [...appList];
 
-    function toggleSpotlight(show) {
-        if (show) {
-            spotlightOverlay.classList.add('active');
-            spotlightInput.value = '';
-            renderResults();
-            setTimeout(() => spotlightInput.focus(), 50);
-        } else {
-            spotlightOverlay.classList.remove('active');
-            spotlightInput.blur();
-        }
-    }
-
-    function renderResults() {
-        spotlightResults.innerHTML = '';
-        if (filteredApps.length === 0) {
-            spotlightResults.innerHTML = `<li class="spotlight-result-item" style="color: var(--color-topbar-text-muted);">No results found</li>`;
-            return;
-        }
-
-        filteredApps.forEach((app, idx) => {
+    function renderSpotlight() {
+        if (!results) return;
+        results.innerHTML = filtered.length ? '' : '<li class="spotlight-result-item">No results</li>';
+        filtered.forEach((app, i) => {
             const li = document.createElement('li');
-            li.className = `spotlight-result-item ${idx === selectedIndex ? 'selected' : ''}`;
-            li.innerHTML = `
-                <span class="spotlight-result-icon">${app.icon}</span>
-                <div style="display:flex; flex-direction:column;">
-                    <span style="font-weight:500;">${app.name}</span>
-                    <span style="font-size:10px; color:var(--color-topbar-text-muted);">${app.desc}</span>
-                </div>
-            `;
-            
-            li.addEventListener('click', () => {
-                app.action();
-                toggleSpotlight(false);
-            });
-
-            spotlightResults.appendChild(li);
+            li.className = `spotlight-result-item ${i === selIdx ? 'selected' : ''}`;
+            li.innerHTML = `<span>${app.icon}</span> <span>${app.name}</span>`;
+            li.onclick = () => { app.action(); spotlight.classList.remove('active'); };
+            results.appendChild(li);
         });
     }
 
-    spotlightInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase();
-        filteredApps = appList.filter(app => 
-            app.name.toLowerCase().includes(query) || 
-            app.desc.toLowerCase().includes(query)
-        );
-        selectedIndex = 0;
-        renderResults();
-    });
-
-    spotlightInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            toggleSpotlight(false);
-        } else if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            selectedIndex = (selectedIndex + 1) % filteredApps.length;
-            renderResults();
-        } else if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            selectedIndex = (selectedIndex - 1 + filteredApps.length) % filteredApps.length;
-            renderResults();
-        } else if (e.key === 'Enter') {
-            e.preventDefault();
-            if (filteredApps[selectedIndex]) {
-                filteredApps[selectedIndex].action();
-                toggleSpotlight(false);
-            }
-        }
-    });
-
-    spotlightOverlay.addEventListener('click', (e) => {
-        if (e.target === spotlightOverlay) {
-            toggleSpotlight(false);
-        }
-    });
-
-    // Ctrl + K or Alt + D to trigger Search
     document.addEventListener('keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
             e.preventDefault();
-            toggleSpotlight(!spotlightOverlay.classList.contains('active'));
-        } else if (e.altKey && e.key === 'd') {
-            e.preventDefault();
-            toggleSpotlight(!spotlightOverlay.classList.contains('active'));
+            spotlight.classList.toggle('active');
+            if (spotlight.classList.contains('active')) {
+                input.value = ''; filtered = [...appList]; selIdx = 0; renderSpotlight(); input.focus();
+            }
+        }
+        if (spotlight.classList.contains('active')) {
+            if (e.key === 'ArrowDown') { e.preventDefault(); selIdx = (selIdx + 1) % filtered.length; renderSpotlight(); }
+            if (e.key === 'ArrowUp') { e.preventDefault(); selIdx = (selIdx - 1 + filtered.length) % filtered.length; renderSpotlight(); }
+            if (e.key === 'Enter') { e.preventDefault(); filtered[selIdx]?.action(); spotlight.classList.remove('active'); }
+            if (e.key === 'Escape') spotlight.classList.remove('active');
         }
     });
 
-    // Topbar search click trigger
-    const topbarSearchTrigger = document.getElementById('topbar-search-trigger');
-    if (topbarSearchTrigger) {
-        topbarSearchTrigger.addEventListener('click', () => {
-            toggleSpotlight(true);
-        });
-    }
-
-    // Topbar theme toggle
-    const topbarThemeToggle = document.getElementById('topbar-theme-toggle');
-    const themeToggleIcon = document.getElementById('theme-toggle-icon');
-    if (topbarThemeToggle) {
-        topbarThemeToggle.addEventListener('click', () => {
-            const isLight = document.body.classList.toggle('light-theme');
-            if (themeToggleIcon) {
-                themeToggleIcon.className = isLight ? 'hgi-stroke hgi-moon' : 'hgi-stroke hgi-sun-01';
-            }
-            // Sync settings pane theme cards
-            const btnDark = document.getElementById('theme-btn-dark');
-            const btnLight = document.getElementById('theme-btn-light');
-            if (btnDark && btnLight) {
-                if (isLight) {
-                    btnLight.classList.add('active');
-                    btnDark.classList.remove('active');
-                } else {
-                    btnDark.classList.add('active');
-                    btnLight.classList.remove('active');
-                }
-            }
-        });
-    }
-
-    // ── 5. App Drawer Drawer Overlay Trigger ──
-    const launchpadOverlay = document.getElementById('launchpad-overlay');
-
-    // Listen to custom window focus event
-    document.addEventListener('focus-window', (e) => {
-        const targetWindow = document.getElementById(e.detail.targetId);
-        if (targetWindow) focusWindow(targetWindow);
+    input?.addEventListener('input', (e) => {
+        const q = e.target.value.toLowerCase();
+        filtered = appList.filter(a => a.name.toLowerCase().includes(q));
+        selIdx = 0;
+        renderSpotlight();
     });
 
-    // Listen to Launchpad custom launch actions
-    document.addEventListener('launch-app-window', (e) => {
-        openWindow(e.detail.windowId);
-    });
+    console.log('[AIOS] System ready.');
+}
 
-
-    // ── 6. Dock Item Clicks ──
-    const dockItems = document.querySelectorAll('.dock-item');
-    dockItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const appName = item.getAttribute('data-app');
-            
-            if (appName === 'launchpad') {
-                launchpadOverlay.classList.toggle('active');
-            } else if (appName === 'files') {
-                openWindow('files-window');
-            } else if (appName === 'browser') {
-                openWindow('browser-window');
-            } else if (appName === 'software') {
-                openWindow('store-window');
-            } else if (appName === 'terminal') {
-                openWindow('terminal-window');
-            } else if (appName === 'monitor') {
-                openWindow('monitor-window');
-            } else if (appName === 'settings') {
-                openWindow('settings-window');
-            } else if (appName === 'editor') {
-                openWindow('editor-window');
-            } else if (appName === 'installer') {
-                openWindow('installer-window');
-            } else if (appName === 'calculator') {
-                openWindow('calculator-window');
-            } else if (appName === 'calendar') {
-                openWindow('calendar-window');
-            } else if (appName === 'notes') {
-                openWindow('notes-window');
-            } else if (appName === 'clock') {
-                openWindow('clock-app-window');
-            } else if (appName === 'ai') {
-                openWindow('ai-window');
-            } else if (appName === 'trash') {
-                showDialog.alert('Trash is empty.', 'Trash Bin');
-            }
-        });
-    });
-
-    // ── 7. Handle app-installed events (adds to Dock and shows running state) ──
-    document.addEventListener('app-installed', (e) => {
-        const newApp = e.detail;
-        if (!newApp) return;
-
-        let dockItem = document.querySelector(`.dock-item[data-app="${newApp.id}"]`);
-        if (!dockItem) {
-            const dock = document.querySelector('.dock');
-            if (dock) {
-                dockItem = document.createElement('div');
-                dockItem.className = `dock-item dock-${newApp.id} running`;
-                dockItem.setAttribute('data-app', newApp.id);
-                dockItem.setAttribute('title', newApp.name);
-                dockItem.innerHTML = newApp.icon;
-                
-                const trash = document.querySelector('.dock-item.dock-trash');
-                if (trash) {
-                    dock.insertBefore(dockItem, trash);
-                } else {
-                    dock.appendChild(dockItem);
-                }
-
-                let winId = null;
-                if (newApp.id === 'gimp') winId = 'paint-window';
-                else if (newApp.id === 'vlc') winId = 'media-window';
-                else if (newApp.id === 'discord') winId = 'chat-window';
-
-                dockItem.addEventListener('click', () => {
-                    if (winId) {
-                        openWindow(winId);
-                    } else if (newApp.windowId) {
-                        openWindow(newApp.windowId);
-                    } else if (newApp.action) {
-                        newApp.action();
-                    }
-                });
-            }
-        } else {
-            dockItem.classList.add('running');
-        }
-    });
-});
+init().catch(err => console.error('[AIOS] Startup error:', err));

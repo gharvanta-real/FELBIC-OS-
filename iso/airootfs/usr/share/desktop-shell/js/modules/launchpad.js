@@ -19,7 +19,9 @@ export function initLaunchpad() {
         { id: 'calculator', name: 'Calculator', icon: '<i class="hgi-stroke hgi-calculator"></i>', windowId: 'calculator-window' },
         { id: 'calendar', name: 'Calendar', icon: '<i class="hgi-stroke hgi-calendar-01"></i>', windowId: 'calendar-window' },
         { id: 'notes', name: 'Notes', icon: '<i class="hgi-stroke hgi-file-01"></i>', windowId: 'notes-window' },
-        { id: 'clock', name: 'Clock', icon: '<i class="hgi-stroke hgi-time-02"></i>', windowId: 'clock-app-window' }
+        { id: 'clock', name: 'Clock', icon: '<i class="hgi-stroke hgi-time-02"></i>', windowId: 'clock-app-window' },
+        { id: 'mail', name: 'MailBox', icon: '<i class="hgi-stroke hgi-mail-01"></i>', windowId: 'mail-window' },
+        { id: 'tasks', name: 'PlanIt Tasks', icon: '<i class="hgi-stroke hgi-task-edit-01"></i>', windowId: 'tasks-window' }
     ];
 
     let installedApps = [];

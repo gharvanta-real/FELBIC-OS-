@@ -1,310 +1,424 @@
-/* ============================================================
-   AIOS — Design Tokens  (Single Source of Truth)
-   All colors, sizes, spacing, motion — NO raw values elsewhere
-   ============================================================ */
+/* ================================================================
+   AURA OS — Design Language v1.0
+   Single Source of Truth — CSS Custom Properties
+   All modules import this file. NEVER hardcode values elsewhere.
+   ================================================================
 
+   THEME SYSTEM
+   ─────────────────────────────────────────────────────────────────
+   Default (dark) tokens live in :root.
+   Light theme overrides use  body.theme-light
+   Future themes follow the same pattern: body.theme-*
+
+   ================================================================ */
+
+/* ── Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+/* ================================================================
+   :root  —  AURA DARK  (default)
+   ================================================================ */
 :root {
 
-    /* ── Typography ── */
-    --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
-                 "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --font-mono: "JetBrains Mono", "Fira Code", Monaco, Consolas,
-                 "Courier New", monospace;
+    /* ── Color scheme hint ── */
+    color-scheme: dark;
 
-    /* Fluid type scale */
-    --text-2xs: 10px;
-    --text-xs:  11px;
-    --text-sm:  13px;
-    --text-md:  15px;
-    --text-lg:  17px;
-    --text-xl:  21px;
-    --text-2xl: 26px;
+    /* ──────────────────────────────────────────
+       1. SURFACE PALETTE  (background layers)
+    ────────────────────────────────────────── */
+    --bg:          #090B0F;   /* deep neutral dark */
+    --bg-elevated: #15181E;   /* elevated surface (cards) */
+    --surface-1:   #101216;   /* primary app surface (no pink tint!) */
+    --surface-2:   #13161C;   /* secondary / sidebar surface (no green tint!) */
+    --surface-3:   #1C1F26;   /* hover state */
+    --panel:       #181B22;   /* dropdowns / popovers */
 
-    /* Aliases for readability */
-    --font-size-2xs: var(--text-2xs);
-    --font-size-xs:  var(--text-xs);
-    --font-size-sm:  var(--text-sm);
-    --font-size-md:  var(--text-md);
-    --font-size-lg:  var(--text-lg);
-    --font-size-xl:  var(--text-xl);
-    --font-size-xxl: var(--text-2xl);
-    --text-3xs: 8px;
-    --font-size-3xs: var(--text-3xs);
-    --font-size-tiny: 9px;
+    /* ──────────────────────────────────────────
+       2. TEXT
+    ────────────────────────────────────────── */
+    --text-1:      #E6E8EC;   /* primary text */
+    --text-2:      #A9B2C3;   /* secondary / body text */
+    --text-3:      #6A7485;   /* muted / caption text */
 
+    /* Semantic aliases (used by modules) */
+    --text-primary:   var(--text-1);
+    --text-secondary: var(--text-2);
+    --text-muted:     var(--text-3);
+    --text-on-accent: #FFFFFF;   /* text placed on accent-colored bg */
+
+    /* ──────────────────────────────────────────
+       3. STROKE / BORDER
+    ────────────────────────────────────────── */
+    --stroke-1:    #22262F;   /* subtle dividers / outlines */
+    --stroke-2:    #2C323E;   /* stronger borders */
+
+    /* Semantic aliases */
+    --border-subtle:  var(--stroke-1);
+    --border-default: var(--stroke-1);
+    --border-strong:  var(--stroke-2);
+
+    /* ──────────────────────────────────────────
+       4. ACCENT  (monochrome)
+    ────────────────────────────────────────── */
+    --accent:      #5F6B7E;   /* interactive accent */
+    --accent-soft: #1C1E26;   /* accent tint / dim background */
+
+    /* Semantic aliases */
+    --accent-primary: var(--accent);
+    --accent-hover:   var(--text-1);
+
+    /* ──────────────────────────────────────────
+       5. STATUS COLORS  (minimal — for system only)
+    ────────────────────────────────────────── */
+    --color-success:  #4CAF82;
+    --color-warning:  #C8A84B;
+    --color-danger:   #C05050;
+
+    /* ──────────────────────────────────────────
+       6. COMPONENT-LEVEL SURFACE ALIASES
+       These are what modules should reference.
+    ────────────────────────────────────────── */
+    --bg-primary:   var(--bg);
+    --bg-secondary: var(--bg-elevated);
+    --bg-tertiary:  var(--panel);
+
+    /* Interactive surface states */
+    --surface-hover:  var(--surface-3);      /* hovered row/item           */
+    --surface-active: var(--stroke-2);       /* pressed / active state     */
+
+    /* Topbar-specific (components reference these) */
+    --color-topbar-bg:          var(--bg);
+    --color-topbar-border:      var(--stroke-1);
+    --color-topbar-text:        var(--text-1);
+    --color-topbar-text-muted:  var(--text-3);
+
+    /* Dock */
+    --color-dock-bg:      var(--panel);
+    --color-dock-border:  var(--stroke-1);
+
+    /* Icon states */
+    --color-icon-primary:   var(--text-1);
+    --color-icon-secondary: var(--text-3);
+
+    /* Accent dim — used for subtle tinted backgrounds */
+    --color-accent-dim:   var(--accent-soft);
+    --color-accent-hover: var(--surface-3);
+    --color-accent:       var(--accent);
+
+    /* Glass / blur — AURA is opaque by default */
+    --glass-bg:     var(--bg-elevated);
+    --glass-border: var(--stroke-1);
+    --glass-blur:   none;
+
+    /* App icon states */
+    --app-icon-bg:          var(--surface-3);
+    --app-icon-border:      var(--stroke-1);
+    --app-icon-shadow:      var(--shadow-1);
+    --app-icon-hover-bg:    var(--panel);
+    --app-icon-hover-border: var(--stroke-2);
+
+    /* Window chrome */
+    --app-glass-bg:   var(--bg-elevated);
+    --app-border:     var(--stroke-1);
+    --app-glass-blur: none;
+
+    /* Overlays */
+    --overlay-scrim:      rgba(0, 0, 0, 0.45);
+    --overlay-scrim-dark: rgba(0, 0, 0, 0.72);
+
+    /* Scrollbar */
+    --scrollbar-thumb:       var(--stroke-2);
+    --scrollbar-thumb-hover: var(--accent);
+
+    /* Desktop icon label */
+    --desktop-icon-text-color: var(--text-2);
+    --desktop-icon-shadow:     none;
+
+    /* Logo / avatar gradients (monochrome) */
+    --gradient-logo:    linear-gradient(135deg, var(--surface-3), var(--accent));
+    --gradient-avatar:  linear-gradient(135deg, var(--accent-soft), var(--surface-3));
+
+    /* Wallpaper presets */
+    --gradient-wallpaper-default:    linear-gradient(160deg, #090B0F 0%, #15181E 100%);
+    --gradient-wallpaper-aurora:     linear-gradient(160deg, #0B0E14 0%, #131A26 50%, #1C2B36 100%);
+    --gradient-wallpaper-sunset:     linear-gradient(160deg, #0D0F14 0%, #1A1F2C 50%, #12141C 100%);
+    --gradient-wallpaper-monochrome: linear-gradient(160deg, #090B0F 0%, #1C1F26 100%);
+
+    /* ──────────────────────────────────────────
+       7. TYPOGRAPHY
+    ────────────────────────────────────────── */
+    --font-sans: 'Inter', 'SF Pro Text', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+    /* Font weight scale */
     --font-weight-light:    300;
-    --font-weight-normal:   400;
+    --font-weight-regular:  400;
     --font-weight-medium:   500;
     --font-weight-semibold: 600;
     --font-weight-bold:     700;
 
-    /* ── Icon Sizing System ── */
-    --icon-2xs:  10px;
-    --icon-xs:   12px;
-    --icon-sm:   14px;
-    --icon-md:   18px;
-    --icon-lg:   22px;
-    --icon-xl:   28px;
-    --icon-dock: 20px;   /* dock item icons  */
-    --icon-topbar: 13px; /* topbar icon size */
-    --icon-sidebar: 16px;/* sidebar nav icons */
+    /* Font size scale */
+    --font-size-2xs: 10px;   /* caption-tiny                   */
+    --font-size-xs:  12px;   /* caption / label                */
+    --font-size-sm:  13px;   /* secondary body                 */
+    --font-size-md:  14px;   /* body (default)                 */
+    --font-size-lg:  16px;   /* large body / input             */
+    --font-size-xl:  18px;   /* title                          */
+    --font-size-2xl: 24px;   /* heading                        */
+    --font-size-3xl: 32px;   /* display                        */
 
-    /* ── Aurora OS Styling Tokens (Dark Space) ── */
-    --brand:          #6C63FF;
-    --brand-hover:    #7E77FF;
-    --brand-soft:     rgba(108, 99, 255, 0.14);
-    --bg:             #0b0a1a;
-    --surface:        rgba(30, 30, 34, 0.78);
-    --glass-bg:       rgba(20, 15, 50, 0.55);
-    --glass-border:   rgba(255, 255, 255, 0.08);
-    --glass-blur:     blur(32px);
-    --input-bg:       rgba(255, 255, 255, 0.08);
+    /* Legacy shorthand aliases (do not add more) */
+    --text-2xs: var(--font-size-2xs);
+    --text-xs:  var(--font-size-xs);
+    --text-sm:  var(--font-size-sm);
+    --text-md:  var(--font-size-md);
+    --text-lg:  var(--font-size-lg);
 
-    /* ── Dark Theme (Default — AIOS Identity) ── */
-    --bg-primary:     var(--bg);
-    --bg-secondary:   #121026;
-    --bg-tertiary:    #181533;
-    --bg-elevated:    #181533;
+    /* ──────────────────────────────────────────
+       8. ICON SIZES
+    ────────────────────────────────────────── */
+    --icon-xs:     12px;
+    --icon-sm:     16px;
+    --icon-md:     18px;
+    --icon-lg:     22px;
+    --icon-xl:     26px;
+    --icon-2xl:    32px;
+    --icon-topbar: 15px;
+    --icon-dock:   22px;
 
-    --surface-1:      var(--surface);
-    --surface-2:      var(--glass-bg);
-    --surface-3:      rgba(255, 255, 255, 0.04);
+    /* ──────────────────────────────────────────
+       9. RADIUS SYSTEM
+    ────────────────────────────────────────── */
+    --radius-1:    4px;
+    --radius-2:    6px;
+    --radius-3:    8px;
+    --radius-4:    10px;
+    --radius-5:    12px;
+    --radius-6:    16px;
+    --radius-7:    24px;
+    --radius-8:    32px;
+    --radius-9:    40px;
 
-    --surface-hover:  rgba(255, 255, 255, 0.07);
-    --surface-active: rgba(255, 255, 255, 0.11);
+    /* Semantic radius aliases */
+    --radius-2xs: var(--radius-1);   /* 4px  — tiny chips / badges    */
+    --radius-xs:  var(--radius-2);   /* 6px  — small buttons / tags   */
+    --radius-sm:  var(--radius-3);   /* 8px  — cards / panels         */
+    --radius-md:  var(--radius-5);   /* 12px — modals / popovers      */
+    --radius-lg:  var(--radius-5);   /* 12px — window chrome          */
+    --radius-xl:  var(--radius-6);   /* 16px — card radius            */
+    --radius-full: 9999px;           /* pill / circle                 */
 
-    --border-subtle:  rgba(255, 255, 255, 0.04);
-    --border-default: var(--glass-border);
-    --border-strong:  rgba(255, 255, 255, 0.14);
+    /* ──────────────────────────────────────────
+       10. SPACING (8pt grid)
+    ────────────────────────────────────────── */
+    --space-1:  4px;
+    --space-2:  8px;
+    --space-3:  12px;
+    --space-4:  16px;
+    --space-5:  20px;
+    --space-6:  24px;
+    --space-7:  32px;
+    --space-8:  40px;
+    --space-9:  48px;
 
-    --text-primary:   #f0f4ff;
-    --text-secondary: #b0bbd4;
-    --text-muted:     #7a8499;
+    /* Legacy UI spacing aliases — kept for apps.css compatibility */
+    --ui-space-2xs: var(--space-1);   /* 4px  */
+    --ui-space-xs:  var(--space-2);   /* 8px  */
+    --ui-space-sm:  var(--space-3);   /* 12px */
+    --ui-space-md:  var(--space-4);   /* 16px */
+    --ui-space-lg:  var(--space-6);   /* 24px */
+    --ui-space-xl:  var(--space-7);   /* 32px */
+    --ui-space-2xl: var(--space-9);   /* 48px */
 
-    /* Identity Accent */
-    --accent-primary: var(--brand);
-    --accent-hover:   var(--brand-hover);
-    --accent-soft:    var(--brand-soft);
+    /* ──────────────────────────────────────────
+       11. SHADOWS
+    ────────────────────────────────────────── */
+    --shadow-1: 0  1px  2px  rgba(0, 0, 0, 0.06);
+    --shadow-2: 0  8px 24px  rgba(15, 16, 28, 0.09);
+    --shadow-3: 0 20px 60px  rgba(15, 14, 28, 0.15);
 
-    /* Semantic Status */
-    --success: #10b981;
-    --warning: #f59e0b;
-    --danger:  #ef4444;
-    --danger-soft:  rgba(239, 68, 68, 0.15);
-    --success-soft: rgba(16, 185, 129, 0.14);
-    --warning-soft: rgba(245, 158, 11, 0.14);
+    /* Semantic shadow aliases */
+    --shadow-xs:     var(--shadow-1);
+    --shadow-sm:     var(--shadow-1);
+    --shadow-md:     var(--shadow-2);
+    --shadow-lg:     var(--shadow-3);
+    --shadow-window: var(--shadow-2);
 
-    /* ── On-Color Text (for colored backgrounds) ── */
-    --text-on-accent:  #ffffff;
-    --text-on-danger:  #ffffff;
-    --text-on-success: #ffffff;
-    --text-on-warning: #ffffff;
-    --text-primary-inverse: #111827;
+    /* ──────────────────────────────────────────
+       12. LAYOUT / CHROME DIMENSIONS
+    ────────────────────────────────────────── */
+    --topbar-height:       42px;
+    --dock-height:         74px;
+    --ui-titlebar-height:  42px;
+    --ui-sidebar-width:    210px;
+    --ui-sidebar-narrow:   94px;
+    --ui-app-padding:      var(--space-5);   /* 20px standard padding */
+    --ui-item-gap:         var(--space-2);   /* 8px standard gap */
 
-    /* ── Brand / App-specific Colors ── */
-    --color-discord-brand: #5865f2;
-    --color-canvas-bg:     #ffffff;   /* paint / canvas always white */
-    --color-media-bg:      #0a0a0a;   /* video area always near-black */
+    --dock-radius:      var(--radius-xl);
+    --dock-item-size:   46px;
+    --dock-item-radius: var(--radius-sm);
 
-    /* ── Gradient Tokens ── */
-    --gradient-logo:   linear-gradient(135deg, #a855f7, #6366f1);
-    --gradient-avatar: linear-gradient(135deg, #3b82f6, #8b5cf6);
-    --gradient-accent: linear-gradient(135deg, var(--accent-primary), #8b5cf6);
-    --gradient-wallpaper-default:
-        radial-gradient(circle at 80% 20%, rgba(99,102,241,0.18) 0%, transparent 50%),
-        radial-gradient(circle at 15% 80%, rgba(168,85,247,0.22) 0%, transparent 60%),
-        linear-gradient(135deg, var(--bg-primary) 0%, #0c0e15 40%, #150f2b 80%, var(--bg-primary) 100%);
-    --gradient-wallpaper-aurora:
-        linear-gradient(135deg, #1e1b4b, #311042, #180026);
-    --gradient-wallpaper-sunset:
-        linear-gradient(135deg, #fdb974, #f472b6, #3b82f6);
-    --gradient-wallpaper-monochrome:
-        linear-gradient(135deg, #09090b, #27272a, #09090b);
+    /* ──────────────────────────────────────────
+       13. MOTION
+    ────────────────────────────────────────── */
+    --transition-fast:   120ms;
+    --transition-normal: 180ms;
+    --transition-slow:   240ms;
+    --curve-smooth:   ease-out;
+    --curve-swift:    cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --curve-elastic:  cubic-bezier(0.34, 1.56, 0.64, 1.00);
+    --curve-linear:   linear;
 
-    /* ── Overlay / Scrim ── */
-    --overlay-scrim:      rgba(0, 0, 0, 0.15);
-    --overlay-scrim-dark: rgba(0, 0, 0, 0.30);
-
-    /* ── Semantic Variable Aliases (mapped from primitives) ── */
-    --color-bg:               var(--bg-primary);
-    --color-topbar-bg:        var(--surface-1);
-    --color-topbar-border:    var(--border-default);
-    --color-topbar-text:      var(--text-primary);
-    --color-topbar-text-muted: var(--text-muted);
-
-    --color-dock-bg:     rgba(18, 24, 36, 0.35);
-    --color-dock-border: var(--border-default);
-    --color-dock-shadow: rgba(0, 0, 0, 0.25);
-
-    --color-window-bg: var(--bg-secondary);
-    --color-panel-bg: rgba(18, 24, 36, 0.45);
-    --shadow-panel: -8px 0 32px rgba(0, 0, 0, 0.25);
-
-    --color-weather-bg: linear-gradient(135deg, rgba(74, 144, 226, 0.85), rgba(44, 82, 130, 0.85));
-    --color-weather-border: rgba(255, 255, 255, 0.15);
-    --color-weather-text: #ffffff;
-    --shadow-text-subtle: 0 1px 2px rgba(0, 0, 0, 0.15);
-
-    --color-accent:        var(--accent-primary);
-    --color-accent-dim:    var(--surface-3);
-    --color-accent-hover:  var(--surface-hover);
-    --color-accent-active: var(--surface-active);
-
-    --color-success: var(--success);
-    --color-warning: var(--warning);
-    --color-danger:  var(--danger);
-
-    /* Desktop Icon Theming */
-    --desktop-icon-shadow:     0 1px 2px rgba(0, 0, 0, 0.50);
-    --desktop-icon-text-color: #ffffff;
-
-    /* App Icon System (Dock + Desktop) */
-    --app-icon-bg:          rgba(255, 255, 255, 0.03);
-    --app-icon-border:      rgba(255, 255, 255, 0.07);
-    --app-icon-shadow:      0 4px 12px rgba(0, 0, 0, 0.18);
-    --app-icon-hover-bg:    rgba(255, 255, 255, 0.08);
-    --app-icon-hover-border: rgba(255, 255, 255, 0.18);
-
-    /* ── Radius System ── */
-    --radius-2xs: 4px;
-    --radius-xs:  6px;
-    --radius-sm:  10px;
-    --radius-md:  14px;
-    --radius-lg:  18px;
-    --radius-xl:  24px;
-    --radius-full: 9999px;
-
-    /* ── Shadow System ── */
-    --shadow-xs:     0 1px 2px rgba(0, 0, 0, 0.12);
-    --shadow-sm:     0 2px 4px rgba(0, 0, 0, 0.16);
-    --shadow-md:     0 6px 16px rgba(0, 0, 0, 0.24);
-    --shadow-lg:     0 12px 28px rgba(0, 0, 0, 0.30);
-    --shadow-window: 0 16px 40px rgba(0, 0, 0, 0.35);
-    --shadow-dock:   var(--shadow-md);
-    --shadow-danger: 0 0 8px rgba(239, 68, 68, 0.18);
-    --shadow-accent: 0 0 10px rgba(90, 127, 255, 0.18);
-
-    /* Scrollbar tokens */
-    --scrollbar-thumb:       rgba(255, 255, 255, 0.14);
-    --scrollbar-thumb-hover: rgba(255, 255, 255, 0.28);
-
-    /* ── Layout & Sizing ── */
-    --topbar-height:   40px;
-
-    --dock-height:     74px;
-    --dock-width:      auto;
-    --dock-radius:     22px;
-    --dock-item-size:  46px;
-    --dock-item-radius: 12px;
-
-    --blur-sm:    blur(4px);
-    --blur-md:    var(--glass-blur);
-    --blur-lg:    blur(48px);
-
-    /* Legacy aliases */
-    --blur-intensity-light:  var(--blur-md);
-    --blur-intensity-heavy:  var(--blur-lg);
-
-    /* ── Transition & Animation ── */
-    --transition-fast:   0.12s;
-    --transition-normal: 0.22s;
-    --transition-slow:   0.35s;
-
-    --curve-smooth:  cubic-bezier(0.25, 0.8, 0.25, 1);
-    --curve-elastic: cubic-bezier(0.34, 1.56, 0.64, 1);
-    --curve-swift:   cubic-bezier(0.16, 1, 0.3, 1);
-    --curve-linear:  linear;
+    /* ──────────────────────────────────────────
+       14. BLUR LEVELS (unused in AURA by default)
+       Kept for compatibility — override in future themes
+    ────────────────────────────────────────── */
+    --blur-sm:               none;
+    --blur-lg:               none;
+    --blur-intensity-light:  none;
+    --blur-intensity-heavy:  none;
 }
 
-
-/* ============================================================
-   LIGHT THEME OVERRIDES
-   ============================================================ */
+body.theme-light,
 body.light-theme {
+    color-scheme: light;
 
-    /* ── Aurora OS Styling Tokens (Light Quartz) ── */
-    --brand:          #6C63FF;
-    --brand-hover:    #5B52EE;
-    --brand-soft:     rgba(108, 99, 255, 0.10);
-    --bg:             #F4F6FB;
-    --surface:        rgba(246, 246, 246, 0.72);
-    --glass-bg:       rgba(255, 255, 255, 0.55);
-    --glass-border:   rgba(0, 0, 0, 0.09);
-    --glass-blur:     blur(32px);
-    --input-bg:       rgba(255, 255, 255, 0.72);
+    --bg:          #F6F7F8;
+    --bg-elevated: #FFFFFF;
+    --surface-1:   #F0F0F3;
+    --surface-2:   #F1F3F5;
+    --surface-3:   #EAEFF5;
+    --panel:       #FCFCFD;
 
-    --bg-primary:     var(--bg);
-    --bg-secondary:   #EAEEF5;
-    --bg-tertiary:    #FFFFFF;
-    --bg-elevated:    #FFFFFF;
+    --text-1:      #121314;
+    --text-2:      #4B5568;
+    --text-3:      #727C84;
 
-    --surface-1:      var(--surface);
-    --surface-2:      var(--glass-bg);
-    --surface-3:      rgba(0, 0, 0, 0.025);
+    --stroke-1:    #EEF1F5;   /* softer border */
+    --stroke-2:    #DDE3EA;   /* softer border and card background */
 
-    --surface-hover:  rgba(0, 0, 0, 0.05);
-    --surface-active: rgba(0, 0, 0, 0.09);
+    --accent:      #171B1C;
+    --accent-soft: #E8EDF2; /* changed from pink to monochrome grey */
 
-    --border-subtle:  rgba(0, 0, 0, 0.04);
-    --border-default: var(--glass-border);
-    --border-strong:  rgba(0, 0, 0, 0.16);
+    --shadow-window: var(--shadow-1);
 
-    --text-primary:   #111827;
-    --text-secondary: #4b5563;
-    --text-muted:     #6b7280;
+    --text-primary:   var(--text-1);
+    --text-secondary: var(--text-2);
+    --text-muted:     var(--text-3);
 
-    --accent-soft:    var(--brand-soft);
+    --border-subtle:  var(--stroke-1);
+    --border-default: var(--stroke-1);
+    --border-strong:  var(--stroke-2);
 
-    --desktop-icon-shadow:     0 1px 2px rgba(0, 0, 0, 0.12);
-    --desktop-icon-text-color: var(--text-primary);
+    --accent-primary: var(--accent);
+    --accent-hover:   var(--text-1);
 
-    --app-icon-bg:           rgba(255, 255, 255, 0.22);
-    --app-icon-border:       rgba(0, 0, 0, 0.05);
-    --app-icon-shadow:       0 1px 3px rgba(0, 0, 0, 0.03);
-    --app-icon-hover-bg:     rgba(255, 255, 255, 0.45);
-    --app-icon-hover-border: rgba(0, 0, 0, 0.10);
+    --scrollbar-thumb:       var(--stroke-2);
+    --scrollbar-thumb-hover: var(--accent);
 
-    --shadow-xs:     0 1px 2px rgba(0, 0, 0, 0.04);
-    --shadow-sm:     0 2px 4px rgba(0, 0, 0, 0.04);
-    --shadow-md:     0 6px 16px rgba(0, 0, 0, 0.05);
-    --shadow-lg:     0 12px 28px rgba(0, 0, 0, 0.06);
-    --shadow-window: 0 16px 40px rgba(0, 0, 0, 0.07);
+    --gradient-wallpaper-default:    linear-gradient(160deg, #EEF0F3 0%, #F6F7F8 100%);
+    --gradient-wallpaper-aurora:     linear-gradient(160deg, #E8EFF8 0%, #EDE8F8 50%, #E8F4EE 100%);
+    --gradient-wallpaper-sunset:     linear-gradient(160deg, #F8EEF0 0%, #F4E8EE 50%, #F8F0F6 100%);
+    --gradient-wallpaper-monochrome: linear-gradient(160deg, #EAEBED 0%, #F4F5F6 100%);
 
-    --scrollbar-thumb:       rgba(0, 0, 0, 0.14);
-    --scrollbar-thumb-hover: rgba(0, 0, 0, 0.26);
+    /* Explicit component alias overrides for light theme */
+    --bg-primary:   var(--bg);
+    --bg-secondary: var(--bg-elevated);
+    --bg-tertiary:  var(--panel);
 
-    --overlay-scrim:      rgba(0, 0, 0, 0.08);
-    --overlay-scrim-dark: rgba(0, 0, 0, 0.15);
+    --surface-hover:  var(--surface-3);
+    --surface-active: var(--stroke-2);
 
-    --color-dock-shadow: rgba(0, 0, 0, 0.05);
+    --color-topbar-bg:          var(--bg);
+    --color-topbar-border:      var(--stroke-1);
+    --color-topbar-text:        var(--text-1);
+    --color-topbar-text-muted:  var(--text-3);
 
-    --gradient-wallpaper-default:
-        linear-gradient(135deg, #e0e7ff 0%, #ede9fe 50%, #fce7f3 100%);
+    --color-dock-bg:      var(--panel);
+    --color-dock-border:  var(--stroke-1);
 
-    /* Mapped aliases — must be re-declared for light theme */
-    --color-bg:               var(--bg-primary);
-    --color-topbar-bg:        var(--surface-1);
-    --color-topbar-border:    var(--border-default);
-    --color-topbar-text:      var(--text-primary);
-    --color-topbar-text-muted: var(--text-muted);
+    --color-icon-primary:   var(--text-1);
+    --color-icon-secondary: var(--text-3);
 
-    --color-dock-bg:     rgba(255, 255, 255, 0.25);
-    --color-dock-border: var(--border-default);
-    --color-window-bg:   var(--bg-secondary);
-    --color-panel-bg: rgba(255, 255, 255, 0.35);
-    --shadow-panel: -8px 0 32px rgba(0, 0, 0, 0.08);
+    --color-accent-dim:   var(--accent-soft);
+    --color-accent-hover: var(--surface-3);
+    --color-accent:       var(--accent);
 
-    --color-weather-bg: linear-gradient(135deg, rgba(100, 170, 245, 0.85), rgba(60, 110, 180, 0.85));
-    --color-weather-border: rgba(255, 255, 255, 0.25);
-    --color-weather-text: #ffffff;
-    --shadow-text-subtle: 0 1px 2px rgba(0, 0, 0, 0.1);
+    --glass-bg:     var(--bg-elevated);
+    --glass-border: var(--stroke-1);
 
-    --color-accent:        var(--accent-primary);
-    --color-accent-dim:    var(--surface-3);
-    --color-accent-hover:  var(--surface-hover);
-    --color-accent-active: var(--surface-active);
+    --app-icon-bg:           var(--bg-elevated);
+    --app-icon-border:       var(--stroke-1);
+    --app-icon-shadow:       var(--shadow-1);
+    --app-icon-hover-bg:     var(--surface-3);
+    --app-icon-hover-border: var(--stroke-2);
 
-    --color-success: var(--success);
-    --color-warning: var(--warning);
-    --color-danger:  var(--danger);
+    --app-glass-bg:   var(--bg-elevated);
+    --app-border:     var(--stroke-1);
+
+    /* Explicit legacy alias overrides for light theme */
+    --app-sidebar-bg:       var(--surface-1);
+    --app-content-bg:       var(--surface-1);
+    --danger-soft:          var(--accent-soft);
+    --success-soft:         var(--accent-soft);
+    --gradient-accent:      linear-gradient(135deg, var(--accent), var(--text-2));
+    --surface-soft:         var(--surface-1);
+    --surface-strong:       #EEF2F6;
+    --input-bg:             var(--surface-1);
+    --text-primary-inverse: var(--bg);
+    --app-window-bg:        var(--bg-elevated);
+    --color-topbar-blur-bg: var(--color-topbar-bg);
+
+    --overlay-scrim:      rgba(100, 110, 130, 0.35);
+    --overlay-scrim-dark: rgba(80, 90, 110, 0.60);
+}
+
+/* ================================================================
+   LEGACY TOKEN COMPATIBILITY LAYER
+   Maps old/broken variable names → canonical AURA tokens.
+   Do NOT use these in new code. They exist only so that
+   apps.css, calendar.css, notes.css etc. don't break
+   while being gradually migrated.
+   ================================================================ */
+:root {
+
+    /* ── App sidebar / content backgrounds ── */
+    --app-sidebar-bg:   var(--bg-secondary);
+    --app-content-bg:   var(--surface-1);
+
+    /* ── Font-size shorthand aliases (--text-* → --font-size-*) ── */
+    --text-3xs: 9px;
+    --text-2xs: var(--font-size-2xs);
+    --text-xs:  var(--font-size-xs);
+    --text-sm:  var(--font-size-sm);
+    --text-md:  var(--font-size-md);
+    --text-lg:  var(--font-size-lg);
+    --text-xl:  var(--font-size-xl);
+    --text-2xl: var(--font-size-2xl);
+    --text-3xl: var(--font-size-3xl);
+
+    /* ── Semantic status color aliases ── */
+    --danger:       var(--color-danger);
+    --success:      var(--color-success);
+    --warning:      var(--color-warning);
+    --danger-soft:  var(--accent-soft);
+    --success-soft: var(--accent-soft);
+
+    /* ── Gradient & surface aliases used by apps ── */
+    --gradient-accent:  linear-gradient(135deg, var(--accent), var(--text-2));
+    --surface-soft:     var(--surface-1);
+    --surface-strong:   var(--stroke-2);
+    --input-bg:         var(--surface-1);
+    --text-primary-inverse: var(--bg);
+
+    /* ── Color accent variant (used in sliders) ── */
+    --color-accent: var(--accent-primary);
+
+    /* ── Sidebar padding ── */
+    --ui-sidebar-padding: var(--space-3);
+
+    /* ── App-level aliases (used by apps.css layout system) ── */
+    --app-window-bg:    var(--bg-elevated);
+    --color-topbar-blur-bg: var(--color-topbar-bg);
 }

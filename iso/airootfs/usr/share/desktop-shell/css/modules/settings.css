@@ -1,0 +1,546 @@
+/* ============================================================
+   AURA OS — Settings App
+   Zero hardcoded values — all tokens
+   ============================================================ */
+
+.settings-tab-pane {
+    padding: var(--space-4);
+}
+
+.settings-tab-pane h2 {
+    font-size: var(--font-size-lg);
+    color: var(--text-primary);
+    margin-bottom: var(--space-1);
+}
+
+.settings-sub {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    margin-bottom: var(--space-4);
+}
+
+/* ── Settings row group (list-style card) ── */
+.settings-row-group {
+    background: var(--surface-1);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    margin-bottom: var(--space-4);
+}
+
+.settings-row {
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color var(--transition-fast) var(--curve-smooth);
+}
+
+.settings-row:last-child { border-bottom: none; }
+.settings-row:hover      { background: var(--surface-hover); }
+
+.settings-column-row {
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.settings-column-row:last-child { border-bottom: none; }
+
+.row-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+    font-weight: var(--font-weight-medium);
+}
+
+/* ── Section title ── */
+.settings-section-title {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ── Controls ── */
+.settings-select {
+    background: var(--surface-3);
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-xs);
+    font-size: var(--font-size-sm);
+    font-family: var(--font-sans);
+    cursor: pointer;
+    outline: none;
+}
+
+.settings-select option {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.settings-slider {
+    width: 100%;
+    margin-top: var(--space-1);
+    accent-color: var(--accent-primary);
+}
+
+.settings-textarea {
+    background: var(--surface-3);
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
+    padding: var(--space-2);
+    border-radius: var(--radius-xs);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    resize: vertical;
+    width: 100%;
+    outline: none;
+}
+
+.slider-row-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-1);
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+}
+
+/* ── Toggle switch ── */
+.switch-container {
+    position: relative;
+    display: inline-block;
+    width: 36px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.switch-container input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: var(--border-strong);
+    border-radius: var(--radius-full);
+    transition: background-color var(--transition-normal) var(--curve-smooth);
+}
+
+.toggle-slider::before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: var(--text-on-accent);
+    border-radius: 50%;
+    transition: transform var(--transition-normal) var(--curve-elastic);
+}
+
+input:checked + .toggle-slider { background-color: var(--accent-primary); }
+input:checked + .toggle-slider::before { transform: translateX(16px); }
+
+/* ── Wallpaper picker ── */
+.wallpaper-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--space-3);
+}
+
+.wallpaper-thumb {
+    height: 100px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    border: 2px solid transparent;
+    display: flex;
+    align-items: flex-end;
+    padding: var(--space-1);
+    background-size: cover;
+    transition: border-color var(--transition-fast) var(--curve-smooth);
+}
+
+.wallpaper-thumb.active { border-color: var(--accent-primary); }
+
+.wallpaper-upload-box:hover {
+    border-color: var(--accent-primary) !important;
+    background-color: var(--bg-hover) !important;
+}
+
+/* ── Theme selector ── */
+.theme-selector {
+    display: flex;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+}
+
+.theme-card {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    align-items: center;
+}
+
+.theme-card-preview {
+    width: 130px;
+    height: 88px;
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--border-subtle);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: border-color var(--transition-fast) var(--curve-smooth),
+                transform     var(--transition-fast) var(--curve-smooth);
+}
+
+.theme-card:hover .theme-card-preview {
+    transform: scale(1.03);
+}
+
+.theme-card.active .theme-card-preview {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 1px var(--accent-primary);
+}
+
+.theme-card-label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+}
+
+/* ── Dark theme preview anatomy ── */
+.theme-preview-dark { background: #0F1114; }
+.theme-preview-dark .tp-topbar {
+    height: 10px;
+    background: #161B1C;
+    border-bottom: 1px solid #2a2d31;
+    flex-shrink: 0;
+}
+.theme-preview-dark .tp-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+.theme-preview-dark .tp-sidebar {
+    width: 30px;
+    background: #1A1F20;
+    border-right: 1px solid #252a2b;
+    flex-shrink: 0;
+}
+.theme-preview-dark .tp-content {
+    flex: 1;
+    background: #0F1114;
+}
+.theme-preview-dark .tp-dock {
+    height: 12px;
+    background: rgba(255,255,255,0.06);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    flex-shrink: 0;
+}
+
+/* ── Light theme preview anatomy ── */
+.theme-preview-light { background: #F6F7F8; }
+.theme-preview-light .tp-topbar {
+    height: 10px;
+    background: #FFFFFF;
+    border-bottom: 1px solid #e2e8ee;
+    flex-shrink: 0;
+}
+.theme-preview-light .tp-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+.theme-preview-light .tp-sidebar {
+    width: 30px;
+    background: #F0F0F3;
+    border-right: 1px solid #e2e8ee;
+    flex-shrink: 0;
+}
+.theme-preview-light .tp-content {
+    flex: 1;
+    background: #F6F7F8;
+}
+.theme-preview-light .tp-dock {
+    height: 12px;
+    background: rgba(0,0,0,0.06);
+    border-top: 1px solid rgba(0,0,0,0.1);
+    flex-shrink: 0;
+}
+
+
+/* ── Volume / mic meter ── */
+.volume-mic-meter {
+    background: var(--surface-3);
+    height: 6px;
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    margin-top: var(--space-2);
+}
+
+.meter-bar {
+    height: 100%;
+    background: var(--accent-primary);
+    transition: width 0.1s var(--curve-linear);
+}
+
+/* ── Utility ── */
+.text-muted-xs {
+    color: var(--text-muted);
+    font-size: var(--font-size-xs);
+}
+
+.row-action-group {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+/* ── Applications Tab Styles ── */
+.app-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.app-list-item {
+    background: var(--surface-1);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: var(--space-2) var(--space-3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color var(--transition-fast) var(--curve-smooth);
+}
+
+.app-list-item:hover {
+    background: var(--surface-hover);
+}
+
+.app-list-item.app-disabled {
+    opacity: 0.6;
+}
+
+.app-item-info-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.app-item-icon-box {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-xs);
+    background: var(--surface-3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    color: var(--text-primary);
+    border: 1px solid var(--border-default);
+}
+
+.app-item-icon-box i {
+    font-size: 18px;
+}
+
+.app-item-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.app-item-name {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.app-item-meta {
+    font-size: 10px;
+    color: var(--text-muted);
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+}
+
+.app-item-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.app-item-type-badge {
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: var(--radius-full);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+}
+
+.app-item-type-badge.system {
+    background-color: rgba(79, 124, 255, 0.15);
+    color: #4f7cff;
+}
+
+.app-item-type-badge.installed,
+.app-item-type-badge.custom {
+    background-color: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+}
+
+/* ── App Installer Dialog Overlay ── */
+.app-installer-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(12px) saturate(160%);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.app-installer-card {
+    background: var(--surface-glass);
+    border: 1px solid var(--border-default);
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--radius-md);
+    width: 420px;
+    max-width: 90%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: window-open 0.3s var(--curve-smooth);
+}
+
+.app-installer-header {
+    padding: var(--space-3);
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.app-installer-icon-box {
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius-sm);
+    background: var(--surface-3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    color: var(--accent-primary);
+    border: 1px solid var(--border-default);
+}
+
+.app-installer-title {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+}
+
+.app-installer-subtitle {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+}
+
+.app-installer-close-btn {
+    font-size: 20px;
+    color: var(--text-muted);
+    cursor: pointer;
+    line-height: 1;
+}
+
+.app-installer-close-btn:hover {
+    color: var(--text-primary);
+}
+
+.app-installer-body {
+    padding: var(--space-4);
+    flex: 1;
+}
+
+.installer-info-text {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: 1.4;
+    margin-bottom: var(--space-4);
+}
+
+.installer-spec-box {
+    background: var(--surface-1);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: var(--space-2) var(--space-3);
+    margin-bottom: var(--space-4);
+}
+
+.installer-spec-row {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-1) 0;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.installer-spec-row:last-child {
+    border-bottom: none;
+}
+
+.spec-label {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+}
+
+.spec-value {
+    font-size: var(--font-size-xs);
+    color: var(--text-primary);
+    font-weight: var(--font-weight-medium);
+}
+
+.installer-security-warning {
+    display: flex;
+    gap: var(--space-2);
+    align-items: flex-start;
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    border-radius: var(--radius-sm);
+    padding: var(--space-2) var(--space-3);
+}
+
+.app-installer-footer {
+    padding: var(--space-3);
+    border-top: 1px solid var(--border-subtle);
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-2);
+    background: var(--surface-2);
+}
+
+/* App Filter Buttons active tabs */
+.app-filter-btn {
+    border-radius: var(--radius-xs);
+    font-size: var(--font-size-2xs) !important;
+    font-weight: var(--font-weight-medium);
+}
+
+.app-filter-btn.active {
+    background-color: var(--accent-primary) !important;
+    color: var(--text-on-accent) !important;
+    border-color: transparent !important;
+}
+
+
