@@ -20,7 +20,14 @@ export function initNotesApp() {
     const deleteBtn = document.getElementById('notes-delete-btn');
 
     // Local State
-    let notes = JSON.parse(localStorage.getItem('aios_notes_data') || '[]');
+    let notes = [];
+    try {
+        notes = JSON.parse(localStorage.getItem('aios_notes_data') || '[]');
+        if (!Array.isArray(notes)) notes = [];
+    } catch (e) {
+        console.error('[notes-app] Error parsing notes from localStorage:', e);
+        notes = [];
+    }
     let activeNoteId = null;
 
     // 1. Render Note List Sidebar
@@ -30,11 +37,12 @@ export function initNotesApp() {
 
         const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
-        // Filter notes by search query
-        const filtered = notes.filter(n => 
-            n.title.toLowerCase().includes(query) || 
-            n.body.toLowerCase().includes(query)
-        );
+        // Filter notes by search query defensively
+        const filtered = notes.filter(n => {
+            const title = (n && n.title) ? String(n.title).toLowerCase() : '';
+            const body = (n && n.body) ? String(n.body).toLowerCase() : '';
+            return title.includes(query) || body.includes(query);
+        });
 
         if (filtered.length === 0) {
             listContainer.innerHTML = `<div style="font-size: 10px; color: var(--text-muted); text-align: center; margin-top: 20px;">No Notes</div>`;

@@ -68,7 +68,14 @@ export function initClockApp() {
     const alarmAddBtn = document.getElementById('alarm-add-btn');
     const alarmsContainer = document.getElementById('alarms-list-container');
 
-    let alarms = JSON.parse(localStorage.getItem('aios_alarms_data') || '[]');
+    let alarms = [];
+    try {
+        alarms = JSON.parse(localStorage.getItem('aios_alarms_data') || '[]');
+        if (!Array.isArray(alarms)) alarms = [];
+    } catch (e) {
+        console.error('[clock-app] Error parsing alarms from localStorage:', e);
+        alarms = [];
+    }
 
     function saveAlarms() {
         localStorage.setItem('aios_alarms_data', JSON.stringify(alarms));
