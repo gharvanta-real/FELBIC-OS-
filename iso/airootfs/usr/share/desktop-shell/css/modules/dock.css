@@ -18,9 +18,9 @@
 .dock {
     height: var(--dock-height);
     background-color: var(--color-dock-bg);
-    border: 1px solid var(--color-dock-border);
-    backdrop-filter: var(--blur-sm);
-    -webkit-backdrop-filter: var(--blur-sm);
+    border: none;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-radius: var(--dock-radius);
     padding: 0 10px;
     display: flex;
@@ -37,7 +37,7 @@
     height: var(--dock-item-size);
     border-radius: var(--dock-item-radius);
     background-color: var(--app-icon-bg);
-    border: 1px solid var(--app-icon-border);
+    border: none;
     backdrop-filter: var(--blur-sm);
     -webkit-backdrop-filter: var(--blur-sm);
     display: flex;
@@ -49,14 +49,12 @@
     position: relative;
     flex-shrink: 0;
     transition: transform var(--transition-fast) var(--curve-smooth),
-                background-color var(--transition-fast) var(--curve-smooth),
-                border-color var(--transition-fast) var(--curve-smooth);
+                background-color var(--transition-fast) var(--curve-smooth);
 }
 
 .dock-item:hover {
     transform: scale(1.06) translateY(-3px);
     background-color: var(--app-icon-hover-bg);
-    border-color: var(--app-icon-hover-border);
 }
 
 .dock-item:active {
